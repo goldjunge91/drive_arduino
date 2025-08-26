@@ -1,0 +1,35 @@
+services:
+  ros2-dev:
+    build: .
+    container_name: robot-ros2-dev
+    volumes:
+      # Mount source for development (optional - for live editing)
+      - ./launch:/ros2_ws/src/robot/launch
+      - ./worlds:/ros2_ws/src/robot/worlds
+      - ./config:/ros2_ws/src/robot/config
+      - ./description:/ros2_ws/src/robot/description
+      # - ./diffdrive_arduino-main:/ros2_ws/src/diffdrive_arduino
+      - ./src/drive_arduino:/ros2_ws/src/drive_arduino
+      - ./src/serial:/ros2_ws/src/serial
+      # Persist build artifacts
+      - ros2_build_cache:/ros2_ws/build
+      - ros2_install_cache:/ros2_ws/install
+      - ros2_log_cache:/ros2_ws/log
+    #working_dir: /ros2_ws
+    environment:
+      - DISPLAY=${DISPLAY:-:0}
+      - ROS_DOMAIN_ID=42
+    # Enable GUI applications (for RViz, Gazebo, etc.)
+    network_mode: host
+    stdin_open: true
+    tty: true
+    # Uncomment for GUI support on Linux
+    # volumes:
+    #   - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    # environment:
+    #   - DISPLAY=$DISPLAY
+
+volumes:
+  ros2_build_cache:
+  ros2_install_cache:
+  ros2_log_cache:

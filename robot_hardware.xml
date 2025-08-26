@@ -1,0 +1,7 @@
+<library path="tb6612_hardware">
+  <class name="tb6612_hardware/TB6612HardwareInterface" type="tb6612_hardware::TB6612HardwareInterface" base_class_type="hardware_interface::SystemInterface">
+    <description>
+      TB6612 Hardware Interface for ros2_control supporting differential, four-wheel, and mecanum drive configurations
+    </description>
+  </class>
+</library>

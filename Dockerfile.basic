@@ -1,0 +1,32 @@
+FROM ros:humble
+
+# Update package lists
+RUN apt-get update
+
+# Install basic development tools
+RUN apt-get install -y \
+    python3-colcon-common-extensions \
+    python3-pip \
+    git \
+    vim \
+    nano
+
+# Install only the essential ROS 2 control packages needed for tb6612_hardware
+RUN apt-get install -y \
+    ros-humble-hardware-interface \
+    ros-humble-controller-manager \
+    ros-humble-pluginlib \
+    ros-humble-rclcpp
+
+# Clean up
+RUN rm -rf /var/lib/apt/lists/*
+
+# Set up workspace
+WORKDIR /workspace
+
+# Source ROS 2 setup in bashrc for convenience
+RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+RUN echo "if [ -f /workspace/install/setup.bash ]; then source /workspace/install/setup.bash; fi" >> ~/.bashrc
+
+# Set default command
+CMD ["bash"]

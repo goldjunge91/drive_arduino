@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>drive_arduino</name>
+  <version>0.0.1</version>
+  <description>Provides a ros2_control hardware interface for TB6612FNG motor driver with support for differential, mecanum, and four-wheel drive configurations.</description>
+
+  <maintainer email="developer@example.com">Developer</maintainer>
+  <author email="developer@example.com">Developer</author>
+  <license>BSD</license>
+
+  <url type="bugtracker">https://github.com/example/tb6612_hardware/issues</url>
+  <url type="repository">https://github.com/example/tb6612_hardware</url>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>hardware_interface</depend>
+  <depend>controller_manager</depend>
+  <depend>pluginlib</depend>
+  <depend>rclcpp</depend>
+  <depend>serial</depend>
+
+  <!-- Test dependencies -->
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+  <test_depend>ament_cmake_gtest</test_depend>
+  <test_depend>ament_cmake_gmock</test_depend>
+
+
+  <export>
+    <build_type>ament_cmake</build_type>
+    <hardware_interface plugin="${prefix}/tb6612_hardware.xml"/>
+  </export>
+</package>
