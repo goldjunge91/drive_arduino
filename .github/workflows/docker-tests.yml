@@ -1,0 +1,35 @@
+name: Docker Build and Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: drive-arduino-ci
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build test image
+        run: docker build --file Dockerfile --tag $IMAGE_NAME .
+
+      - name: Run unit tests inside container
+        run: |
+          docker run --rm $IMAGE_NAME bash -lc "set -euo pipefail; \
+            source /opt/ros/humble/setup.bash; \
+            cd /ros2_ws; \
+            colcon build --packages-select drive_arduino --cmake-args -DBUILD_TESTING=ON; \
+            colcon test --packages-select drive_arduino; \
+            colcon test-result --all --verbose"
