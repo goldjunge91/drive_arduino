@@ -66,6 +66,13 @@ docker build --build-arg INSTALL_GAZEBO=1 -t drive_arduino:gazebo .
 docker-compose build --build-arg INSTALL_DESKTOP_TOOLS=1 --build-arg INSTALL_GAZEBO=1
 ```
 
+These installs now share a BuildKit cache, so the first build still pulls the packages but subsequent builds reuse the cached `.deb` downloads. If BuildKit is disabled globally, enable it temporarily:
+
+```bash
+export DOCKER_BUILDKIT=1
+export COMPOSE_DOCKER_CLI_BUILD=1
+```
+
 When an optional package is unavailable on your ROS mirror, the build logs a warning and continues.
 
 ## File & Volume Layout
