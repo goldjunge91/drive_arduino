@@ -40,3 +40,9 @@ uint16_t crc16_ccitt_false(const uint8_t* data, size_t len);
 
 } // namespace protocol
 } // namespace mecabridge
+ 
+// Provide a global convenience forwarding symbol so legacy tests that call
+// crc16_ccitt_false(...) without namespace qualification still compile/link.
+inline uint16_t crc16_ccitt_false(const uint8_t* data, size_t len) {
+  return ::mecabridge::protocol::crc16_ccitt_false(data, len);
+}

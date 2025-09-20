@@ -3,6 +3,9 @@
 #include <cstdint>
 #include <cstddef>
 
+// Include CRC helper used by tests/helpers
+#include "crc16.hpp"
+
 namespace mecabridge {
 namespace protocol {
 
@@ -47,10 +50,11 @@ struct CommandFramePayload {
     float servo_cont_vel_norm;      // Continuous servo velocity (-1..1)
     float esc_norm[2];              // ESC normalized [-1..1]
     uint16_t seq;                   // Sequence number
+    uint8_t protocol_version;       // Protocol version
     uint8_t reserved_flags;         // Future use (0)
 } __attribute__((packed));
 
-static_assert(sizeof(CommandFramePayload) == 35, "CommandFramePayload must be 35 bytes");
+static_assert(sizeof(CommandFramePayload) == 36, "CommandFramePayload must be 36 bytes");
 
 // State frame payload structure
 struct StateFramePayload {
@@ -62,9 +66,10 @@ struct StateFramePayload {
     uint16_t seq_echo;              // Last accepted COMMAND seq
     uint16_t flags;                 // Status flags bitfield
     uint8_t error_code;             // Recent error cause
+    uint8_t protocol_version;       // Protocol version of the firmware
 } __attribute__((packed));
 
-static_assert(sizeof(StateFramePayload) == 39, "StateFramePayload must be 39 bytes");
+static_assert(sizeof(StateFramePayload) == 40, "StateFramePayload must be 40 bytes");
 
 // Generic frame structure for parsing
 struct Frame {
@@ -83,6 +88,7 @@ enum class ParseResult {
     INVALID_FRAME_ID,
     INVALID_LENGTH,
     CRC_MISMATCH,
+    VERSION_MISMATCH,
     UNKNOWN_ERROR
 };
 
@@ -106,6 +112,7 @@ struct ByteSpan {
 ErrorCode encodeCommand(const CommandFramePayload& command, uint8_t* buffer, size_t buffer_size, size_t& bytes_written);
 ErrorCode encodeState(const StateFramePayload& state, uint8_t* buffer, size_t buffer_size, size_t& bytes_written);
 ParseResult tryParseFrame(ByteSpan input, ParsedFrame& result);
+bool verify_version(uint8_t firmware_version);
 
 // Helper functions
 bool validateCommandPayload(CommandFramePayload& command);
@@ -113,3 +120,9 @@ void clampCommandValues(CommandFramePayload& command, uint16_t& flags_set);
 
 } // namespace protocol
 } // namespace mecabridge
+
+// Provide a global convenience forwarding symbol for legacy tests that call
+// crc16_ccitt_false without namespace qualification.
+inline uint16_t crc16_ccitt_false(const uint8_t* data, size_t len) {
+    return ::mecabridge::protocol::crc16_ccitt_false(data, len);
+}

@@ -9,13 +9,16 @@ namespace protocol {
 
 ErrorCode encodeCommand(const CommandFramePayload& command, uint8_t* buffer, size_t buffer_size, size_t& bytes_written) {
     // Frame structure: START_BYTE + FRAME_ID + LEN + PAYLOAD + CRC16
-    // Total size: 1 + 1 + 1 + 35 + 2 = 40 bytes
-    const size_t total_frame_size = 40;
+    // Total size: 1 + 1 + 1 + 36 + 2 = 41 bytes
+    const size_t total_frame_size = 41;
     
     if (buffer == nullptr || buffer_size < total_frame_size) {
         bytes_written = 0;
         return ErrorCode::MALFORMED_FRAME;
     }
+
+    CommandFramePayload command_copy = command;
+    command_copy.protocol_version = PROTOCOL_VERSION;
     
     size_t offset = 0;
     
@@ -29,7 +32,7 @@ ErrorCode encodeCommand(const CommandFramePayload& command, uint8_t* buffer, siz
     buffer[offset++] = sizeof(CommandFramePayload);
     
     // PAYLOAD - copy the struct directly (little-endian)
-    std::memcpy(&buffer[offset], &command, sizeof(CommandFramePayload));
+    std::memcpy(&buffer[offset], &command_copy, sizeof(CommandFramePayload));
     offset += sizeof(CommandFramePayload);
     
     // Calculate CRC over FRAME_ID + LEN + PAYLOAD (exclude START_BYTE and CRC bytes)
@@ -45,13 +48,16 @@ ErrorCode encodeCommand(const CommandFramePayload& command, uint8_t* buffer, siz
 
 ErrorCode encodeState(const StateFramePayload& state, uint8_t* buffer, size_t buffer_size, size_t& bytes_written) {
     // Frame structure: START_BYTE + FRAME_ID + LEN + PAYLOAD + CRC16
-    // Total size: 1 + 1 + 1 + 39 + 2 = 44 bytes
-    const size_t total_frame_size = 44;
+    // Total size: 1 + 1 + 1 + 40 + 2 = 45 bytes
+    const size_t total_frame_size = 45;
     
     if (buffer == nullptr || buffer_size < total_frame_size) {
         bytes_written = 0;
         return ErrorCode::MALFORMED_FRAME;
     }
+
+    StateFramePayload state_copy = state;
+    state_copy.protocol_version = PROTOCOL_VERSION;
     
     size_t offset = 0;
     
@@ -65,7 +71,7 @@ ErrorCode encodeState(const StateFramePayload& state, uint8_t* buffer, size_t bu
     buffer[offset++] = sizeof(StateFramePayload);
     
     // PAYLOAD - copy the struct directly (little-endian)
-    std::memcpy(&buffer[offset], &state, sizeof(StateFramePayload));
+    std::memcpy(&buffer[offset], &state_copy, sizeof(StateFramePayload));
     offset += sizeof(StateFramePayload);
     
     // Calculate CRC over FRAME_ID + LEN + PAYLOAD (exclude START_BYTE and CRC bytes)
@@ -144,10 +150,25 @@ ParseResult tryParseFrame(ByteSpan input, ParsedFrame& result) {
         result.result = ParseResult::CRC_MISMATCH;
         return ParseResult::CRC_MISMATCH;
     }
+
+    // Version check for STATE frames
+    if (result.frame_id == FrameId::STATE) {
+        if (result.payload_len == sizeof(StateFramePayload)) {
+            const auto* payload = reinterpret_cast<const StateFramePayload*>(result.payload_data);
+            if (!verify_version(payload->protocol_version)) {
+                result.result = ParseResult::VERSION_MISMATCH;
+                return ParseResult::VERSION_MISMATCH;
+            }
+        }
+    }
     
     // Success
     result.result = ParseResult::SUCCESS;
     return ParseResult::SUCCESS;
+}
+
+bool verify_version(uint8_t firmware_version) {
+    return firmware_version == PROTOCOL_VERSION;
 }
 
 bool validateCommandPayload(CommandFramePayload& command) {
