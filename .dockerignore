@@ -27,3 +27,8 @@ ros2_log_cache
 # Firmware build artifacts
 **/build/
 **/cmake-build-*
+
+# Additional common ignores
+.gitignore
+node_modules
+.DS_Store
