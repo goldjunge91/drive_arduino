@@ -1,99 +1,101 @@
 # Docker Development Environment
 
-This setup provides a complete ROS 2 Humble development environment using Docker Compose.
+This Docker setup provides a complete ROS 2 Humble development environment preloaded with the `drive_arduino` workspace. The image copies the whole repository into `/ros2_ws/src/drive_arduino`, so CI builds and manual `docker build` invocations always see a self-contained tree. During day-to-day development the compose file bind-mounts the host checkout over that path so edits are reflected instantly.
 
 ## Quick Start
 
 ### Option 1: Using the helper script
 ```bash
-# Start development environment (builds container and enters shell)
+# Build and start the development container, dropping you into a shell
 ./scripts/dev.sh
 ```
 
 ### Option 2: Manual Docker Compose
 ```bash
-# Build and start the container
+# Build the image and start the container
 docker-compose up --build -d
 
-# Enter the development container
+# Enter the running container
 docker-compose exec ros2-dev bash
 
-# Stop the container when done
+# Stop the container when finished
 docker-compose down
 ```
 
 ## Inside the Container
 
-Once inside the container, you can build and work with your ROS 2 packages:
-
 ```bash
-# Build the workspace (with helper script)
-./scripts/build.sh
-
-# Or build manually
+# Always source ROS 2
 source /opt/ros/humble/setup.bash
+
+# Build the entire workspace
 colcon build --symlink-install
 
-# Clean build
-./scripts/build.sh --clean
+# Or target individual packages
+colcon build --packages-select drive_arduino mecabridge_hardware --symlink-install
 
-# Source the workspace
+# Source the overlay
 source install/setup.bash
 
-# List available packages
-ros2 pkg list
-
-# Test specific package
-colcon build --packages-select tb6612_hardware --symlink-install
+# Run tests
+colcon test --packages-select mecabridge_hardware
 ```
+
+Build, install, and log directories live in Docker named volumes to avoid polluting the host.
 
 ## What's Included
 
-The Docker environment includes:
-- **ROS 2 Humble** base installation
-- **ros2_control** framework (hardware_interface, controller_manager, etc.)
-- **Gazebo** simulation packages
-- **Development tools** (colcon, git, vim, nano)
-- **All project dependencies** pre-installed
+- ROS 2 Humble base image
+- ros2_control stack (`hardware_interface`, `controller_manager`, controllers, pluginlib)
+- Serial driver dependency for the hardware interface
+- Colcon + common development utilities (git, cmake, build-essential, editors)
+- Optional desktop tools (twist_mux, joint_state_publisher_gui, xacro) and Gazebo when enabled
 
-## File Structure
+## Optional Packages & Build Arguments
 
-- `Dockerfile` - Container definition with all ROS 2 dependencies
-- `docker-compose.yml` - Service configuration with volume mounts
-- `scripts/build.sh` - Helper script for building ROS 2 workspace
-- `scripts/dev.sh` - Quick start script for development
-- `.dockerignore` - Excludes build artifacts from Docker context
+To keep the default image lightweight, heavy desktop/Gazebo packages are disabled unless requested. Enable them via build arguments:
 
-## Persistent Data
+```bash
+# Enable desktop helpers (twist_mux, joint_state_publisher_gui, xacro)
+docker build --build-arg INSTALL_DESKTOP_TOOLS=1 -t drive_arduino:desktop .
 
-Build artifacts are stored in Docker volumes to speed up rebuilds:
-- `ros2_build_cache` - CMake build files
-- `ros2_install_cache` - Installed packages
-- `ros2_log_cache` - Build logs
+# Enable Gazebo integration packages
+docker build --build-arg INSTALL_GAZEBO=1 -t drive_arduino:gazebo .
 
-To start fresh, remove the volumes:
+# Enable both when using docker-compose
+docker-compose build --build-arg INSTALL_DESKTOP_TOOLS=1 --build-arg INSTALL_GAZEBO=1
+```
+
+When an optional package is unavailable on your ROS mirror, the build logs a warning and continues.
+
+## File & Volume Layout
+
+- `Dockerfile` ? installs dependencies and copies the repository into `/ros2_ws/src/drive_arduino`
+- `Dockerfile.basic` ? slimmer variant with only the essentials
+- `docker-compose.yml` ? defines the `ros2-dev` service and bind-mounts the host repo
+- `.dockerignore` ? keeps build artifacts, VCS data, and generated files out of the build context
+- Named volumes `ros2_build_cache`, `ros2_install_cache`, `ros2_log_cache` store build outputs
+
+To reset the cached build state:
 ```bash
 docker-compose down -v
 ```
 
 ## Troubleshooting
 
-### Permission Issues
-If you encounter permission issues with files created in the container:
+### File Ownership on the Host
+If files created in the container end up owned by root, fix them on the host:
 ```bash
-# Fix ownership (run on host)
-sudo chown -R $USER:$USER build/ install/ log/
+sudo chown -R $USER:$USER build install log
 ```
 
-### GUI Applications (Linux only)
-To run GUI applications like RViz or Gazebo, uncomment the X11 forwarding lines in `docker-compose.yml`.
+### GUI Applications (Linux)
+Uncomment the X11 lines in `docker-compose.yml` and run `xhost +local:` before starting the container.
 
 ### Clean Rebuild
 ```bash
-# Remove all containers and volumes
 docker-compose down -v
 docker system prune -f
 
-# Rebuild from scratch
 docker-compose up --build
 ```

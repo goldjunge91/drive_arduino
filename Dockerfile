@@ -1,64 +1,53 @@
 FROM ros:humble
 
-# Update package lists
-RUN apt-get update
+ARG INSTALL_DESKTOP_TOOLS=0
+ARG INSTALL_GAZEBO=0
 
-# Install basic development tools first
-RUN apt-get install -y \
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Core tooling and ROS dependencies (single layer for better caching)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    git \
     python3-colcon-common-extensions \
     python3-pip \
-    git \
     vim \
-    nano
-
-# Install core ROS 2 control packages
-RUN apt-get install -y \
-    ros-humble-hardware-interface \
+    nano \
     ros-humble-controller-manager \
+    ros-humble-hardware-interface \
     ros-humble-pluginlib \
+    ros-humble-rclcpp \
     ros-humble-ros2-control \
-    ros-humble-ros2-controllers
+    ros-humble-ros2-controllers \
+    ros-humble-serial-driver \
+ && if [ "$INSTALL_DESKTOP_TOOLS" = "1" ]; then \
+    apt-get install -y --no-install-recommends \
+      ros-humble-twist-mux \
+      ros-humble-joint-state-publisher-gui \
+      ros-humble-xacro \
+    || echo "Optional desktop tools not available"; \
+ fi \
+ && if [ "$INSTALL_GAZEBO" = "1" ]; then \
+    apt-get install -y --no-install-recommends \
+      ros-humble-gazebo-ros \
+      ros-humble-gazebo-ros-pkgs \
+      ros-humble-gazebo-ros2-control \
+    || echo "Gazebo packages not available"; \
+ fi \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 
-# Install additional ROS 2 packages (try to install what's available)
-RUN apt-get install -y \
-    ros-humble-twist-mux \
-    ros-humble-xacro \
-    ros-humble-joint-state-publisher-gui \
-    || echo "Some optional packages not available"
-
-# Try to install Gazebo packages if available
-RUN apt-get install -y \
-    ros-humble-gazebo-ros \
-    ros-humble-gazebo-ros-pkgs \
-    ros-humble-gazebo-ros2-control \
-    || echo "Gazebo packages not available"
-
-# Clean up
-RUN rm -rf /var/lib/apt/lists/*
-
-# Set up ROS 2 workspace structure
-WORKDIR /ros2_ws
+# Colcon workspace layout
+ENV ROS_WORKSPACE=/ros2_ws
+WORKDIR ${ROS_WORKSPACE}
 RUN mkdir -p src
 
-# Copy project files to workspace
-COPY launch/ src/robot/launch/
-COPY worlds/ src/robot/worlds/
-COPY config/ src/robot/config/
-COPY description/ src/robot/description/
-COPY serial/ src/serial/
-COPY package.xml src/robot/
-COPY CMakeLists.txt src/robot/
-COPY scripts/ src/robot/scripts/
+# Copy the whole package (relies on .dockerignore for exclusions)
+COPY . ${ROS_WORKSPACE}/src/drive_arduino
 
-# Copy diffdrive_arduino to src
-COPY diffdrive_arduino-main/ src/diffdrive_arduino/
+# Convenience: source ROS 2 and workspace overlays on shell start
+RUN echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc \
+ && echo "if [ -f ${ROS_WORKSPACE}/install/setup.bash ]; then source ${ROS_WORKSPACE}/install/setup.bash; fi" >> /root/.bashrc
 
-# Set workspace as working directory
-WORKDIR /ros2_ws
-
-# Source ROS 2 setup in bashrc for convenience
-RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
-RUN echo "if [ -f /ros2_ws/install/setup.bash ]; then source /ros2_ws/install/setup.bash; fi" >> ~/.bashrc
-
-# Set default command
 CMD ["bash"]
