@@ -1,9 +1,9 @@
 # Tasks: MecaBridge Hardware Interface (Feature 001)
 
 Branch: `001-mecabridge-plan`  
-Spec: `src/drive_arduino/specs/001-mecabridge-plan/spec.md`  
-Plan: `src/drive_arduino/specs/001-mecabridge-plan/plan.md`  
-Contracts: `src/drive_arduino/specs/001-mecabridge-plan/contracts/`  
+Spec: `/specs/001-mecabridge-plan/spec.md`  
+Plan: `/specs/001-mecabridge-plan/plan.md`  
+Contracts: `/specs/001-mecabridge-plan/contracts/`  
 
 Legend:
 - [P] = Can be executed in parallel with other [P] tasks (different files / no ordering dependency)
@@ -199,3 +199,4 @@ T032. Constitution Check audit before merge [P] [GATE]
 
 ## Completion Criteria
 All tasks T001–T034 (plus insertion T005a) completed, tests green, latency & watchdog integration tests within specified constraints, Constitution Check (T032) passes with no unaddressed violations. FR-012 explicitly validated via T005a + T033; FR-015 via T018 + T022 + T034.
+
