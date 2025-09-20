@@ -67,17 +67,17 @@ Parallel clusters: {T001,T002 strict}; {T003,T004 CRC/layout tests parallel}; {T
 - API: `void updateOnValidFrame(Time now)`, `bool tripped(Time now)`, `void reset()`, `uint16_t flags()`.
 
 ### Configuration Loader
-T009. Implement YAML configuration loader (parse + validate) [CONFIG]
+[X] T009. Implement YAML configuration loader (parse + validate) [CONFIG]
 - Files: `src/mecabridge_hardware/src/mecabridge_utils/config/config.hpp/.cpp`
 - Use rclcpp::Node parameters or direct yaml-cpp (choose minimal dependency; if unavailable use rclcpp::Parameter for loaded YAML string).
 - Validation rules from `yaml_config.md` (errors throw exception with message).
 
-T010. Add configuration unit tests [P] [CONFIG]
+[X] T010. Add configuration unit tests [P] [CONFIG]
 - File: `src/mecabridge_hardware/test/mecabridge/config/test_config.cpp`
 - Valid config test; each validation rule negative test; ordering determinism check.
 
 ### ros2_control Hardware Interface Skeleton
-T011. Create `MecaBridgeHardware` skeleton class [ROS2-CONTROL]
+[X] T011. Create `MecaBridgeHardware` skeleton class [ROS2-CONTROL]
 - Files: `src/mecabridge_hardware/include/mecabridge_hardware/mecabridge_hardware.hpp`, `src/mecabridge_hardware/src/mecabridge_hardware/mecabridge_hardware.cpp`
 - Inherit `hardware_interface::SystemInterface`.
 - Implement methods returning OK/ERROR with TODO comments.
