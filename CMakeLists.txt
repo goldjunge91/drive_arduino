@@ -17,65 +17,100 @@ find_package(hardware_interface REQUIRED)
 find_package(controller_manager REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(pluginlib REQUIRED)
-find_package(serial REQUIRED)
+
+# Optional legacy TB6612 build (disabled by default)
+option(BUILD_TB6612 "Build legacy TB6612 hardware and tests" OFF)
+set(TB6612_XML ${CMAKE_CURRENT_SOURCE_DIR}/tb6612_hardware.xml)
+set(TB6612_SRC_OK FALSE)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/tb6612_hardware_interface.cpp)
+  set(TB6612_SRC_OK TRUE)
+endif()
+if(BUILD_TB6612 AND NOT TB6612_SRC_OK)
+  message(WARNING "BUILD_TB6612=ON but TB6612 sources not found; skipping legacy build.")
+endif()
+if(BUILD_TB6612 AND TB6612_SRC_OK)
+  find_package(serial REQUIRED)
+endif()
 
 
 
 
 
 
-# TB6612 Hardware Interface - Main library
+if(BUILD_TB6612 AND TB6612_SRC_OK)
+  # TB6612 Hardware Interface - Main library
+  add_library(tb6612_hardware SHARED 
+    src/tb6612_hardware_interface.cpp 
+    src/tb6612_comms.cpp 
+    src/wheel.cpp
+  )
 
-add_library(tb6612_hardware SHARED 
-  src/tb6612_hardware_interface.cpp 
-  src/tb6612_comms.cpp 
-  src/wheel.cpp
-)
+  target_include_directories(
+    tb6612_hardware
+    PRIVATE
+    include
+  )
 
-target_include_directories(
-  tb6612_hardware
-  PRIVATE
-  include
-)
+  ament_target_dependencies(
+    tb6612_hardware
+    hardware_interface
+    controller_manager
+    rclcpp
+    pluginlib
+    serial
+  )
 
-ament_target_dependencies(
-  tb6612_hardware
-  hardware_interface
-  controller_manager
-  rclcpp
-  pluginlib
-  serial
-)
+  if(EXISTS ${TB6612_XML})
+    pluginlib_export_plugin_description_file(hardware_interface tb6612_hardware.xml)
+  else()
+    message(WARNING "TB6612 plugin XML not found at ${TB6612_XML}; skipping plugin export.")
+  endif()
 
-pluginlib_export_plugin_description_file(hardware_interface tb6612_hardware.xml)
-
-install(
-  TARGETS tb6612_hardware
-  DESTINATION lib
-)
-
-
-
-
-install(
-  DIRECTORY controllers launch/
-  DESTINATION share/${PROJECT_NAME}
-)
+  install(
+    TARGETS tb6612_hardware
+    DESTINATION lib
+  )
+endif()
 
 
-ament_export_libraries(
-  tb6612_hardware
-)
-ament_export_dependencies(
-  hardware_interface
-  controller_manager
-  rclcpp
-  pluginlib
-  serial
-)
+
+
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/controllers)
+  install(
+    DIRECTORY controllers
+    DESTINATION share/${PROJECT_NAME}
+  )
+endif()
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/launch)
+  install(
+    DIRECTORY launch/
+    DESTINATION share/${PROJECT_NAME}
+  )
+endif()
+
+
+if(BUILD_TB6612 AND TB6612_SRC_OK)
+  ament_export_libraries(
+    tb6612_hardware
+  )
+  ament_export_dependencies(
+    hardware_interface
+    controller_manager
+    rclcpp
+    pluginlib
+    serial
+  )
+else()
+  ament_export_dependencies(
+    hardware_interface
+    controller_manager
+    rclcpp
+    pluginlib
+  )
+endif()
 
 # Testing
-if(BUILD_TESTING)
+if(BUILD_TESTING AND BUILD_TB6612 AND TB6612_SRC_OK)
   find_package(ament_lint_auto REQUIRED)
   find_package(ament_cmake_gtest REQUIRED)
   
