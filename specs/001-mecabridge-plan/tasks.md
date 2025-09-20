@@ -48,21 +48,21 @@ Parallel clusters: {T001,T002 strict}; {T003,T004 CRC/layout tests parallel}; {T
 - Fill `encodeCommand`, `encodeState`, parser state machine (one-shot buffer parse for now; iterative improvement later).
 - Enforce clamp rules & set internal flags for out-of-range.
 
-T005a. Protocol version & handshake logic + mismatch path [PROTOCOL][SAFETY]
+[X] T005a. Protocol version & handshake logic + mismatch path [PROTOCOL][SAFETY]
 - Implement explicit `PROTOCOL_VERSION` field injection & extraction; add lightweight handshake routine (`bool verify_version(uint8_t firmware_version)`), returning false on mismatch.
 - On mismatch: set internal error code VERSION_MISMATCH; watchdog stays armed; driver initialization fails fast.
 - Add host unit test `src/mecabridge_hardware/test/mecabridge/protocol/test_protocol_handshake.cpp` creating a synthetic frame with wrong version.
 - Preconditions: T005 completed (basic encode/decode available).
 
-T006. Add error handling tests (CRC fail, truncated, unknown ID) [PROTOCOL]
+[X] T006. Add error handling tests (CRC fail, truncated, unknown ID) [PROTOCOL]
 - File: `src/mecabridge_hardware/test/mecabridge/protocol/test_frame_errors.cpp`
 - Generate corrupted frames; expect parser status codes & flags set per contract.
 
-T007. Add watchdog logic unit tests (host-side simulation) [SAFETY]
+[X] T007. Add watchdog logic unit tests (host-side simulation) [SAFETY]
 - File: `src/mecabridge_hardware/test/mecabridge/safety/test_watchdog.cpp`
 - Simulate time progression; ensure trigger at >150ms silence.
 
-T008. Implement host-side watchdog integration helper [SAFETY]
+[X] T008. Implement host-side watchdog integration helper [SAFETY]
 - Files: `src/mecabridge_hardware/src/mecabridge_utils/safety/watchdog.hpp/.cpp`
 - API: `void updateOnValidFrame(Time now)`, `bool tripped(Time now)`, `void reset()`, `uint16_t flags()`.
 
