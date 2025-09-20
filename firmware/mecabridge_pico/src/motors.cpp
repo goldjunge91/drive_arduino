@@ -9,12 +9,11 @@ static const uint8_t IN1[4] = {FL_IN1, FR_IN1, RL_IN1, RR_IN1};
 static const uint8_t IN2[4] = {FL_IN2, FR_IN2, RL_IN2, RR_IN2};
 static int8_t offset[4] = {OFFSET_FL, OFFSET_FR, OFFSET_RL, OFFSET_RR};
 
-static inline int clamp(int v, int lo, int hi) { return v < lo ? lo : (v > hi ? hi : v); }
+static inline int clamp(int v, int lo, int hi) {return v < lo ? lo : (v > hi ? hi : v);}
 
 void motors_set_freq_hz(uint32_t hz)
 {
-  for (int i = 0; i < 4; i++)
-  {
+  for (int i = 0; i < 4; i++) {
     uint s = slice_m[i];
     pwm_set_clkdiv(s, 1.0f);
     uint32_t top = (125000000u / hz) - 1u;
@@ -27,8 +26,7 @@ void motors_init(void)
   gpio_init(STBY);
   gpio_set_dir(STBY, GPIO_OUT);
   gpio_put(STBY, 1);
-  for (int i = 0; i < 4; i++)
-  {
+  for (int i = 0; i < 4; i++) {
     gpio_init(IN1[i]);
     gpio_set_dir(IN1[i], GPIO_OUT);
     gpio_put(IN1[i], 0);
@@ -49,8 +47,7 @@ void motor_drive_pct(int i, int pct)
   uint s = slice_m[i], ch = ch_m[i];
   uint16_t top = pwm_hw->slice[s].top;
   // sichere Richtungsumschaltung
-  if (pct == 0)
-  {
+  if (pct == 0) {
     pwm_set_chan_level(s, ch, 0);
     gpio_put(IN1[i], 0);
     gpio_put(IN2[i], 0);
@@ -58,8 +55,7 @@ void motor_drive_pct(int i, int pct)
   }
   static int dir_last[4] = {0, 0, 0, 0};
   int dir = (pct > 0) ? +1 : -1;
-  if (dir_last[i] && dir_last[i] != dir)
-  {
+  if (dir_last[i] && dir_last[i] != dir) {
     pwm_set_chan_level(s, ch, 0);
     sleep_us(200);
   }
@@ -72,8 +68,7 @@ void motor_drive_pct(int i, int pct)
 
 void motors_brake_all(void)
 {
-  for (int i = 0; i < 4; i++)
-  {
+  for (int i = 0; i < 4; i++) {
     gpio_put(IN1[i], 1);
     gpio_put(IN2[i], 1);
     pwm_set_chan_level(slice_m[i], ch_m[i], 0);
