@@ -11,11 +11,15 @@ void CRC16::reset() {
 }
 
 void CRC16::update(uint8_t byte) {
-    // TODO: Implement CRC16/CCITT-FALSE update algorithm
-    // crc ^= (uint16_t)byte << 8;
-    // for (int b = 0; b < 8; ++b) {
-    //     if (crc & 0x8000) crc = (crc << 1) ^ POLYNOMIAL; else crc <<= 1;
-    // }
+    // CRC-16/CCITT-FALSE algorithm implementation
+    crc_ ^= static_cast<uint16_t>(byte) << 8;
+    for (int b = 0; b < 8; ++b) {
+        if (crc_ & 0x8000) {
+            crc_ = (crc_ << 1) ^ POLYNOMIAL;
+        } else {
+            crc_ <<= 1;
+        }
+    }
 }
 
 void CRC16::update(const uint8_t* data, size_t len) {
@@ -29,9 +33,13 @@ uint16_t CRC16::finalize() const {
 }
 
 uint16_t crc16_ccitt_false(const uint8_t* data, size_t len) {
-    // TODO: Implement one-shot CRC calculation
-    // For now, return placeholder
-    return 0x0000;
+    if (data == nullptr || len == 0) {
+        return CRC16::INIT_VALUE;
+    }
+    
+    CRC16 crc;
+    crc.update(data, len);
+    return crc.finalize();
 }
 
 } // namespace protocol
