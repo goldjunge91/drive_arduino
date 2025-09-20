@@ -79,6 +79,18 @@ if(BUILD_TESTING)
   )
   target_link_libraries(test_protocol_empty mecabridge_protocol)
   target_include_directories(test_protocol_empty PRIVATE src)
+  
+  ament_add_gtest(test_crc16
+    test/mecabridge/protocol/test_crc16.cpp
+  )
+  target_link_libraries(test_crc16 mecabridge_protocol)
+  target_include_directories(test_crc16 PRIVATE src)
+  
+  ament_add_gtest(test_frame_roundtrip
+    test/mecabridge/protocol/test_frame_roundtrip.cpp
+  )
+  target_link_libraries(test_frame_roundtrip mecabridge_protocol)
+  target_include_directories(test_frame_roundtrip PRIVATE src)
 endif()
 
 ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)

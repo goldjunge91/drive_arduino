@@ -22,29 +22,29 @@ Parallel clusters: {T001,T002 strict}; {T003,T004 CRC/layout tests parallel}; {T
 ## Tasks
 
 ### Setup & Scaffolding
-T001. Create protocol library skeleton [PROTOCOL]
+[X] T001. Create protocol library skeleton [PROTOCOL]
 - Files: `src/mecabridge_hardware/src/mecabridge_utils/protocol/{frame.hpp, frame.cpp, crc16.hpp, crc16.cpp}` (host package root `src/mecabridge_hardware/` per plan structure)
 - Define enums (FrameId, ErrorCode), constants (START_BYTE, etc.), struct layouts (CommandFrame, StateFrame) mirroring `data-model.md` & `frame_protocol.md`.
 - Provide function stubs: `encodeCommand(...)`, `tryParseFrame(ByteSpan, ParsedFrame&)`, `crc16_ccitt_false(data,len)`.
 - No logic yet (return NOT_IMPLEMENTED).
 - Add placeholder CMake target `mecabridge_protocol`.
 
-T002. Add GTest target & basic build integration [PROTOCOL]
+[X] T002. Add GTest target & basic build integration [PROTOCOL]
 - Files: `src/mecabridge_hardware/test/mecabridge/protocol/test_protocol_empty.cpp`
 - Verify library compiles & headers include cleanly.
 - CI passes with one trivial test (EXPECT_TRUE(true)).
 
 ### Protocol Tests First
-T003. Implement CRC16 tests & function [P] [PROTOCOL]
+[X] T003. Implement CRC16 tests & function [P] [PROTOCOL]
 - Files: `src/mecabridge_hardware/test/mecabridge/protocol/test_crc16.cpp`, update `src/mecabridge_hardware/src/mecabridge_utils/protocol/crc16.cpp`.
 - Add test vector "123456789" → 0x29B1; randomized fuzz of small buffers.
 - Implement `crc16_ccitt_false` fully.
 
-T004. Implement frame size & layout encode/decode round-trip tests [P] [PROTOCOL]
+[X] T004. Implement frame size & layout encode/decode round-trip tests [P] [PROTOCOL]
 - File: `src/mecabridge_hardware/test/mecabridge/protocol/test_frame_roundtrip.cpp`
 - Tests: encode command sets LEN=35, total bytes=40; encode state sets LEN=39, total=44; decode returns identical fields; CRC validated.
 
-T005. Implement frame encoding & parsing logic [PROTOCOL]
+[X] T005. Implement frame encoding & parsing logic [PROTOCOL]
 - Fill `encodeCommand`, `encodeState`, parser state machine (one-shot buffer parse for now; iterative improvement later).
 - Enforce clamp rules & set internal flags for out-of-range.
 
