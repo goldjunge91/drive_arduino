@@ -5,13 +5,13 @@
 - `firmware/mecabridge_pico/` contains Pico firmware sources plus the protocol data fixtures used by hardware tests.
 - `robot/` packages simulation, teleop, and driver utilities; keep launch and config files in sync with hardware schema updates.
 - `.docs/` and `specs/001-mecabridge-plan/` record architecture decisions, task statuses, and protocol definitions consulted by reviewers.
-- `test/` stores standalone TB6612 harnesses and Docker-ready scripts, while `scripts/` wraps common workspace build flows.
+- `test/` stores standalone mecabridge harnesses and Docker-ready scripts, while `scripts/` wraps common workspace build flows.
 
 ## Build, Test, and Development Commands
 - Launch the ROS Humble dev container with `./scripts/dev.sh`; manual alternative is `docker-compose up --build -d`.
 - Inside the container, run `colcon build --symlink-install` (use `--packages-select drive_arduino mecabridge_hardware` when scoping changes).
 - Execute unit and lint suites via `colcon test --packages-select mecabridge_hardware` followed by `colcon test-result --all --verbose`.
-- Legacy TB6612 coverage still runs through `./test/run_tests.sh`, which sources ROS and prints verbose GTest summaries.
+- Legacy mecabridge coverage still runs through `./test/run_tests.sh`, which sources ROS and prints verbose GTest summaries.
 
 ## Coding Style & Naming Conventions
 - C++ targets C++17 with `-Wall -Wextra -Wpedantic`; prefer `PascalCase` for types, `snake_case` for functions and members with trailing underscores for storage fields.

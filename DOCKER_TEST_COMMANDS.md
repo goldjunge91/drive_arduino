@@ -107,9 +107,9 @@ docker system prune -f
 docker-compose up --build
 ```
 
-# Docker Test Commands for TB6612Comms Unit Tests
+# Docker Test Commands for MecaBridgeSerialProtocol Unit Tests
 
-Since you're running in a Docker container, here are the commands to build and test the TB6612Comms unit tests:
+Since you're running in a Docker container, here are the commands to build and test the MecaBridgeSerialProtocol unit tests:
 
 ## Method 1: Direct Docker Commands
 
@@ -127,7 +127,7 @@ colcon test-result --all --verbose
 
 From your host machine (outside Docker):
 ```bash
-./test_tb6612_comms_docker.sh
+./test_mecabridge_comms_docker.sh
 ```
 
 ## Method 3: Manual Commands in Running Container
@@ -172,8 +172,8 @@ apt-get install -y python3-colcon-common-extensions
 ## Test Files Location
 
 The test files are located at:
-- `/ros2_ws/src/drive_arduino/test/test_tb6612_comms_simple.cpp`
-- `/ros2_ws/src/drive_arduino/test/test_tb6612_comms_comprehensive.cpp`
+- `/ros2_ws/src/drive_arduino/test/test_mecabridge_comms_simple.cpp`
+- `/ros2_ws/src/drive_arduino/test/test_mecabridge_comms_comprehensive.cpp`
 - `/ros2_ws/src/drive_arduino/test/README.md` (detailed documentation)
 
 ## Build Output Location

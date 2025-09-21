@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 """
-TB6612 Four Wheel Independent Drive Launch File
+mecabridge Four Wheel Independent Drive Launch File
 
-This launch file starts the TB6612 hardware interface configured for independent
+This launch file starts the mecabridge hardware interface configured for independent
 control of 4 wheels without specific kinematics constraints.
 
 Usage:
@@ -43,7 +43,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "device",
             default_value="",
-            description="Serial device path for TB6612 communication. Leave empty for auto-detection.",
+            description="Serial device path for mecabridge communication. Leave empty for auto-detection.",
         )
     )
     declared_arguments.append(

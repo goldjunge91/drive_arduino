@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-TB6612 Hardware Interface Example Usage
+mecabridge Hardware Interface Example Usage
 
-This script demonstrates how to use the TB6612 hardware interface
+This script demonstrates how to use the mecabridge hardware interface
 with different drive configurations and provides examples for
 integration testing.
 
@@ -29,11 +29,11 @@ from nav_msgs.msg import Odometry
 from std_msgs.msg import String
 
 
-class TB6612ExampleUsage(Node):
-    """Example usage node for TB6612 hardware interface"""
+class mecabridgeExampleUsage(Node):
+    """Example usage node for mecabridge hardware interface"""
 
     def __init__(self):
-        super().__init__('tb6612_example_usage')
+        super().__init__('mecabridge_example_usage')
         
         # Publishers for sending commands
         self.cmd_vel_pub = self.create_publisher(
@@ -51,7 +51,7 @@ class TB6612ExampleUsage(Node):
         self.last_joint_state = None
         self.last_odom = None
         
-        self.get_logger().info("TB6612 Example Usage Node initialized")
+        self.get_logger().info("mecabridge Example Usage Node initialized")
 
     def joint_state_callback(self, msg):
         """Callback for joint state messages"""
@@ -171,7 +171,7 @@ def check_ros2_environment():
 
 
 def test_plugin_loading():
-    """Test that the TB6612 hardware interface plugin can be loaded"""
+    """Test that the mecabridge hardware interface plugin can be loaded"""
     print("\nTesting plugin loading...")
     
     # This would normally be done by controller_manager, but we can test the concept
@@ -180,11 +180,11 @@ def test_plugin_loading():
         loader = pluginlib.ClassLoader('hardware_interface', 'hardware_interface::SystemInterface')
         classes = loader.getDeclaredClasses()
         
-        if 'drive_arduino/TB6612HardwareInterface' in classes:
-            print("✓ TB6612HardwareInterface plugin is discoverable")
+        if 'drive_arduino/MecaBridgeHardwareInterface' in classes:
+            print("✓ MecaBridgeHardwareInterface plugin is discoverable")
             return True
         else:
-            print("❌ TB6612HardwareInterface plugin not found")
+            print("❌ MecaBridgeHardwareInterface plugin not found")
             print(f"Available classes: {classes}")
             return False
     except Exception as e:
@@ -204,8 +204,8 @@ def test_launch_files():
         return False
     
     launch_files = [
-        "tb6612_hardware.launch.py",
-        "tb6612_differential.launch.py"
+        "mecabridge_hardware.launch.py",
+        "mecabridge_differential.launch.py"
     ]
     
     for launch_file in launch_files:
@@ -237,8 +237,8 @@ def test_controller_configs():
         return False
     
     config_files = [
-        "tb6612_differential_enhanced.yaml",
-        "tb6612_hardware_params.yaml"
+        "mecabridge_differential_enhanced.yaml",
+        "mecabridge_hardware_params.yaml"
     ]
     
     for config_file in config_files:
@@ -259,8 +259,8 @@ def test_controller_configs():
 
 
 def main():
-    """Main function demonstrating TB6612 hardware interface usage"""
-    print("TB6612 Hardware Interface Example Usage")
+    """Main function demonstrating mecabridge hardware interface usage"""
+    print("mecabridge Hardware Interface Example Usage")
     print("=" * 50)
     
     # Check environment
@@ -285,7 +285,7 @@ def main():
     
     try:
         # Create example node
-        node = TB6612ExampleUsage()
+        node = mecabridgeExampleUsage()
         executor = SingleThreadedExecutor()
         executor.add_node(node)
         
@@ -297,7 +297,7 @@ def main():
         print("✓ ROS 2 node initialized")
         
         # Note: For full testing, you would need to launch the hardware interface first:
-        # ros2 launch drive_arduino tb6612_differential.launch.py use_mock_hardware:=true
+        # ros2 launch drive_arduino mecabridge_differential.launch.py use_mock_hardware:=true
         
         print("\n" + "=" * 50)
         print("INTEGRATION TEST SUMMARY")
@@ -309,7 +309,7 @@ def main():
         print("")
         print("To complete integration testing:")
         print("1. Launch the hardware interface:")
-        print("   ros2 launch drive_arduino tb6612_differential.launch.py use_mock_hardware:=true")
+        print("   ros2 launch drive_arduino mecabridge_differential.launch.py use_mock_hardware:=true")
         print("")
         print("2. In another terminal, run this script again to test communication:")
         print("   python3 src/drive_arduino/test/example_usage.py --test-communication")
@@ -338,7 +338,7 @@ def main():
             else:
                 print("❌ Communication test failed")
                 print("Make sure the hardware interface is running:")
-                print("ros2 launch drive_arduino tb6612_differential.launch.py use_mock_hardware:=true")
+                print("ros2 launch drive_arduino mecabridge_differential.launch.py use_mock_hardware:=true")
                 return 1
         
     except KeyboardInterrupt:

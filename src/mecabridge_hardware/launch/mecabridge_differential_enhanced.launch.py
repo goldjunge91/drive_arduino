@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 """
-TB6612 Differential Drive Launch File (Enhanced)
+mecabridge Differential Drive Launch File (Enhanced)
 
-This launch file starts the TB6612 hardware interface configured for differential drive
+This launch file starts the mecabridge hardware interface configured for differential drive
 with 2 wheels and comprehensive parameter support.
 
 Usage:
@@ -43,7 +43,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "device",
             default_value="",
-            description="Serial device path for TB6612 communication. Leave empty for auto-detection.",
+            description="Serial device path for mecabridge communication. Leave empty for auto-detection.",
         )
     )
     declared_arguments.append(

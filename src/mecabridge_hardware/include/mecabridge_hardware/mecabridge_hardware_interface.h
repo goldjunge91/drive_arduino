@@ -1,5 +1,5 @@
-#ifndef TB6612_HARDWARE_TB6612_HARDWARE_INTERFACE_H
-#define TB6612_HARDWARE_TB6612_HARDWARE_INTERFACE_H
+#ifndef mecabridge_hardware_mecabridge_hardware_INTERFACE_H
+#define mecabridge_hardware_mecabridge_hardware_INTERFACE_H
 
 #include <memory>
 #include <string>
@@ -18,18 +18,18 @@
 #include "rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp"
 #include "rclcpp_lifecycle/state.hpp"
 
-#include "tb6612_hardware/tb6612_comms.h"
-#include "tb6612_hardware/mecabridge_drive_config.h"
-#include "tb6612_hardware/wheel.h"
+#include "mecabridge_hardware/mecabridge_serial_protocol.h"
+#include "mecabridge_hardware/mecabridge_drive_config.h"
+#include "mecabridge_hardware/wheel.h"
 
-namespace tb6612_hardware
+namespace mecabridge_hardware
 {
-  class TB6612HardwareInterface: public hardware_interface::SystemInterface
+  class MecaBridgeHardwareInterface: public hardware_interface::SystemInterface
   {
 public:
-    RCLCPP_SHARED_PTR_DEFINITIONS(TB6612HardwareInterface);
+    RCLCPP_SHARED_PTR_DEFINITIONS(MecaBridgeHardwareInterface);
 
-    TB6612HardwareInterface();
+    MecaBridgeHardwareInterface();
 
     hardware_interface::CallbackReturn on_init(
       const hardware_interface::HardwareInfo & info) override;
@@ -51,8 +51,8 @@ public:
       const rclcpp::Time & time, const rclcpp::Duration & period) override;
 
 private:
-    TB6612Config cfg_;
-    TB6612Comms tb6612_;
+    MecaBridgeDriveConfig cfg_;
+    MecaBridgeSerialProtocol serial_protocol_;
 
     // Wheels based on drive type
     std::vector < Wheel > wheels_;
@@ -74,6 +74,6 @@ private:
     mutable int write_error_count_;
   };
 
-}  // namespace tb6612_hardware
+}  // namespace mecabridge_hardware
 
-#endif  // TB6612_HARDWARE_TB6612_HARDWARE_INTERFACE_H
+#endif  // mecabridge_hardware_mecabridge_hardware_INTERFACE_H

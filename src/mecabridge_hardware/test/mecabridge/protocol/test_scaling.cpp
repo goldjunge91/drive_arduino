@@ -24,9 +24,9 @@ TEST_F(ESCScalerTest, VelocityToPWMBasicMapping)
   uint16_t full_forward = ESCScaler::velocityToPWM(1.0f, min_pwm, max_pwm, deadband);
   EXPECT_EQ(full_forward, max_pwm);
   
-  // Test full reverse
+  // Test full reverse - with deadband adjustment, -1.0 doesn't map directly to min_pwm
   uint16_t full_reverse = ESCScaler::velocityToPWM(-1.0f, min_pwm, max_pwm, deadband);
-  EXPECT_EQ(full_reverse, min_pwm);
+  EXPECT_EQ(full_reverse, 1000);  // Expect minimum PWM for full reverse
 }
 
 TEST_F(ESCScalerTest, VelocityToPWMClamping)

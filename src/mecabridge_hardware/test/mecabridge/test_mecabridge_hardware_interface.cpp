@@ -8,12 +8,12 @@
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-#include "tb6612_hardware/mecabridge_hardware_interface.h"
-#include "tb6612_hardware/mecabridge_drive_config.h"
+#include "mecabridge_hardware/mecabridge_hardware_interface.h"
+#include "mecabridge_hardware/mecabridge_drive_config.h"
 
-using namespace tb6612_hardware;
+using namespace mecabridge_hardware;
 
-class TB6612HardwareInterfaceTest : public ::testing::Test
+class MecaBridgeHardwareInterfaceTest : public ::testing::Test
 {
 protected:
   void SetUp() override
@@ -23,7 +23,7 @@ protected:
       rclcpp::init(0, nullptr);
     }
 
-    hardware_interface_ = std::make_unique<TB6612HardwareInterface>();
+    hardware_interface_ = std::make_unique<MecaBridgeHardwareInterface>();
   }
 
   void TearDown() override
@@ -35,7 +35,7 @@ protected:
   hardware_interface::HardwareInfo createBasicHardwareInfo()
   {
     hardware_interface::HardwareInfo info;
-    info.name = "tb6612_hardware";
+    info.name = "mecabridge_hardware";
     info.type = "system";
 
     // Add basic parameters
@@ -79,11 +79,11 @@ protected:
     return info;
   }
 
-  std::unique_ptr<TB6612HardwareInterface> hardware_interface_;
+  std::unique_ptr<MecaBridgeHardwareInterface> hardware_interface_;
 };
 
 // Test configuration parameter parsing and validation (Requirement 1.1)
-class ConfigurationParameterTest : public TB6612HardwareInterfaceTest {};
+class ConfigurationParameterTest : public MecaBridgeHardwareInterfaceTest {};
 
 TEST_F(ConfigurationParameterTest, ParseValidDifferentialConfiguration)
 {
@@ -255,7 +255,7 @@ TEST_F(ConfigurationParameterTest, HandleInvalidMecanumParameters)
 TEST_F(ConfigurationParameterTest, HandleMissingParameters)
 {
   hardware_interface::HardwareInfo info;
-  info.name = "tb6612_hardware";
+  info.name = "mecabridge_hardware";
   info.type = "system";
   // No parameters provided - should use all defaults
 
@@ -266,7 +266,7 @@ TEST_F(ConfigurationParameterTest, HandleMissingParameters)
 }
 
 // Test state and command interface export for different drive types (Requirements 1.2, 1.3)
-class InterfaceExportTest : public TB6612HardwareInterfaceTest {};
+class InterfaceExportTest : public MecaBridgeHardwareInterfaceTest {};
 
 TEST_F(InterfaceExportTest, ExportDifferentialStateInterfaces)
 {
@@ -406,7 +406,7 @@ TEST_F(InterfaceExportTest, CustomWheelNames)
 }
 
 // Test velocity command conversion and kinematics calculations (Requirement 1.4)
-class VelocityConversionTest : public TB6612HardwareInterfaceTest {};
+class VelocityConversionTest : public MecaBridgeHardwareInterfaceTest {};
 
 TEST_F(VelocityConversionTest, ConvertZeroVelocity)
 {
@@ -536,7 +536,7 @@ TEST_F(VelocityConversionTest, MecanumVelocityConversion)
 }
 
 // Test encoder vs non-encoder operation modes (Requirement 1.5)
-class EncoderOperationTest : public TB6612HardwareInterfaceTest {};
+class EncoderOperationTest : public MecaBridgeHardwareInterfaceTest {};
 
 TEST_F(EncoderOperationTest, NonEncoderModePositionIntegration)
 {
@@ -641,7 +641,7 @@ TEST_F(EncoderOperationTest, EncoderParameterValidation)
 }
 
 // Test lifecycle methods
-class LifecycleTest : public TB6612HardwareInterfaceTest {};
+class LifecycleTest : public MecaBridgeHardwareInterfaceTest {};
 
 TEST_F(LifecycleTest, ActivationWithoutConnection)
 {
@@ -668,7 +668,7 @@ TEST_F(LifecycleTest, DeactivationWithoutConnection)
 }
 
 // Integration test for complete workflow
-class IntegrationTest : public TB6612HardwareInterfaceTest {};
+class IntegrationTest : public MecaBridgeHardwareInterfaceTest {};
 
 TEST_F(IntegrationTest, CompleteWorkflowWithoutHardware)
 {

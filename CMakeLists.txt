@@ -18,17 +18,17 @@ find_package(controller_manager REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(pluginlib REQUIRED)
 
-# Optional legacy TB6612 build (disabled by default)
-option(BUILD_TB6612 "Build legacy TB6612 hardware and tests" OFF)
-set(TB6612_XML ${CMAKE_CURRENT_SOURCE_DIR}/tb6612_hardware.xml)
-set(TB6612_SRC_OK FALSE)
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/tb6612_hardware_interface.cpp)
-  set(TB6612_SRC_OK TRUE)
+# Optional legacy mecabridge build (disabled by default)
+option(BUILD_mecabridge "Build legacy mecabridge hardware and tests" OFF)
+set(mecabridge_XML ${CMAKE_CURRENT_SOURCE_DIR}/mecabridge_hardware.xml)
+set(mecabridge_SRC_OK FALSE)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/mecabridge_hardware_interface.cpp)
+  set(mecabridge_SRC_OK TRUE)
 endif()
-if(BUILD_TB6612 AND NOT TB6612_SRC_OK)
-  message(WARNING "BUILD_TB6612=ON but TB6612 sources not found; skipping legacy build.")
+if(BUILD_mecabridge AND NOT mecabridge_SRC_OK)
+  message(WARNING "BUILD_mecabridge=ON but mecabridge sources not found; skipping legacy build.")
 endif()
-if(BUILD_TB6612 AND TB6612_SRC_OK)
+if(BUILD_mecabridge AND mecabridge_SRC_OK)
   find_package(serial REQUIRED)
 endif()
 
@@ -37,22 +37,22 @@ endif()
 
 
 
-if(BUILD_TB6612 AND TB6612_SRC_OK)
-  # TB6612 Hardware Interface - Main library
-  add_library(tb6612_hardware SHARED 
-    src/tb6612_hardware_interface.cpp 
-    src/tb6612_comms.cpp 
+if(BUILD_mecabridge AND mecabridge_SRC_OK)
+  # mecabridge Hardware Interface - Main library
+  add_library(mecabridge_hardware SHARED 
+    src/mecabridge_hardware_interface.cpp 
+    src/mecabridge_comms.cpp 
     src/wheel.cpp
   )
 
   target_include_directories(
-    tb6612_hardware
+    mecabridge_hardware
     PRIVATE
     include
   )
 
   ament_target_dependencies(
-    tb6612_hardware
+    mecabridge_hardware
     hardware_interface
     controller_manager
     rclcpp
@@ -60,14 +60,14 @@ if(BUILD_TB6612 AND TB6612_SRC_OK)
     serial
   )
 
-  if(EXISTS ${TB6612_XML})
-    pluginlib_export_plugin_description_file(hardware_interface tb6612_hardware.xml)
+  if(EXISTS ${mecabridge_XML})
+    pluginlib_export_plugin_description_file(hardware_interface mecabridge_hardware.xml)
   else()
-    message(WARNING "TB6612 plugin XML not found at ${TB6612_XML}; skipping plugin export.")
+    message(WARNING "mecabridge plugin XML not found at ${mecabridge_XML}; skipping plugin export.")
   endif()
 
   install(
-    TARGETS tb6612_hardware
+    TARGETS mecabridge_hardware
     DESTINATION lib
   )
 endif()
@@ -89,9 +89,9 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/launch)
 endif()
 
 
-if(BUILD_TB6612 AND TB6612_SRC_OK)
+if(BUILD_mecabridge AND mecabridge_SRC_OK)
   ament_export_libraries(
-    tb6612_hardware
+    mecabridge_hardware
   )
   ament_export_dependencies(
     hardware_interface
@@ -110,7 +110,7 @@ else()
 endif()
 
 # Testing
-if(BUILD_TESTING AND BUILD_TB6612 AND TB6612_SRC_OK)
+if(BUILD_TESTING AND BUILD_mecabridge AND mecabridge_SRC_OK)
   find_package(ament_lint_auto REQUIRED)
   find_package(ament_cmake_gtest REQUIRED)
   
@@ -122,71 +122,71 @@ if(BUILD_TESTING AND BUILD_TB6612 AND TB6612_SRC_OK)
   # Lint tests
   ament_lint_auto_find_test_dependencies()
   
-  # Unit tests for TB6612Comms - Simple tests
-  ament_add_gtest(test_tb6612_comms_simple
-    test/test_tb6612_comms_simple.cpp
+  # Unit tests for MecaBridgeSerialProtocol - Simple tests
+  ament_add_gtest(test_mecabridge_comms_simple
+    test/test_mecabridge_comms_simple.cpp
   )
   
-  target_include_directories(test_tb6612_comms_simple PRIVATE
+  target_include_directories(test_mecabridge_comms_simple PRIVATE
     include
   )
   
-  ament_target_dependencies(test_tb6612_comms_simple
+  ament_target_dependencies(test_mecabridge_comms_simple
     rclcpp
     serial
   )
   
-  target_link_libraries(test_tb6612_comms_simple
-    tb6612_hardware
+  target_link_libraries(test_mecabridge_comms_simple
+    mecabridge_hardware
   )
   
-  # Unit tests for TB6612Comms - Comprehensive tests
-  ament_add_gtest(test_tb6612_comms_comprehensive
-    test/test_tb6612_comms_comprehensive.cpp
+  # Unit tests for MecaBridgeSerialProtocol - Comprehensive tests
+  ament_add_gtest(test_mecabridge_comms_comprehensive
+    test/test_mecabridge_comms_comprehensive.cpp
   )
   
-  target_include_directories(test_tb6612_comms_comprehensive PRIVATE
+  target_include_directories(test_mecabridge_comms_comprehensive PRIVATE
     include
   )
   
-  ament_target_dependencies(test_tb6612_comms_comprehensive
+  ament_target_dependencies(test_mecabridge_comms_comprehensive
     rclcpp
     serial
   )
   
-  target_link_libraries(test_tb6612_comms_comprehensive
-    tb6612_hardware
+  target_link_libraries(test_mecabridge_comms_comprehensive
+    mecabridge_hardware
   )
   
-  # Unit tests for TB6612HardwareInterface
-  ament_add_gtest(test_tb6612_hardware_interface
-    test/test_tb6612_hardware_interface.cpp
+  # Unit tests for MecaBridgeHardwareInterface
+  ament_add_gtest(test_mecabridge_hardware_interface
+    test/test_mecabridge_hardware_interface.cpp
   )
   
-  target_include_directories(test_tb6612_hardware_interface PRIVATE
+  target_include_directories(test_mecabridge_hardware_interface PRIVATE
     include
   )
   
-  ament_target_dependencies(test_tb6612_hardware_interface
+  ament_target_dependencies(test_mecabridge_hardware_interface
     hardware_interface
     rclcpp
     serial
   )
   
-  target_link_libraries(test_tb6612_hardware_interface
-    tb6612_hardware
+  target_link_libraries(test_mecabridge_hardware_interface
+    mecabridge_hardware
   )
   
-  # Integration tests for TB6612 Hardware Interface
-  ament_add_gtest(test_tb6612_integration
-    test/test_tb6612_integration.cpp
+  # Integration tests for mecabridge Hardware Interface
+  ament_add_gtest(test_mecabridge_integration
+    test/test_mecabridge_integration.cpp
   )
   
-  target_include_directories(test_tb6612_integration PRIVATE
+  target_include_directories(test_mecabridge_integration PRIVATE
     include
   )
   
-  ament_target_dependencies(test_tb6612_integration
+  ament_target_dependencies(test_mecabridge_integration
     hardware_interface
     controller_manager
     rclcpp
@@ -194,8 +194,8 @@ if(BUILD_TESTING AND BUILD_TB6612 AND TB6612_SRC_OK)
     serial
   )
   
-  target_link_libraries(test_tb6612_integration
-    tb6612_hardware
+  target_link_libraries(test_mecabridge_integration
+    mecabridge_hardware
   )
 
 endif()

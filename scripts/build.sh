@@ -41,7 +41,7 @@ if [ -f install/setup.bash ]; then
     source install/setup.bash
     echo "✅ Build completed successfully!"
     echo "📦 Available packages:"
-    ros2 pkg list | grep -E "(robot|tb6612)" || echo "No custom packages found"
+    ros2 pkg list | grep -E "(robot|mecabridge)" || echo "No custom packages found"
 else
     echo "❌ Build failed - install/setup.bash not found"
     exit 1

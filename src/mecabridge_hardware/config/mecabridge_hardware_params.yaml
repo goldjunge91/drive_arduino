@@ -1,5 +1,5 @@
-# TB6612 Hardware Interface Parameters
-# This file contains all configurable parameters for the TB6612 hardware interface
+# mecabridge Hardware Interface Parameters
+# This file contains all configurable parameters for the mecabridge hardware interface
 # with detailed documentation and default values
 
 hardware_interface:

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Test runner script for TB6612Comms unit tests
+# Test runner script for MecaBridgeSerialProtocol unit tests
 # This script can be used to run the tests manually in Docker environment
 
-echo "Building and running TB6612Comms unit tests..."
+echo "Building and running MecaBridgeSerialProtocol unit tests..."
 
 # Try to find and source ROS 2 environment
 if [ -f "/opt/ros/humble/setup.bash" ]; then

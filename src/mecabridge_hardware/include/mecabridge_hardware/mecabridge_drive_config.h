@@ -1,9 +1,9 @@
-#ifndef TB6612_HARDWARE_TB6612_CONFIG_H
-#define TB6612_HARDWARE_TB6612_CONFIG_H
+#ifndef MECABRIDGE_HARDWARE_MECABRIDGE_DRIVE_CONFIG_H
+#define MECABRIDGE_HARDWARE_MECABRIDGE_DRIVE_CONFIG_H
 
 #include <string>
 
-namespace tb6612_hardware
+namespace mecabridge_hardware
 {
 
   enum class DriveType
@@ -13,7 +13,7 @@ namespace tb6612_hardware
     MECANUM        // 4 motors, mecanum kinematics
   };
 
-  struct TB6612Config
+  struct MecaBridgeDriveConfig
   {
     // Drive configuration
     DriveType drive_type = DriveType::DIFFERENTIAL;
@@ -47,6 +47,6 @@ namespace tb6612_hardware
     float wheel_radius = 0.05; // meters
   };
 
-}  // namespace tb6612_hardware
+}  // namespace mecabridge_hardware
 
-#endif  // TB6612_HARDWARE_TB6612_CONFIG_H
+#endif  // MECABRIDGE_HARDWARE_MECABRIDGE_DRIVE_CONFIG_H

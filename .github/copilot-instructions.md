@@ -10,13 +10,13 @@ This is a **ROS 2 hardware interface** (`ros2_control` SystemInterface) for robo
 
 ### Component Hierarchy
 ```
-TB6612HardwareInterface (SystemInterface)
-├── TB6612Comms (Serial Protocol Layer)
-├── TB6612Config (Parameter Management)  
+MecaBridgeHardwareInterface (SystemInterface)
+├── MecaBridgeSerialProtocol (Serial Protocol Layer)
+├── MecaBridgeDriveConfig (Parameter Management)  
 └── Wheel[] (Joint State Management)
 ```
 
-**Namespace Convention**: All classes use `tb6612_hardware` namespace. Follow existing pattern when adding new components.
+**Namespace Convention**: All classes use `mecabridge_hardware` namespace. Follow existing pattern when adding new components.
 
 ### Drive Type Abstraction
 The system supports multiple drive configurations through runtime switching:
@@ -24,7 +24,7 @@ The system supports multiple drive configurations through runtime switching:
 - **Mecanum**: 4 wheels (`front_left_wheel`, `front_right_wheel`, `rear_left_wheel`, `rear_right_wheel`)
 - **Four Wheel**: 4 independent wheels
 
-**Key Pattern**: Joint names and wheel count are determined by `drive_type` parameter in YAML config. When adding drive types, update both `TB6612Config::setupJoints()` and corresponding controller YAML templates.
+**Key Pattern**: Joint names and wheel count are determined by `drive_type` parameter in YAML config. When adding drive types, update both `MecaBridgeDriveConfig::setupJoints()` and corresponding controller YAML templates.
 
 ### Safety Architecture
 - **Watchdog**: ≤150ms timeout, enforced in firmware
@@ -40,13 +40,13 @@ The system supports multiple drive configurations through runtime switching:
 docker-compose run --rm ros2-dev bash -c "colcon build --packages-select drive_arduino --cmake-args -DBUILD_TESTING=ON"
 
 # Test execution
-./test_tb6612_comms_docker.sh  # Runs full test suite
+./test_mecabridge_comms_docker.sh  # Runs full test suite
 ```
 
 **Testing Strategy**: 
 - Unit tests use `MockSerial` injection (#ifdef TESTING_MODE)
 - Integration tests load actual plugins via `pluginlib::ClassLoader`
-- Hardware-in-the-loop via `/test/test_tb6612_hardware.launch.py`
+- Hardware-in-the-loop via `/test/test_mecabridge_hardware.launch.py`
 
 ### Build Patterns
 - Use `colcon build --packages-select drive_arduino` for focused builds
@@ -57,12 +57,12 @@ docker-compose run --rm ros2-dev bash -c "colcon build --packages-select drive_a
 
 ## Key Files to Reference
 
-- **Hardware Interface**: `src/mecabridge_hardware/include/mecabridge_hardware/tb6612_hardware_interface.h`
-- **Serial Protocol**: `src/mecabridge_hardware/include/mecabridge_hardware/tb6612_comms.h`
-- **Configuration**: `src/mecabridge_hardware/config/tb6612_hardware_params.yaml`
+- **Hardware Interface**: `src/mecabridge_hardware/include/mecabridge_hardware/mecabridge_hardware_interface.h`
+- **Serial Protocol**: `src/mecabridge_hardware/include/mecabridge_hardware/mecabridge_comms.h`
+- **Configuration**: `src/mecabridge_hardware/config/mecabridge_hardware_params.yaml`
 - **Protocol Spec**: `specs/001-mecabridge-plan/contracts/frame_protocol.md`
 - **Safety Spec**: `specs/001-mecabridge-plan/contracts/watchdog.md`
-- **Test Examples**: `test/mecabridge/test_tb6612_hardware_interface.cpp`
+- **Test Examples**: `test/mecabridge/test_mecabridge_hardware_interface.cpp`
 
 ## Common Pitfalls
 

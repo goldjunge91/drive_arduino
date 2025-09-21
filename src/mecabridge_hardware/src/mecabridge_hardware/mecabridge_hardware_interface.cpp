@@ -1,22 +1,22 @@
-#include "tb6612_hardware/tb6612_hardware_interface.h"
+#include "mecabridge_hardware/mecabridge_hardware_interface.h"
 
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include <algorithm>
 #include <cmath>
 
-namespace tb6612_hardware
+namespace mecabridge_hardware
 {
 
-TB6612HardwareInterface::TB6612HardwareInterface()
-: logger_(rclcpp::get_logger("TB6612HardwareInterface")),
+MecaBridgeHardwareInterface::MecaBridgeHardwareInterface()
+: logger_(rclcpp::get_logger("MecaBridgeHardwareInterface")),
   connection_error_count_(0),
   read_error_count_(0),
   write_error_count_(0)
 {
 }
 
-hardware_interface::CallbackReturn TB6612HardwareInterface::on_init(
+hardware_interface::CallbackReturn MecaBridgeHardwareInterface::on_init(
   const hardware_interface::HardwareInfo & info)
 {
   if (hardware_interface::SystemInterface::on_init(info) !=
@@ -26,7 +26,7 @@ hardware_interface::CallbackReturn TB6612HardwareInterface::on_init(
     return hardware_interface::CallbackReturn::ERROR;
   }
 
-  RCLCPP_INFO(logger_, "Configuring TB6612 Hardware Interface...");
+  RCLCPP_INFO(logger_, "Configuring mecabridge Hardware Interface...");
 
   time_ = std::chrono::system_clock::now();
 
@@ -300,14 +300,14 @@ hardware_interface::CallbackReturn TB6612HardwareInterface::on_init(
       break;
   }
 
-  // Set up the TB6612 communication with enhanced error handling
+  // Set up the serial protocol communication with enhanced error handling
   try {
-    RCLCPP_INFO(logger_, "Attempting to establish TB6612 communication...");
-    tb6612_.setup(cfg_.device, cfg_.baud_rate, cfg_.timeout);
-    RCLCPP_INFO(logger_, "TB6612 communication established successfully");
+    RCLCPP_INFO(logger_, "Attempting to establish MecaBridge communication...");
+    serial_protocol_.setup(cfg_.device, cfg_.baud_rate, cfg_.timeout);
+    RCLCPP_INFO(logger_, "MecaBridge communication established successfully");
   } catch (const std::exception & e) {
-    RCLCPP_ERROR(logger_, "Failed to setup TB6612 communication: %s", e.what());
-    RCLCPP_ERROR(logger_, "Check that the TB6612 device is connected and accessible");
+    RCLCPP_ERROR(logger_, "Failed to setup MecaBridge communication: %s", e.what());
+    RCLCPP_ERROR(logger_, "Check that the MecaBridge device is connected and accessible");
     if (cfg_.device.empty()) {
       RCLCPP_ERROR(
         logger_,
@@ -318,7 +318,7 @@ hardware_interface::CallbackReturn TB6612HardwareInterface::on_init(
     return hardware_interface::CallbackReturn::ERROR;
   }
 
-  RCLCPP_INFO(logger_, "TB6612 Hardware Interface configured successfully");
+  RCLCPP_INFO(logger_, "MecaBridge Hardware Interface configured successfully");
   RCLCPP_INFO(logger_, "Configuration summary:");
   RCLCPP_INFO(
     logger_, "  Drive type: %s",
@@ -337,7 +337,7 @@ hardware_interface::CallbackReturn TB6612HardwareInterface::on_init(
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
-std::vector<hardware_interface::StateInterface> TB6612HardwareInterface::export_state_interfaces()
+std::vector<hardware_interface::StateInterface> MecaBridgeHardwareInterface::export_state_interfaces()
 {
   std::vector<hardware_interface::StateInterface> state_interfaces;
 
@@ -355,7 +355,7 @@ std::vector<hardware_interface::StateInterface> TB6612HardwareInterface::export_
   return state_interfaces;
 }
 
-std::vector<hardware_interface::CommandInterface> TB6612HardwareInterface::export_command_interfaces()
+std::vector<hardware_interface::CommandInterface> MecaBridgeHardwareInterface::export_command_interfaces()
 {
   std::vector<hardware_interface::CommandInterface> command_interfaces;
 
@@ -370,33 +370,33 @@ std::vector<hardware_interface::CommandInterface> TB6612HardwareInterface::expor
   return command_interfaces;
 }
 
-hardware_interface::CallbackReturn TB6612HardwareInterface::on_activate(
+hardware_interface::CallbackReturn MecaBridgeHardwareInterface::on_activate(
   const rclcpp_lifecycle::State & /*previous_state*/)
 {
-  RCLCPP_INFO(logger_, "Activating TB6612 Hardware Interface...");
+  RCLCPP_INFO(logger_, "Activating mecabridge Hardware Interface...");
 
   // Check connection status with detailed diagnostics
-  if (!tb6612_.connected()) {
-    RCLCPP_ERROR(logger_, "TB6612 not connected, cannot activate interface");
-    RCLCPP_ERROR(logger_, "Ensure the TB6612 device is properly connected and configured");
+  if (!serial_protocol_.connected()) {
+    RCLCPP_ERROR(logger_, "mecabridge not connected, cannot activate interface");
+    RCLCPP_ERROR(logger_, "Ensure the mecabridge device is properly connected and configured");
 
     // Provide detailed connection diagnostics
     int write_errors, read_errors, reconnection_attempts;
-    tb6612_.getConnectionStats(write_errors, read_errors, reconnection_attempts);
+    serial_protocol_.getConnectionStats(write_errors, read_errors, reconnection_attempts);
     RCLCPP_ERROR(
       logger_, "Connection statistics: write_errors=%d, read_errors=%d, reconnection_attempts=%d",
       write_errors, read_errors, reconnection_attempts);
 
     RCLCPP_ERROR(
       logger_,
-      "CRITICAL: Cannot activate TB6612 interface - check device connection and permissions");
+      "CRITICAL: Cannot activate mecabridge interface - check device connection and permissions");
     return hardware_interface::CallbackReturn::ERROR;
   }
 
   // Send initial ping for synchronization with error handling
   try {
-    RCLCPP_INFO(logger_, "Sending synchronization ping to TB6612...");
-    tb6612_.sendPing();
+    RCLCPP_INFO(logger_, "Sending synchronization ping to MecaBridge...");
+    serial_protocol_.sendPing();
     RCLCPP_INFO(logger_, "Synchronization ping sent successfully");
   } catch (const std::exception & e) {
     RCLCPP_WARN(logger_, "Failed to send synchronization ping: %s", e.what());
@@ -415,7 +415,7 @@ hardware_interface::CallbackReturn TB6612HardwareInterface::on_activate(
     RCLCPP_DEBUG(logger_, "Initialized wheel %zu (%s)", i, wheels_[i].name.c_str());
   }
 
-  RCLCPP_INFO(logger_, "TB6612 Hardware Interface activated successfully");
+  RCLCPP_INFO(logger_, "mecabridge Hardware Interface activated successfully");
   RCLCPP_INFO(logger_, "Interface is ready to receive commands and provide state feedback");
   RCLCPP_INFO(logger_, "Activation summary:");
   RCLCPP_INFO(
@@ -429,28 +429,28 @@ hardware_interface::CallbackReturn TB6612HardwareInterface::on_activate(
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
-hardware_interface::CallbackReturn TB6612HardwareInterface::on_deactivate(
+hardware_interface::CallbackReturn MecaBridgeHardwareInterface::on_deactivate(
   const rclcpp_lifecycle::State & /*previous_state*/)
 {
-  RCLCPP_INFO(logger_, "Deactivating TB6612 Hardware Interface...");
+  RCLCPP_INFO(logger_, "Deactivating mecabridge Hardware Interface...");
 
   // Stop all motors by sending zero commands with error handling
   try {
-    if (tb6612_.connected()) {
+    if (serial_protocol_.connected()) {
       RCLCPP_INFO(logger_, "Stopping all motors...");
       switch (cfg_.drive_type) {
         case DriveType::DIFFERENTIAL:
-          tb6612_.setDifferentialMotors(0, 0);
+          serial_protocol_.setDifferentialMotors(0, 0);
           RCLCPP_INFO(logger_, "Differential motors stopped");
           break;
         case DriveType::FOUR_WHEEL:
         case DriveType::MECANUM:
-          tb6612_.setFourMotors(0, 0, 0, 0);
+          serial_protocol_.setFourMotors(0, 0, 0, 0);
           RCLCPP_INFO(logger_, "All four motors stopped");
           break;
       }
     } else {
-      RCLCPP_WARN(logger_, "TB6612 not connected, cannot send stop commands");
+      RCLCPP_WARN(logger_, "mecabridge not connected, cannot send stop commands");
     }
   } catch (const std::exception & e) {
     RCLCPP_ERROR(logger_, "Failed to stop motors during deactivation: %s", e.what());
@@ -463,28 +463,28 @@ hardware_interface::CallbackReturn TB6612HardwareInterface::on_deactivate(
     wheel.velSetPt = 0.0;
   }
 
-  RCLCPP_INFO(logger_, "TB6612 Hardware Interface deactivated successfully");
+  RCLCPP_INFO(logger_, "mecabridge Hardware Interface deactivated successfully");
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
-hardware_interface::return_type TB6612HardwareInterface::read(
+hardware_interface::return_type MecaBridgeHardwareInterface::read(
   const rclcpp::Time & /*time*/, const rclcpp::Duration & period)
 {
   // Check connection status with automatic recovery attempt
-  if (!tb6612_.connected()) {
+  if (!serial_protocol_.connected()) {
     connection_error_count_++;
 
     // Attempt recovery periodically
     if (connection_error_count_ % 100 == 1) {  // Try recovery every 100 failures
       RCLCPP_ERROR(
-        logger_, "TB6612 not connected, cannot read state (error count: %d)",
+        logger_, "MecaBridge not connected, cannot read state (error count: %d)",
         connection_error_count_);
 
       if (attemptConnectionRecovery()) {
         RCLCPP_INFO(logger_, "Connection recovered, resuming normal operation");
         connection_error_count_ = 0;  // Reset error count on successful recovery
         read_error_count_ = 0;  // Reset read errors on successful recovery
-        tb6612_.resetErrorCounters();  // Reset communication layer error counters
+        serial_protocol_.resetErrorCounters();  // Reset communication layer error counters
       } else {
         RCLCPP_ERROR(
           logger_,
@@ -510,7 +510,7 @@ hardware_interface::return_type TB6612HardwareInterface::read(
         case DriveType::DIFFERENTIAL:
           {
             int left_enc, right_enc;
-            tb6612_.readDifferentialEncoders(left_enc, right_enc);
+            serial_protocol_.readDifferentialEncoders(left_enc, right_enc);
 
             // Update encoder counts and calculate positions
             wheels_[0].enc = left_enc;
@@ -537,7 +537,7 @@ hardware_interface::return_type TB6612HardwareInterface::read(
         case DriveType::MECANUM:
           {
             int fl_enc, fr_enc, rl_enc, rr_enc;
-            tb6612_.readFourEncoders(fl_enc, fr_enc, rl_enc, rr_enc);
+            serial_protocol_.readFourEncoders(fl_enc, fr_enc, rl_enc, rr_enc);
 
             // Update encoder counts and calculate positions
             wheels_[0].enc = fl_enc;  // front_left
@@ -588,7 +588,7 @@ hardware_interface::return_type TB6612HardwareInterface::read(
 
     if (read_error_count_ % 50 == 1) {  // Log every 50 failures to avoid spam
       RCLCPP_ERROR(
-        logger_, "Error reading from TB6612 (error count: %d): %s", read_error_count_,
+        logger_, "Error reading from mecabridge (error count: %d): %s", read_error_count_,
         e.what());
       RCLCPP_ERROR(logger_, "This may indicate communication issues or hardware problems");
     }
@@ -597,7 +597,7 @@ hardware_interface::return_type TB6612HardwareInterface::read(
     if (read_error_count_ % 200 == 0) {
       RCLCPP_ERROR(
         logger_,
-        "CRITICAL: Persistent read errors from TB6612 - check serial communication");
+        "CRITICAL: Persistent read errors from mecabridge - check serial communication");
     }
 
     // Continue operation with last known values rather than stopping completely
@@ -606,24 +606,24 @@ hardware_interface::return_type TB6612HardwareInterface::read(
   }
 }
 
-hardware_interface::return_type TB6612HardwareInterface::write(
+hardware_interface::return_type MecaBridgeHardwareInterface::write(
   const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 {
   // Check connection status with automatic recovery attempt
-  if (!tb6612_.connected()) {
+  if (!serial_protocol_.connected()) {
     connection_error_count_++;
 
     // Attempt recovery periodically
     if (connection_error_count_ % 100 == 1) {  // Try recovery every 100 failures
       RCLCPP_ERROR(
-        logger_, "TB6612 not connected, cannot write commands (error count: %d)",
+        logger_, "mecabridge not connected, cannot write commands (error count: %d)",
         connection_error_count_);
 
       if (attemptConnectionRecovery()) {
         RCLCPP_INFO(logger_, "Connection recovered, resuming command transmission");
         connection_error_count_ = 0;  // Reset error count on successful recovery
         write_error_count_ = 0;  // Reset write errors on successful recovery
-        tb6612_.resetErrorCounters();  // Reset communication layer error counters
+        serial_protocol_.resetErrorCounters();  // Reset communication layer error counters
       } else {
         RCLCPP_ERROR(
           logger_,
@@ -663,7 +663,7 @@ hardware_interface::return_type TB6612HardwareInterface::write(
           int right_motor_cmd = convertVelocityToMotorCommand(right_vel_cmd);
 
           // Send differential motor commands
-          tb6612_.setDifferentialMotors(left_motor_cmd, right_motor_cmd);
+          serial_protocol_.setDifferentialMotors(left_motor_cmd, right_motor_cmd);
 
           // Store the velocity setpoints for debugging
           wheels_[0].velSetPt = left_vel_cmd;
@@ -702,7 +702,7 @@ hardware_interface::return_type TB6612HardwareInterface::write(
           int rr_motor_cmd = convertVelocityToMotorCommand(rr_vel_cmd);
 
           // Send four motor commands
-          tb6612_.setFourMotors(fl_motor_cmd, fr_motor_cmd, rl_motor_cmd, rr_motor_cmd);
+          serial_protocol_.setFourMotors(fl_motor_cmd, fr_motor_cmd, rl_motor_cmd, rr_motor_cmd);
 
           // Store the velocity setpoints for debugging
           wheels_[0].velSetPt = fl_vel_cmd;
@@ -737,7 +737,7 @@ hardware_interface::return_type TB6612HardwareInterface::write(
           int rr_motor_cmd = convertVelocityToMotorCommand(rr_vel_cmd);
 
           // Send four motor commands
-          tb6612_.setFourMotors(fl_motor_cmd, fr_motor_cmd, rl_motor_cmd, rr_motor_cmd);
+          serial_protocol_.setFourMotors(fl_motor_cmd, fr_motor_cmd, rl_motor_cmd, rr_motor_cmd);
 
           // Store the velocity setpoints for debugging
           wheels_[0].velSetPt = fl_vel_cmd;
@@ -758,7 +758,7 @@ hardware_interface::return_type TB6612HardwareInterface::write(
 
     if (write_error_count_ % 50 == 1) {  // Log every 50 failures to avoid spam
       RCLCPP_ERROR(
-        logger_, "Error writing to TB6612 (error count: %d): %s", write_error_count_,
+        logger_, "Error writing to mecabridge (error count: %d): %s", write_error_count_,
         e.what());
       RCLCPP_ERROR(logger_, "Motor commands may not be reaching the hardware");
       RCLCPP_WARN(logger_, "Check serial connection stability and hardware status");
@@ -768,7 +768,7 @@ hardware_interface::return_type TB6612HardwareInterface::write(
     if (write_error_count_ % 200 == 0) {
       RCLCPP_ERROR(
         logger_,
-        "CRITICAL: Persistent write errors to TB6612 - motor commands not transmitted");
+        "CRITICAL: Persistent write errors to mecabridge - motor commands not transmitted");
     }
 
     // Continue operation - don't stop the entire system due to communication errors
@@ -777,10 +777,10 @@ hardware_interface::return_type TB6612HardwareInterface::write(
   }
 }
 
-int TB6612HardwareInterface::convertVelocityToMotorCommand(double wheel_vel_rad_s)
+int MecaBridgeHardwareInterface::convertVelocityToMotorCommand(double wheel_vel_rad_s)
 {
   // Convert wheel velocity (rad/s) to motor command value (-100 to 100)
-  // Based on the maximum velocity configuration and TB6612 command range
+  // Based on the maximum velocity configuration and mecabridge command range
 
   // Calculate the maximum wheel velocity in rad/s based on linear velocity limit
   // For a wheel: v_linear = v_angular * wheel_radius
@@ -796,13 +796,13 @@ int TB6612HardwareInterface::convertVelocityToMotorCommand(double wheel_vel_rad_
   // Convert to motor command range [-100, 100]
   int motor_cmd = static_cast<int>(std::round(100.0 * normalized_vel));
 
-  // Final clamp to ensure we're within TB6612 command range
+  // Final clamp to ensure we're within mecabridge command range
   motor_cmd = std::max(-100, std::min(100, motor_cmd));
 
   return motor_cmd;
 }
 
-bool TB6612HardwareInterface::attemptConnectionRecovery()
+bool MecaBridgeHardwareInterface::attemptConnectionRecovery()
 {
   static auto last_recovery_attempt = std::chrono::steady_clock::now();
   auto now = std::chrono::steady_clock::now();
@@ -816,23 +816,23 @@ bool TB6612HardwareInterface::attemptConnectionRecovery()
 
   last_recovery_attempt = now;
 
-  RCLCPP_WARN(logger_, "Attempting connection recovery for TB6612...");
+  RCLCPP_WARN(logger_, "Attempting connection recovery for mecabridge...");
   RCLCPP_INFO(logger_, "Recovery attempt details:");
   RCLCPP_INFO(logger_, "  Device: %s", cfg_.device.empty() ? "auto-detect" : cfg_.device.c_str());
   RCLCPP_INFO(logger_, "  Baud rate: %d", cfg_.baud_rate);
   RCLCPP_INFO(logger_, "  Timeout: %d ms", cfg_.timeout);
 
   try {
-    // Attempt to reconnect using the TB6612Comms reconnection method
-    bool recovery_success = tb6612_.attemptReconnection();
+    // Attempt to reconnect using the MecaBridgeSerialProtocol reconnection method
+    bool recovery_success = serial_protocol_.attemptReconnection();
 
     if (recovery_success) {
       RCLCPP_INFO(logger_, "Connection recovery successful!");
-      RCLCPP_INFO(logger_, "TB6612 hardware interface is now operational");
+      RCLCPP_INFO(logger_, "mecabridge hardware interface is now operational");
 
       // Send a test ping to verify communication
       try {
-        tb6612_.sendPing();
+        serial_protocol_.sendPing();
         RCLCPP_INFO(logger_, "Communication test (ping) successful");
         return true;
       } catch (const std::exception & e) {
@@ -858,11 +858,11 @@ bool TB6612HardwareInterface::attemptConnectionRecovery()
 
 // Validation and logging methods will be added back after fixing compilation issues
 
-}  // namespace tb6612_hardware
+}  // namespace mecabridge_hardware
 
 #include "pluginlib/class_list_macros.hpp"
 
 PLUGINLIB_EXPORT_CLASS(
-  tb6612_hardware::TB6612HardwareInterface,
+  mecabridge_hardware::MecaBridgeHardwareInterface,
   hardware_interface::SystemInterface
 )

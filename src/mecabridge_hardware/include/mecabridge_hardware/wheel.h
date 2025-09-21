@@ -1,9 +1,9 @@
-#ifndef TB6612_HARDWARE_WHEEL_H
-#define TB6612_HARDWARE_WHEEL_H
+#ifndef mecabridge_hardware_WHEEL_H
+#define mecabridge_hardware_WHEEL_H
 
 #include <string>
 
-namespace tb6612_hardware
+namespace mecabridge_hardware
 {
 
   class Wheel
@@ -27,6 +27,6 @@ public:
     double calcEncAngle();
   };
 
-}  // namespace tb6612_hardware
+}  // namespace mecabridge_hardware
 
-#endif // TB6612_HARDWARE_WHEEL_H
+#endif // mecabridge_hardware_WHEEL_H

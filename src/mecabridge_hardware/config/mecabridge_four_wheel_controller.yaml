@@ -1,4 +1,4 @@
-# TB6612 Four Wheel Independent Drive Controller Configuration
+# mecabridge Four Wheel Independent Drive Controller Configuration
 # This configuration supports independent control of 4 wheels without specific kinematics
 # Suitable for custom drive algorithms or manual wheel control
 

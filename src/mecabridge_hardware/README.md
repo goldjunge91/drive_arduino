@@ -18,15 +18,15 @@ The MecaBridge Hardware Interface is a ROS 2 `SystemInterface` implementation th
 ### Component Hierarchy
 
 ```
-TB6612HardwareInterface (SystemInterface)
-├── TB6612Comms (Serial Protocol Layer)
-├── TB6612Config (Parameter Management)
+MecaBridgeHardwareInterface (SystemInterface)
+├── MecaBridgeSerialProtocol (Serial Protocol Layer)
+├── MecaBridgeDriveConfig (Parameter Management)
 └── Wheel[] (Joint State Management)
 ```
 
 ### Core Components
 
-#### TB6612HardwareInterface
+#### MecaBridgeHardwareInterface
 
 The main ROS 2 hardware interface that implements the `SystemInterface` lifecycle. This class manages:
 
@@ -44,7 +44,7 @@ The main ROS 2 hardware interface that implements the `SystemInterface` lifecycl
 - `read()`: Read encoder data and update joint states
 - `write()`: Send velocity commands to motors
 
-#### TB6612Comms
+#### MecaBridgeSerialProtocol
 
 Handles all serial communication with the Raspberry Pi Pico firmware. Features include:
 
@@ -61,7 +61,7 @@ Handles all serial communication with the Raspberry Pi Pico firmware. Features i
 - `readDifferentialEncoders()`: "E\n" → "left right"
 - `readFourEncoders()`: "E\n" → "fl fr rl rr"
 
-#### TB6612Config
+#### MecaBridgeDriveConfig
 
 Configuration management structure containing all hardware parameters:
 
@@ -138,7 +138,7 @@ struct StateFramePayload {
 ### YAML Configuration Structure
 
 ```yaml
-tb6612_hardware_node:
+mecabridge_hardware_node:
   ros__parameters:
     # Drive configuration
     drive_type: "differential"  # Options: differential, four_wheel, mecanum
@@ -219,8 +219,8 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package='mecabridge_hardware',
-            executable='tb6612_hardware_node',
-            name='tb6612_hardware',
+            executable='mecabridge_hardware_node',
+            name='mecabridge_hardware',
             parameters=[{
                 'drive_type': 'differential',
                 'device': '/dev/ttyUSB0',
@@ -258,25 +258,25 @@ diff_drive_controller:
 
 ```bash
 # Run all unit tests
-colcon test --packages-select mecabridge_hardware --ctest-args -R test_tb6612
+colcon test --packages-select mecabridge_hardware --ctest-args -R test_mecabridge
 
 # Run specific test
-colcon test --packages-select mecabridge_hardware --ctest-args -R test_tb6612_comms
+colcon test --packages-select mecabridge_hardware --ctest-args -R test_mecabridge_comms
 ```
 
 #### Integration Tests
 
 ```bash
 # Hardware-in-the-loop testing
-ros2 launch mecabridge_hardware test_tb6612_hardware.launch.py
+ros2 launch mecabridge_hardware test_mecabridge_hardware.launch.py
 
 # Mock testing
-colcon test --packages-select mecabridge_hardware --ctest-args -R test_tb6612_integration
+colcon test --packages-select mecabridge_hardware --ctest-args -R test_mecabridge_integration
 ```
 
 ## API Reference
 
-### TB6612HardwareInterface API
+### MecaBridgeHardwareInterface API
 
 #### Public Methods
 
@@ -310,7 +310,7 @@ colcon test --packages-select mecabridge_hardware --ctest-args -R test_tb6612_in
   - Converts wheel velocity to motor command value
   - Scales and clamps to valid motor range
 
-### TB6612Comms API
+### MecaBridgeSerialProtocol API
 
 #### Public Methods
 
@@ -335,7 +335,7 @@ colcon test --packages-select mecabridge_hardware --ctest-args -R test_tb6612_in
 - `void getConnectionStats(int& write_errors, int& read_errors, int& reconnection_attempts) const`
   - Retrieves error statistics
 
-### TB6612Config API
+### MecaBridgeDriveConfig API
 
 #### Configuration Parameters
 
@@ -387,7 +387,7 @@ The system includes comprehensive unit tests with mock injection:
 
 ### Development
 
-1. **Namespace Convention**: All classes use `tb6612_hardware` namespace
+1. **Namespace Convention**: All classes use `mecabridge_hardware` namespace
 2. **Error Handling**: Always check return values and handle errors gracefully
 3. **Testing Mode**: Use `#ifdef TESTING_MODE` for mock injection
 4. **Documentation**: Update this documentation when adding new features
@@ -469,15 +469,15 @@ Das MecaBridge Hardware Interface ist eine ROS 2 `SystemInterface`-Implementieru
 ### Komponentenhierarchie
 
 ```
-TB6612HardwareInterface (SystemInterface)
-├── TB6612Comms (Serial Protocol Layer)
-├── TB6612Config (Parameter Management)
+MecaBridgeHardwareInterface (SystemInterface)
+├── MecaBridgeSerialProtocol (Serial Protocol Layer)
+├── MecaBridgeDriveConfig (Parameter Management)
 └── Wheel[] (Joint State Management)
 ```
 
 ### Kernkomponenten
 
-#### TB6612HardwareInterface
+#### MecaBridgeHardwareInterface
 
 Die Haupt-ROS 2 Hardware-Schnittstelle, die den `SystemInterface`-Lebenszyklus implementiert. Diese Klasse verwaltet:
 
@@ -495,7 +495,7 @@ Die Haupt-ROS 2 Hardware-Schnittstelle, die den `SystemInterface`-Lebenszyklus i
 - `read()`: Liest Encoder-Daten und aktualisiert Joint-Zustände
 - `write()`: Sendet Geschwindigkeitsbefehle an Motoren
 
-#### TB6612Comms
+#### MecaBridgeSerialProtocol
 
 Verwaltet die gesamte serielle Kommunikation mit der Raspberry Pi Pico-Firmware. Features umfassen:
 
@@ -512,7 +512,7 @@ Verwaltet die gesamte serielle Kommunikation mit der Raspberry Pi Pico-Firmware.
 - `readDifferentialEncoders()`: "E\n" → "left right"
 - `readFourEncoders()`: "E\n" → "fl fr rl rr"
 
-#### TB6612Config
+#### MecaBridgeDriveConfig
 
 Konfigurations-Verwaltungsstruktur mit allen Hardware-Parametern:
 
@@ -589,7 +589,7 @@ struct StateFramePayload {
 ### YAML-Konfigurationsstruktur
 
 ```yaml
-tb6612_hardware_node:
+mecabridge_hardware_node:
   ros__parameters:
     # Antriebs-Konfiguration
     drive_type: "differential"  # Optionen: differential, four_wheel, mecanum
@@ -670,8 +670,8 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package='mecabridge_hardware',
-            executable='tb6612_hardware_node',
-            name='tb6612_hardware',
+            executable='mecabridge_hardware_node',
+            name='mecabridge_hardware',
             parameters=[{
                 'drive_type': 'differential',
                 'device': '/dev/ttyUSB0',
@@ -709,25 +709,25 @@ diff_drive_controller:
 
 ```bash
 # Alle Unit-Tests ausführen
-colcon test --packages-select mecabridge_hardware --ctest-args -R test_tb6612
+colcon test --packages-select mecabridge_hardware --ctest-args -R test_mecabridge
 
 # Spezifischen Test ausführen
-colcon test --packages-select mecabridge_hardware --ctest-args -R test_tb6612_comms
+colcon test --packages-select mecabridge_hardware --ctest-args -R test_mecabridge_comms
 ```
 
 #### Integration-Tests
 
 ```bash
 # Hardware-in-the-Loop-Tests
-ros2 launch mecabridge_hardware test_tb6612_hardware.launch.py
+ros2 launch mecabridge_hardware test_mecabridge_hardware.launch.py
 
 # Mock-Tests
-colcon test --packages-select mecabridge_hardware --ctest-args -R test_tb6612_integration
+colcon test --packages-select mecabridge_hardware --ctest-args -R test_mecabridge_integration
 ```
 
 ## API-Referenz
 
-### TB6612HardwareInterface API
+### MecaBridgeHardwareInterface API
 
 #### Öffentliche Methoden
 
@@ -761,7 +761,7 @@ colcon test --packages-select mecabridge_hardware --ctest-args -R test_tb6612_in
   - Konvertiert Rad-Geschwindigkeit zu Motor-Befehlswert
   - Skaliert und begrenzt auf gültigen Motor-Bereich
 
-### TB6612Comms API
+### MecaBridgeSerialProtocol API
 
 #### Methoden
 
@@ -786,7 +786,7 @@ colcon test --packages-select mecabridge_hardware --ctest-args -R test_tb6612_in
 - `void getConnectionStats(int& write_errors, int& read_errors, int& reconnection_attempts) const`
   - Ruft Fehler-Statistiken ab
 
-### TB6612Config API
+### MecaBridgeDriveConfig API
 
 #### Konfigurations-Parameter
 
@@ -838,7 +838,7 @@ Das System beinhaltet umfassende Unit-Tests mit Mock-Injection:
 
 ### Entwicklung
 
-1. **Namespace-Konvention**: Alle Klassen verwenden `tb6612_hardware` Namespace
+1. **Namespace-Konvention**: Alle Klassen verwenden `mecabridge_hardware` Namespace
 2. **Fehlerbehandlung**: Immer Return-Werte prüfen und Fehler graceful behandeln
 3. **Test-Modus**: `#ifdef TESTING_MODE` für Mock-Injection verwenden
 4. **Dokumentation**: Diese Dokumentation bei neuen Features aktualisieren

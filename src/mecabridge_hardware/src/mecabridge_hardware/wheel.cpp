@@ -1,8 +1,8 @@
-#include "tb6612_hardware/wheel.h"
+#include "mecabridge_hardware/wheel.h"
 
 #include <cmath>
 
-namespace tb6612_hardware
+namespace mecabridge_hardware
 {
 
 Wheel::Wheel(const std::string & wheel_name, int counts_per_rev)
@@ -21,4 +21,4 @@ double Wheel::calcEncAngle()
   return enc * rads_per_count;
 }
 
-}  // namespace tb6612_hardware
+}  // namespace mecabridge_hardware

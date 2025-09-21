@@ -1,19 +1,19 @@
-# TB6612 Hardware Interface Configuration Guide
+# mecabridge Hardware Interface Configuration Guide
 
-This directory contains configuration files for the TB6612 hardware interface supporting multiple drive types and configurations.
+This directory contains configuration files for the mecabridge hardware interface supporting multiple drive types and configurations.
 
 ## Configuration Files Overview
 
 ### Controller Configurations
-- `tb6612_differential_controller.yaml` - Basic differential drive controller
-- `tb6612_differential_enhanced.yaml` - Enhanced differential drive with full documentation
-- `tb6612_mecanum_controller.yaml` - Basic mecanum drive controller  
-- `tb6612_mecanum_enhanced.yaml` - Enhanced mecanum drive with full documentation
-- `tb6612_four_wheel_controller.yaml` - Four wheel independent drive controller
+- `mecabridge_differential_controller.yaml` - Basic differential drive controller
+- `mecabridge_differential_enhanced.yaml` - Enhanced differential drive with full documentation
+- `mecabridge_mecanum_controller.yaml` - Basic mecanum drive controller  
+- `mecabridge_mecanum_enhanced.yaml` - Enhanced mecanum drive with full documentation
+- `mecabridge_four_wheel_controller.yaml` - Four wheel independent drive controller
 
 ### Hardware Interface Parameters
 - `mecabridge_hardware_params.yaml` - Complete hardware interface parameter documentation
-- `tb6612_example_configs.yaml` - Example configurations for all drive types
+- `mecabridge_example_configs.yaml` - Example configurations for all drive types
 
 ## Supported Drive Types
 
@@ -91,31 +91,31 @@ track_width: 0.3     # Distance between left and right wheels (m)
 ### Launch Differential Drive
 ```bash
 # Basic differential drive
-ros2 launch tb6612_hardware mecabridge_differential.launch.py
+ros2 launch mecabridge_hardware mecabridge_differential.launch.py
 
 # With specific serial device
-ros2 launch tb6612_hardware mecabridge_differential_enhanced.launch.py device:=/dev/ttyUSB0
+ros2 launch mecabridge_hardware mecabridge_differential_enhanced.launch.py device:=/dev/ttyUSB0
 
 # With encoder support
-ros2 launch tb6612_hardware mecabridge_differential_enhanced.launch.py has_encoders:=true
+ros2 launch mecabridge_hardware mecabridge_differential_enhanced.launch.py has_encoders:=true
 ```
 
 ### Launch Mecanum Drive
 ```bash
 # Basic mecanum drive
-ros2 launch tb6612_hardware mecabridge_mecanum.launch.py
+ros2 launch mecabridge_hardware mecabridge_mecanum.launch.py
 
 # With mock hardware for testing
-ros2 launch tb6612_hardware mecabridge_mecanum.launch.py use_mock_hardware:=true
+ros2 launch mecabridge_hardware mecabridge_mecanum.launch.py use_mock_hardware:=true
 ```
 
 ### Launch Four Wheel Independent
 ```bash
 # Four wheel independent control
-ros2 launch tb6612_hardware mecabridge_four_wheel.launch.py
+ros2 launch mecabridge_hardware mecabridge_four_wheel.launch.py
 
 # With custom baud rate
-ros2 launch tb6612_hardware mecabridge_four_wheel.launch.py baud_rate:=57600
+ros2 launch mecabridge_hardware mecabridge_four_wheel.launch.py baud_rate:=57600
 ```
 
 ## Serial Port Auto-Detection
@@ -188,7 +188,7 @@ To create a custom configuration:
 
 ## Integration with Existing Systems
 
-The TB6612 hardware interface is designed to be compatible with:
+The mecabridge hardware interface is designed to be compatible with:
 - Standard ros2_control controllers
 - Existing launch files and configurations
 - Navigation stack (nav2)

@@ -1,18 +1,18 @@
-#ifndef TB6612_HARDWARE_TB6612_COMMS_H
-#define TB6612_HARDWARE_TB6612_COMMS_H
+#ifndef MECABRIDGE_HARDWARE_MECABRIDGE_SERIAL_PROTOCOL_H
+#define MECABRIDGE_HARDWARE_MECABRIDGE_SERIAL_PROTOCOL_H
 
 #include <string>
 #include <vector>
 #include <serial/serial.h>
 
-namespace tb6612_hardware
+namespace mecabridge_hardware
 {
 
-  class TB6612Comms
+  class MecaBridgeSerialProtocol
   {
 public:
-    TB6612Comms();
-    TB6612Comms(const std::string & serial_device, int32_t baud_rate, int32_t timeout_ms);
+    MecaBridgeSerialProtocol();
+    MecaBridgeSerialProtocol(const std::string & serial_device, int32_t baud_rate, int32_t timeout_ms);
 
     void setup(const std::string & serial_device, int32_t baud_rate, int32_t timeout_ms);
     void sendPing(); // Sends "PING\n" for Arduino reset sync
@@ -69,6 +69,6 @@ private:
     mutable int reconnection_attempts_;
   };
 
-}  // namespace tb6612_hardware
+}  // namespace mecabridge_hardware
 
-#endif  // TB6612_HARDWARE_TB6612_COMMS_H
+#endif  // MECABRIDGE_HARDWARE_MECABRIDGE_SERIAL_PROTOCOL_H

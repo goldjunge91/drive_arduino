@@ -1,12 +1,12 @@
-# TB6612 Hardware Interface Tests
+# mecabridge Hardware Interface Tests
 
-This directory contains comprehensive tests for the TB6612 hardware interface, including unit tests, integration tests, and example usage demonstrations. The tests cover all requirements specified in tasks 10, 11, and 12 of the TB6612 hardware interface specification.
+This directory contains comprehensive tests for the mecabridge hardware interface, including unit tests, integration tests, and example usage demonstrations. The tests cover all requirements specified in tasks 10, 11, and 12 of the mecabridge hardware interface specification.
 
 ## Test Categories
 
 ### Unit Tests (Tasks 10 & 11)
-- **TB6612Comms Tests**: Serial communication functionality
-- **TB6612HardwareInterface Tests**: Hardware interface core functionality
+- **MecaBridgeSerialProtocol Tests**: Serial communication functionality
+- **MecaBridgeHardwareInterface Tests**: Hardware interface core functionality
 
 ### Integration Tests (Task 12)
 - **Plugin Loading Tests**: Hardware interface plugin registration and discovery
@@ -43,23 +43,23 @@ This directory contains comprehensive tests for the TB6612 hardware interface, i
 
 ## Test Files
 
-### test_tb6612_comms_simple.cpp
+### test_mecabridge_comms_simple.cpp
 Basic unit tests that cover fundamental functionality:
 - Constructor testing
 - Basic connection logic
 - Error handling for disconnected state
 - Parameter validation
 
-### test_tb6612_comms_comprehensive.cpp
+### test_mecabridge_comms_comprehensive.cpp
 Comprehensive test suite organized by requirements:
 - **SerialPortDetectionTest**: Tests all aspects of serial port detection and connection
 - **MotorCommandFormattingTest**: Tests motor command formatting for both drive types
 - **EncoderReadingTest**: Tests encoder reading functionality
 - **ErrorHandlingTest**: Tests error handling and recovery scenarios
-- **TB6612CommsIntegrationTest**: Integration tests for complete workflows
+- **MecaBridgeSerialProtocolIntegrationTest**: Integration tests for complete workflows
 
-### test_tb6612_hardware_interface.cpp
-Comprehensive unit tests for the TB6612HardwareInterface class covering all requirements:
+### test_mecabridge_hardware_interface.cpp
+Comprehensive unit tests for the MecaBridgeHardwareInterface class covering all requirements:
 - **ConfigurationParameterTest**: Tests parameter parsing and validation for all drive types
 - **InterfaceExportTest**: Tests state and command interface export for different configurations
 - **VelocityConversionTest**: Tests velocity command conversion and kinematics calculations
@@ -69,7 +69,7 @@ Comprehensive unit tests for the TB6612HardwareInterface class covering all requ
 
 ## Test Strategy
 
-Since the TB6612Comms class interacts with hardware serial ports, the tests are designed to:
+Since the MecaBridgeSerialProtocol class interacts with hardware serial ports, the tests are designed to:
 
 1. **Test without hardware**: All tests run without requiring actual hardware connections
 2. **Focus on error paths**: Tests primarily exercise error handling since hardware isn't available
@@ -81,7 +81,7 @@ Since the TB6612Comms class interacts with hardware serial ports, the tests are 
 ### Docker Environment (Recommended)
 ```bash
 # From host machine - run the Docker test script
-./test_tb6612_comms_docker.sh
+./test_mecabridge_comms_docker.sh
 
 # Or manually in Docker container
 docker-compose run --rm robot bash
@@ -136,16 +136,16 @@ The original test design included mock serial objects, but the final implementat
 ## Future Enhancements
 
 For more comprehensive testing with actual hardware simulation:
-1. Implement dependency injection in TB6612Comms class
+1. Implement dependency injection in MecaBridgeSerialProtocol class
 2. Create mock serial interface for testing connected behavior
 3. Add tests for actual command formatting and response parsing
 4. Test timeout and retry logic with controlled timing
 
 ## Files Overview
 
-- `test_tb6612_comms_simple.cpp`: Basic functionality tests
-- `test_tb6612_comms_comprehensive.cpp`: Complete requirement coverage
+- `test_mecabridge_comms_simple.cpp`: Basic functionality tests
+- `test_mecabridge_comms_comprehensive.cpp`: Complete requirement coverage
 - `mock_serial.h`: Mock serial interface (for future use)
-- `testable_tb6612_comms.h/cpp`: Testable version with dependency injection (for future use)
+- `testable_mecabridge_comms.h/cpp`: Testable version with dependency injection (for future use)
 - `run_tests.sh`: Test execution script
 - `README.md`: This documentation file

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# TB6612 Hardware Interface Integration Test Runner
-# This script runs comprehensive integration tests for the TB6612 hardware interface
+# mecabridge Hardware Interface Integration Test Runner
+# This script runs comprehensive integration tests for the mecabridge hardware interface
 # covering all requirements from task 12.
 
 set -e  # Exit on any error
@@ -19,7 +19,7 @@ TESTS_FAILED=0
 FAILED_TESTS=()
 
 echo -e "${BLUE}========================================${NC}"
-echo -e "${BLUE}TB6612 Hardware Interface Integration Tests${NC}"
+echo -e "${BLUE}mecabridge Hardware Interface Integration Tests${NC}"
 echo -e "${BLUE}========================================${NC}"
 echo ""
 
@@ -89,14 +89,14 @@ build_package_with_tests
 
 # Test 1: Plugin Loading and Registration (Requirement 4.1)
 run_test "Plugin Loading and Registration" \
-    "colcon test --packages-select drive_arduino --ctest-args -R test_tb6612_integration"
+    "colcon test --packages-select drive_arduino --ctest-args -R test_mecabridge_integration"
 
 # Test 2: Unit Tests (Prerequisites for integration)
-run_test "TB6612Comms Unit Tests" \
-    "colcon test --packages-select drive_arduino --ctest-args -R test_tb6612_comms_comprehensive"
+run_test "MecaBridgeSerialProtocol Unit Tests" \
+    "colcon test --packages-select drive_arduino --ctest-args -R test_mecabridge_comms_comprehensive"
 
-run_test "TB6612HardwareInterface Unit Tests" \
-    "colcon test --packages-select drive_arduino --ctest-args -R test_tb6612_hardware_interface"
+run_test "MecaBridgeHardwareInterface Unit Tests" \
+    "colcon test --packages-select drive_arduino --ctest-args -R test_mecabridge_hardware_interface"
 
 # Test 3: Launch File Functionality (Requirements 4.3, 4.4)
 run_test "Launch File Functionality Tests" \
@@ -108,7 +108,7 @@ run_test "Plugin Discovery Test" \
 
 # Test 5: Hardware Interface XML Validation
 run_test "Plugin XML Validation" \
-    "test -f src/drive_arduino/tb6612_hardware.xml && xmllint --noout src/drive_arduino/tb6612_hardware.xml 2>/dev/null || echo 'XML validation skipped (xmllint not available)'"
+    "test -f src/drive_arduino/mecabridge_hardware.xml && xmllint --noout src/drive_arduino/mecabridge_hardware.xml 2>/dev/null || echo 'XML validation skipped (xmllint not available)'"
 
 # Test 6: Controller Configuration Validation
 run_test "Controller Configuration Files" \
@@ -116,10 +116,10 @@ run_test "Controller Configuration Files" \
 import yaml
 import os
 configs = [
-    'src/drive_arduino/controllers/tb6612_differential_enhanced.yaml',
-    'src/drive_arduino/controllers/tb6612_mecanum_enhanced.yaml', 
-    'src/drive_arduino/controllers/tb6612_four_wheel_controller.yaml',
-    'src/drive_arduino/controllers/tb6612_hardware_params.yaml'
+    'src/drive_arduino/controllers/mecabridge_differential_enhanced.yaml',
+    'src/drive_arduino/controllers/mecabridge_mecanum_enhanced.yaml', 
+    'src/drive_arduino/controllers/mecabridge_four_wheel_controller.yaml',
+    'src/drive_arduino/controllers/mecabridge_hardware_params.yaml'
 ]
 for config in configs:
     if os.path.exists(config):
@@ -137,10 +137,10 @@ run_test "Launch File Syntax Validation" \
 import os
 import py_compile
 launch_files = [
-    'src/drive_arduino/launch/tb6612_hardware.launch.py',
-    'src/drive_arduino/launch/tb6612_differential.launch.py',
-    'src/drive_arduino/launch/tb6612_mecanum.launch.py',
-    'src/drive_arduino/launch/tb6612_four_wheel.launch.py'
+    'src/drive_arduino/launch/mecabridge_hardware.launch.py',
+    'src/drive_arduino/launch/mecabridge_differential.launch.py',
+    'src/drive_arduino/launch/mecabridge_mecanum.launch.py',
+    'src/drive_arduino/launch/mecabridge_four_wheel.launch.py'
 ]
 for launch_file in launch_files:
     if os.path.exists(launch_file):
@@ -173,7 +173,7 @@ run_test "CMakeLists.txt Plugin Export" \
 
 # Test 10: Integration Test Results
 run_test "Integration Test Results Review" \
-    "colcon test-result --all --verbose | grep -E '(drive_arduino|test_tb6612)' || echo 'No specific test results found, but this is expected if tests passed'"
+    "colcon test-result --all --verbose | grep -E '(drive_arduino|test_mecabridge)' || echo 'No specific test results found, but this is expected if tests passed'"
 
 # Test 11: Mock Hardware Interface Test (if available)
 if [ -f "src/drive_arduino/fake_robot_hardware.xml" ]; then
@@ -197,7 +197,7 @@ echo ""
 if [ $TESTS_FAILED -eq 0 ]; then
     echo -e "${GREEN}🎉 All integration tests passed!${NC}"
     echo ""
-    echo -e "${GREEN}The TB6612 Hardware Interface is ready for use with:${NC}"
+    echo -e "${GREEN}The mecabridge Hardware Interface is ready for use with:${NC}"
     echo -e "  • Plugin loading and registration ✓"
     echo -e "  • Controller manager integration ✓" 
     echo -e "  • diff_drive_controller compatibility ✓"
@@ -206,10 +206,10 @@ if [ $TESTS_FAILED -eq 0 ]; then
     echo ""
     echo -e "${BLUE}Next steps:${NC}"
     echo "1. Test with real hardware using:"
-    echo "   ros2 launch drive_arduino tb6612_differential.launch.py"
+    echo "   ros2 launch drive_arduino mecabridge_differential.launch.py"
     echo ""
     echo "2. Test with mock hardware using:"
-    echo "   ros2 launch drive_arduino tb6612_differential.launch.py use_mock_hardware:=true"
+    echo "   ros2 launch drive_arduino mecabridge_differential.launch.py use_mock_hardware:=true"
     echo ""
     echo "3. Monitor topics:"
     echo "   ros2 topic list"

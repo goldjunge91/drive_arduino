@@ -39,12 +39,15 @@ public:
     
     // Adjust for deadband - map remaining range to full PWM range
     float adjusted_velocity;
-    if (velocity_norm > 0) {
+    if (velocity_norm > deadband) {
       // Positive: map [deadband, 1.0] to [0.5, 1.0]
       adjusted_velocity = 0.5f + 0.5f * (velocity_norm - deadband) / (1.0f - deadband);
-    } else {
+    } else if (velocity_norm < -deadband) {
       // Negative: map [-1.0, -deadband] to [0.0, 0.5]
-      adjusted_velocity = 0.5f * (velocity_norm + deadband) / (deadband - 1.0f);
+      adjusted_velocity = 0.5f * (velocity_norm + 1.0f) / (1.0f - deadband);
+    } else {
+      // Within deadband: return neutral
+      adjusted_velocity = 0.5f;
     }
     
     // Map [0.0, 1.0] to [min_pwm_us, max_pwm_us]

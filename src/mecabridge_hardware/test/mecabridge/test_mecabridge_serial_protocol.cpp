@@ -7,16 +7,16 @@
 
 // Mock serial library for testing
 #include "mock_serial.h"
-#include "testable_tb6612_comms.h"
+#include "testable_mecabridge_serial_protocol.h"
 
-using namespace tb6612_hardware;
+using namespace mecabridge_hardware;
 using ::testing::_;
 using ::testing::Return;
 using ::testing::Throw;
 using ::testing::StrictMock;
 using ::testing::InSequence;
 
-class TB6612CommsTest : public ::testing::Test
+class MecaBridgeSerialProtocolTest : public ::testing::Test
 {
 protected:
   void SetUp() override
@@ -29,8 +29,8 @@ protected:
     // Create mock serial connection
     mock_serial_ = std::make_shared<StrictMock<MockSerial>>();
 
-    // Create TestableTB6612Comms instance for testing
-    comms_ = std::make_unique<TestableTB6612Comms>();
+    // Create TestableMecaBridgeSerialProtocol instance for testing
+    comms_ = std::make_unique<TestableMecaBridgeSerialProtocol>();
   }
 
   void TearDown() override
@@ -40,15 +40,15 @@ protected:
   }
 
   std::shared_ptr<StrictMock<MockSerial>> mock_serial_;
-  std::unique_ptr<TestableTB6612Comms> comms_;
+  std::unique_ptr<TestableMecaBridgeSerialProtocol> comms_;
 };
 
 // Test serial port detection and connection logic
-class TB6612CommsConnectionTest : public TB6612CommsTest
+class MecaBridgeSerialProtocolConnectionTest : public MecaBridgeSerialProtocolTest
 {
 };
 
-TEST_F(TB6612CommsConnectionTest, TestAutoDetectionWithValidPort)
+TEST_F(MecaBridgeSerialProtocolConnectionTest, TestAutoDetectionWithValidPort)
 {
   // Test that auto-detection finds the first available port
   EXPECT_CALL(*mock_serial_, setPort("/dev/ttyUSB0"));
@@ -61,14 +61,14 @@ TEST_F(TB6612CommsConnectionTest, TestAutoDetectionWithValidPort)
   EXPECT_CALL(*mock_serial_, write("PING\n"))
   .WillOnce(Return(5));
 
-  // Inject mock into TestableTB6612Comms for testing
+  // Inject mock into TestableMecaBridgeSerialProtocol for testing
   comms_->setMockSerial(mock_serial_);
 
   EXPECT_NO_THROW(comms_->setup("", 115200, 50));
   EXPECT_TRUE(comms_->connected());
 }
 
-TEST_F(TB6612CommsConnectionTest, TestAutoDetectionWithMultiplePorts)
+TEST_F(MecaBridgeSerialProtocolConnectionTest, TestAutoDetectionWithMultiplePorts)
 {
   // Test that auto-detection tries multiple ports until one works
   {
@@ -99,7 +99,7 @@ TEST_F(TB6612CommsConnectionTest, TestAutoDetectionWithMultiplePorts)
   EXPECT_TRUE(comms_->connected());
 }
 
-TEST_F(TB6612CommsConnectionTest, TestAutoDetectionFailsAllPorts)
+TEST_F(MecaBridgeSerialProtocolConnectionTest, TestAutoDetectionFailsAllPorts)
 {
   // Test that auto-detection throws when no ports are available
   EXPECT_CALL(*mock_serial_, setPort(_))
@@ -118,7 +118,7 @@ TEST_F(TB6612CommsConnectionTest, TestAutoDetectionFailsAllPorts)
   EXPECT_FALSE(comms_->connected());
 }
 
-TEST_F(TB6612CommsConnectionTest, TestSpecificPortConnection)
+TEST_F(MecaBridgeSerialProtocolConnectionTest, TestSpecificPortConnection)
 {
   // Test connection to a specific port
   EXPECT_CALL(*mock_serial_, setPort("/dev/ttyACM0"));
@@ -137,7 +137,7 @@ TEST_F(TB6612CommsConnectionTest, TestSpecificPortConnection)
   EXPECT_TRUE(comms_->connected());
 }
 
-TEST_F(TB6612CommsConnectionTest, TestInvalidParameters)
+TEST_F(MecaBridgeSerialProtocolConnectionTest, TestInvalidParameters)
 {
   // Test that invalid parameters are corrected to defaults
   EXPECT_CALL(*mock_serial_, setPort("/dev/ttyUSB0"));
@@ -158,12 +158,12 @@ TEST_F(TB6612CommsConnectionTest, TestInvalidParameters)
 }
 
 // Test motor command formatting for different drive configurations
-class TB6612CommsMotorCommandTest : public TB6612CommsTest
+class MecaBridgeSerialProtocolMotorCommandTest : public MecaBridgeSerialProtocolTest
 {
 protected:
   void SetUp() override
   {
-    TB6612CommsTest::SetUp();
+    MecaBridgeSerialProtocolTest::SetUp();
 
     // Set up a connected state for motor command tests
     EXPECT_CALL(*mock_serial_, setPort(_));
@@ -180,7 +180,7 @@ protected:
   }
 };
 
-TEST_F(TB6612CommsMotorCommandTest, TestDifferentialMotorCommandFormatting)
+TEST_F(MecaBridgeSerialProtocolMotorCommandTest, TestDifferentialMotorCommandFormatting)
 {
   // Test differential motor command formatting: "V {left} {right}\n"
   EXPECT_CALL(*mock_serial_, write("V 50 -30\n"))
@@ -189,7 +189,7 @@ TEST_F(TB6612CommsMotorCommandTest, TestDifferentialMotorCommandFormatting)
   EXPECT_NO_THROW(comms_->setDifferentialMotors(50, -30));
 }
 
-TEST_F(TB6612CommsMotorCommandTest, TestDifferentialMotorValueClamping)
+TEST_F(MecaBridgeSerialProtocolMotorCommandTest, TestDifferentialMotorValueClamping)
 {
   // Test that values outside [-100, 100] are clamped
   EXPECT_CALL(*mock_serial_, write("V 100 -100\n"))
@@ -198,7 +198,7 @@ TEST_F(TB6612CommsMotorCommandTest, TestDifferentialMotorValueClamping)
   EXPECT_NO_THROW(comms_->setDifferentialMotors(150, -150));
 }
 
-TEST_F(TB6612CommsMotorCommandTest, TestFourMotorCommandFormatting)
+TEST_F(MecaBridgeSerialProtocolMotorCommandTest, TestFourMotorCommandFormatting)
 {
   // Test four motor command formatting: "M {fl} {fr} {rl} {rr}\n"
   EXPECT_CALL(*mock_serial_, write("M 25 -50 75 -25\n"))
@@ -207,7 +207,7 @@ TEST_F(TB6612CommsMotorCommandTest, TestFourMotorCommandFormatting)
   EXPECT_NO_THROW(comms_->setFourMotors(25, -50, 75, -25));
 }
 
-TEST_F(TB6612CommsMotorCommandTest, TestFourMotorValueClamping)
+TEST_F(MecaBridgeSerialProtocolMotorCommandTest, TestFourMotorValueClamping)
 {
   // Test that all four motor values are clamped properly
   EXPECT_CALL(*mock_serial_, write("M 100 -100 100 -100\n"))
@@ -216,7 +216,7 @@ TEST_F(TB6612CommsMotorCommandTest, TestFourMotorValueClamping)
   EXPECT_NO_THROW(comms_->setFourMotors(200, -200, 150, -150));
 }
 
-TEST_F(TB6612CommsMotorCommandTest, TestMotorCommandBoundaryValues)
+TEST_F(MecaBridgeSerialProtocolMotorCommandTest, TestMotorCommandBoundaryValues)
 {
   // Test boundary values (exactly -100 and 100)
   EXPECT_CALL(*mock_serial_, write("V -100 100\n"))
@@ -225,7 +225,7 @@ TEST_F(TB6612CommsMotorCommandTest, TestMotorCommandBoundaryValues)
   EXPECT_NO_THROW(comms_->setDifferentialMotors(-100, 100));
 }
 
-TEST_F(TB6612CommsMotorCommandTest, TestMotorCommandZeroValues)
+TEST_F(MecaBridgeSerialProtocolMotorCommandTest, TestMotorCommandZeroValues)
 {
   // Test zero values (stop command)
   EXPECT_CALL(*mock_serial_, write("V 0 0\n"))
@@ -235,12 +235,12 @@ TEST_F(TB6612CommsMotorCommandTest, TestMotorCommandZeroValues)
 }
 
 // Test encoder reading functionality with mock serial responses
-class TB6612CommsEncoderTest : public TB6612CommsTest
+class MecaBridgeSerialProtocolEncoderTest : public MecaBridgeSerialProtocolTest
 {
 protected:
   void SetUp() override
   {
-    TB6612CommsTest::SetUp();
+    MecaBridgeSerialProtocolTest::SetUp();
 
     // Set up a connected state for encoder tests
     EXPECT_CALL(*mock_serial_, setPort(_));
@@ -257,7 +257,7 @@ protected:
   }
 };
 
-TEST_F(TB6612CommsEncoderTest, TestDifferentialEncoderReading)
+TEST_F(MecaBridgeSerialProtocolEncoderTest, TestDifferentialEncoderReading)
 {
   // Test successful differential encoder reading
   EXPECT_CALL(*mock_serial_, write("E\n"))
@@ -272,7 +272,7 @@ TEST_F(TB6612CommsEncoderTest, TestDifferentialEncoderReading)
   EXPECT_EQ(right_enc, -5678);
 }
 
-TEST_F(TB6612CommsEncoderTest, TestFourEncoderReading)
+TEST_F(MecaBridgeSerialProtocolEncoderTest, TestFourEncoderReading)
 {
   // Test successful four encoder reading
   EXPECT_CALL(*mock_serial_, write("E\n"))
@@ -289,7 +289,7 @@ TEST_F(TB6612CommsEncoderTest, TestFourEncoderReading)
   EXPECT_EQ(rr, -400);
 }
 
-TEST_F(TB6612CommsEncoderTest, TestEncoderReadingInvalidFormat)
+TEST_F(MecaBridgeSerialProtocolEncoderTest, TestEncoderReadingInvalidFormat)
 {
   // Test handling of invalid encoder response format
   EXPECT_CALL(*mock_serial_, write("E\n"))
@@ -305,7 +305,7 @@ TEST_F(TB6612CommsEncoderTest, TestEncoderReadingInvalidFormat)
   EXPECT_EQ(right_enc, 0);
 }
 
-TEST_F(TB6612CommsEncoderTest, TestEncoderReadingPartialResponse)
+TEST_F(MecaBridgeSerialProtocolEncoderTest, TestEncoderReadingPartialResponse)
 {
   // Test handling of partial encoder response
   EXPECT_CALL(*mock_serial_, write("E\n"))
@@ -321,7 +321,7 @@ TEST_F(TB6612CommsEncoderTest, TestEncoderReadingPartialResponse)
   EXPECT_EQ(right_enc, 0);
 }
 
-TEST_F(TB6612CommsEncoderTest, TestEncoderReadingEmptyResponse)
+TEST_F(MecaBridgeSerialProtocolEncoderTest, TestEncoderReadingEmptyResponse)
 {
   // Test handling of empty encoder response
   EXPECT_CALL(*mock_serial_, write("E\n"))
@@ -338,12 +338,12 @@ TEST_F(TB6612CommsEncoderTest, TestEncoderReadingEmptyResponse)
 }
 
 // Test error handling scenarios and connection failures
-class TB6612CommsErrorHandlingTest : public TB6612CommsTest
+class MecaBridgeSerialProtocolErrorHandlingTest : public MecaBridgeSerialProtocolTest
 {
 protected:
   void SetUp() override
   {
-    TB6612CommsTest::SetUp();
+    MecaBridgeSerialProtocolTest::SetUp();
 
     // Set up a connected state for error handling tests
     EXPECT_CALL(*mock_serial_, setPort(_));
@@ -360,7 +360,7 @@ protected:
   }
 };
 
-TEST_F(TB6612CommsErrorHandlingTest, TestMotorCommandWriteFailure)
+TEST_F(MecaBridgeSerialProtocolErrorHandlingTest, TestMotorCommandWriteFailure)
 {
   // Test handling of serial write failure during motor command
   EXPECT_CALL(*mock_serial_, write("V 50 -30\n"))
@@ -374,7 +374,7 @@ TEST_F(TB6612CommsErrorHandlingTest, TestMotorCommandWriteFailure)
   EXPECT_GT(write_errors, 0);
 }
 
-TEST_F(TB6612CommsErrorHandlingTest, TestEncoderReadFailure)
+TEST_F(MecaBridgeSerialProtocolErrorHandlingTest, TestEncoderReadFailure)
 {
   // Test handling of serial read failure during encoder reading
   EXPECT_CALL(*mock_serial_, write("E\n"))
@@ -395,7 +395,7 @@ TEST_F(TB6612CommsErrorHandlingTest, TestEncoderReadFailure)
   EXPECT_GT(read_errors, 0);
 }
 
-TEST_F(TB6612CommsErrorHandlingTest, TestConnectionLoss)
+TEST_F(MecaBridgeSerialProtocolErrorHandlingTest, TestConnectionLoss)
 {
   // Test handling of connection loss
   EXPECT_CALL(*mock_serial_, isOpen())
@@ -404,7 +404,7 @@ TEST_F(TB6612CommsErrorHandlingTest, TestConnectionLoss)
   EXPECT_FALSE(comms_->connected());
 }
 
-TEST_F(TB6612CommsErrorHandlingTest, TestReconnectionAttempt)
+TEST_F(MecaBridgeSerialProtocolErrorHandlingTest, TestReconnectionAttempt)
 {
   // Test reconnection functionality
   {
@@ -436,7 +436,7 @@ TEST_F(TB6612CommsErrorHandlingTest, TestReconnectionAttempt)
   EXPECT_GT(reconnection_attempts, 0);
 }
 
-TEST_F(TB6612CommsErrorHandlingTest, TestReconnectionFailure)
+TEST_F(MecaBridgeSerialProtocolErrorHandlingTest, TestReconnectionFailure)
 {
   // Test failed reconnection attempt
   {
@@ -459,7 +459,7 @@ TEST_F(TB6612CommsErrorHandlingTest, TestReconnectionFailure)
   EXPECT_FALSE(comms_->attemptReconnection());
 }
 
-TEST_F(TB6612CommsErrorHandlingTest, TestErrorCounterReset)
+TEST_F(MecaBridgeSerialProtocolErrorHandlingTest, TestErrorCounterReset)
 {
   // Generate some errors first
   EXPECT_CALL(*mock_serial_, write("V 50 -30\n"))
@@ -482,7 +482,7 @@ TEST_F(TB6612CommsErrorHandlingTest, TestErrorCounterReset)
   EXPECT_EQ(reconnection_attempts, 0);
 }
 
-TEST_F(TB6612CommsErrorHandlingTest, TestCommandsOnDisconnectedState)
+TEST_F(MecaBridgeSerialProtocolErrorHandlingTest, TestCommandsOnDisconnectedState)
 {
   // Test that commands fail gracefully when not connected
   EXPECT_CALL(*mock_serial_, isOpen())
@@ -499,12 +499,12 @@ TEST_F(TB6612CommsErrorHandlingTest, TestCommandsOnDisconnectedState)
 }
 
 // Test ping functionality
-class TB6612CommsPingTest : public TB6612CommsTest
+class MecaBridgeSerialProtocolPingTest : public MecaBridgeSerialProtocolTest
 {
 protected:
   void SetUp() override
   {
-    TB6612CommsTest::SetUp();
+    MecaBridgeSerialProtocolTest::SetUp();
 
     // Set up a connected state for ping tests
     EXPECT_CALL(*mock_serial_, setPort(_));
@@ -521,7 +521,7 @@ protected:
   }
 };
 
-TEST_F(TB6612CommsPingTest, TestPingCommand)
+TEST_F(MecaBridgeSerialProtocolPingTest, TestPingCommand)
 {
   // Test that ping sends correct command
   EXPECT_CALL(*mock_serial_, write("PING\n"))
@@ -530,7 +530,7 @@ TEST_F(TB6612CommsPingTest, TestPingCommand)
   EXPECT_NO_THROW(comms_->sendPing());
 }
 
-TEST_F(TB6612CommsPingTest, TestPingFailure)
+TEST_F(MecaBridgeSerialProtocolPingTest, TestPingFailure)
 {
   // Test that ping failure is handled gracefully
   EXPECT_CALL(*mock_serial_, write("PING\n"))

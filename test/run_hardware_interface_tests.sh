@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Test runner script for TB6612HardwareInterface unit tests
+# Test runner script for MecaBridgeHardwareInterface unit tests
 # This script can be used to run the hardware interface tests manually
 
-echo "Building and running TB6612HardwareInterface unit tests..."
+echo "Building and running MecaBridgeHardwareInterface unit tests..."
 
 # Try to find and source ROS 2 environment
 if [ -f "/opt/ros/humble/setup.bash" ]; then
@@ -24,7 +24,7 @@ if [ $? -eq 0 ]; then
     echo "Build successful. Running hardware interface tests..."
     
     # Run only the hardware interface tests
-    colcon test --packages-select drive_arduino --ctest-args -R test_tb6612_hardware_interface
+    colcon test --packages-select drive_arduino --ctest-args -R test_mecabridge_hardware_interface
     
     if [ $? -eq 0 ]; then
         echo "Hardware interface tests completed. Showing results..."

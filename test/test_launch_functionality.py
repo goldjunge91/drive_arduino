@@ -3,7 +3,7 @@
 Launch File Functionality Tests
 
 This test file verifies launch file functionality and parameter loading
-for the TB6612 hardware interface.
+for the mecabridge hardware interface.
 
 Requirements tested:
 - 4.3: Launch file functionality 
@@ -44,10 +44,10 @@ class LaunchFunctionalityTest(unittest.TestCase):
     def test_launch_files_exist(self):
         """Test that all expected launch files exist"""
         expected_launch_files = [
-            "tb6612_hardware.launch.py",
-            "tb6612_differential.launch.py", 
-            "tb6612_mecanum.launch.py",
-            "tb6612_four_wheel.launch.py"
+            "mecabridge_hardware.launch.py",
+            "mecabridge_differential.launch.py", 
+            "mecabridge_mecanum.launch.py",
+            "mecabridge_four_wheel.launch.py"
         ]
 
         for launch_file in expected_launch_files:
@@ -58,12 +58,12 @@ class LaunchFunctionalityTest(unittest.TestCase):
     def test_controller_config_files_exist(self):
         """Test that all expected controller configuration files exist"""
         expected_config_files = [
-            "tb6612_differential_controller.yaml",
-            "tb6612_differential_enhanced.yaml",
-            "tb6612_mecanum_controller.yaml", 
-            "tb6612_mecanum_enhanced.yaml",
-            "tb6612_four_wheel_controller.yaml",
-            "tb6612_hardware_params.yaml"
+            "mecabridge_differential_controller.yaml",
+            "mecabridge_differential_enhanced.yaml",
+            "mecabridge_mecanum_controller.yaml", 
+            "mecabridge_mecanum_enhanced.yaml",
+            "mecabridge_four_wheel_controller.yaml",
+            "mecabridge_hardware_params.yaml"
         ]
 
         for config_file in expected_config_files:
@@ -74,10 +74,10 @@ class LaunchFunctionalityTest(unittest.TestCase):
     def test_launch_file_syntax(self):
         """Test that launch files have valid Python syntax"""
         launch_files = [
-            "tb6612_hardware.launch.py",
-            "tb6612_differential.launch.py",
-            "tb6612_mecanum.launch.py", 
-            "tb6612_four_wheel.launch.py"
+            "mecabridge_hardware.launch.py",
+            "mecabridge_differential.launch.py",
+            "mecabridge_mecanum.launch.py", 
+            "mecabridge_four_wheel.launch.py"
         ]
 
         for launch_file in launch_files:
@@ -95,12 +95,12 @@ class LaunchFunctionalityTest(unittest.TestCase):
     def test_yaml_config_syntax(self):
         """Test that YAML configuration files have valid syntax"""
         yaml_files = [
-            "tb6612_differential_controller.yaml",
-            "tb6612_differential_enhanced.yaml", 
-            "tb6612_mecanum_controller.yaml",
-            "tb6612_mecanum_enhanced.yaml",
-            "tb6612_four_wheel_controller.yaml",
-            "tb6612_hardware_params.yaml"
+            "mecabridge_differential_controller.yaml",
+            "mecabridge_differential_enhanced.yaml", 
+            "mecabridge_mecanum_controller.yaml",
+            "mecabridge_mecanum_enhanced.yaml",
+            "mecabridge_four_wheel_controller.yaml",
+            "mecabridge_hardware_params.yaml"
         ]
 
         for yaml_file in yaml_files:
@@ -116,7 +116,7 @@ class LaunchFunctionalityTest(unittest.TestCase):
 
     def test_differential_controller_config(self):
         """Test differential drive controller configuration parameters"""
-        config_path = self.controllers_dir / "tb6612_differential_enhanced.yaml"
+        config_path = self.controllers_dir / "mecabridge_differential_enhanced.yaml"
         if not config_path.exists():
             self.skipTest(f"Config file {config_path} does not exist")
 
@@ -143,7 +143,7 @@ class LaunchFunctionalityTest(unittest.TestCase):
 
     def test_mecanum_controller_config(self):
         """Test mecanum drive controller configuration parameters"""
-        config_path = self.controllers_dir / "tb6612_mecanum_enhanced.yaml"
+        config_path = self.controllers_dir / "mecabridge_mecanum_enhanced.yaml"
         if not config_path.exists():
             self.skipTest(f"Config file {config_path} does not exist")
 
@@ -167,7 +167,7 @@ class LaunchFunctionalityTest(unittest.TestCase):
 
     def test_hardware_params_config(self):
         """Test hardware parameters configuration"""
-        config_path = self.controllers_dir / "tb6612_hardware_params.yaml"
+        config_path = self.controllers_dir / "mecabridge_hardware_params.yaml"
         if not config_path.exists():
             self.skipTest(f"Config file {config_path} does not exist")
 
@@ -189,8 +189,8 @@ class LaunchFunctionalityTest(unittest.TestCase):
     def test_launch_file_imports(self):
         """Test that launch files can import required modules"""
         launch_files = [
-            "tb6612_hardware.launch.py",
-            "tb6612_differential.launch.py"
+            "mecabridge_hardware.launch.py",
+            "mecabridge_differential.launch.py"
         ]
 
         for launch_file in launch_files:
@@ -219,9 +219,9 @@ class LaunchFunctionalityTest(unittest.TestCase):
 
     def test_launch_arguments(self):
         """Test that launch files declare expected arguments"""
-        launch_path = self.launch_dir / "tb6612_hardware.launch.py"
+        launch_path = self.launch_dir / "mecabridge_hardware.launch.py"
         if not launch_path.exists():
-            self.skipTest("tb6612_hardware.launch.py does not exist")
+            self.skipTest("mecabridge_hardware.launch.py does not exist")
 
         try:
             import importlib.util
@@ -247,9 +247,9 @@ class LaunchFunctionalityTest(unittest.TestCase):
 
     def test_parameter_substitution(self):
         """Test that launch files properly use parameter substitution"""
-        launch_path = self.launch_dir / "tb6612_hardware.launch.py"
+        launch_path = self.launch_dir / "mecabridge_hardware.launch.py"
         if not launch_path.exists():
-            self.skipTest("tb6612_hardware.launch.py does not exist")
+            self.skipTest("mecabridge_hardware.launch.py does not exist")
 
         with open(launch_path, 'r') as f:
             content = f.read()
@@ -264,9 +264,9 @@ class LaunchFunctionalityTest(unittest.TestCase):
 
     def test_node_configuration(self):
         """Test that launch files configure nodes correctly"""
-        launch_path = self.launch_dir / "tb6612_differential.launch.py"
+        launch_path = self.launch_dir / "mecabridge_differential.launch.py"
         if not launch_path.exists():
-            self.skipTest("tb6612_differential.launch.py does not exist")
+            self.skipTest("mecabridge_differential.launch.py does not exist")
 
         try:
             import importlib.util

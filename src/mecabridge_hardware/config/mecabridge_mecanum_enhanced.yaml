@@ -1,5 +1,5 @@
-# TB6612 Mecanum Drive Controller Configuration  
-# This configuration is for 4-wheel mecanum drive robots using TB6612 motor drivers
+# mecabridge Mecanum Drive Controller Configuration  
+# This configuration is for 4-wheel mecanum drive robots using mecabridge motor drivers
 # Supports omnidirectional movement (forward/backward, sideways, rotation)
 
 controller_manager:

@@ -1,5 +1,5 @@
-# TB6612 Differential Drive Controller Configuration
-# This configuration is for 2-wheel differential drive robots using TB6612 motor driver
+# mecabridge Differential Drive Controller Configuration
+# This configuration is for 2-wheel differential drive robots using mecabridge motor driver
 
 controller_manager:
   ros__parameters:
