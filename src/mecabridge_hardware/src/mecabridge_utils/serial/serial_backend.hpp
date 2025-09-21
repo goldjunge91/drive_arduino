@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// Header guard
+// Primary include guard
 #ifndef MECABRIDGE_UTILS__SERIAL__SERIAL_BACKEND_HPP_
 #define MECABRIDGE_UTILS__SERIAL__SERIAL_BACKEND_HPP_
 
-#include <algorithm>
 #pragma once
+
+#include <algorithm>
 
 #include <cstdint>
 #include <cstddef>

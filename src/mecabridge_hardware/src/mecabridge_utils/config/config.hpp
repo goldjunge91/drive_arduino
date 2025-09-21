@@ -3,13 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// Primary include guard
 #ifndef MECABRIDGE_UTILS__CONFIG__CONFIG_HPP_
 #define MECABRIDGE_UTILS__CONFIG__CONFIG_HPP_
 
-
-
-
-﻿#pragma once
+#pragma once  // Optional, redundant with guard but retained for faster builds
 
 #include <string>
 #include <array>
@@ -123,5 +121,5 @@ Config parse_from_yaml_file(const std::string & path);
 
 }   // namespace config
 } // namespace mecabridge
-#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__CONFIG__CONFIG_HPP_
+
 #endif  // MECABRIDGE_UTILS__CONFIG__CONFIG_HPP_
