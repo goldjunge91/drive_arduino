@@ -1,6 +1,17 @@
 /*
  * Copyright (c) 2024 MecaBridge Project
- * SPDX-License-Identifier: Apache-2.0
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 #include <gtest/gtest.h>
@@ -25,12 +36,14 @@ TEST(TestMecabridgeHardwareInterface, load_urdf_and_check_interfaces)
   const auto config_file = config_path.string();
 
   std::ostringstream urdf;
-  urdf << R"(<robot name="TestRobot">
+  urdf <<
+      R"(<robot name="TestRobot">
   <ros2_control name="MecaBridgeSystem" type="system">
     <hardware>
       <plugin>mecabridge_hardware/MecaBridgeHardware</plugin>
       <param name="config_file">)"
-       << config_file << R"(</param>
+       << config_file <<
+      R"(</param>
     </hardware>
     <joint name="front_left_wheel_joint">
       <command_interface name="velocity"/>
@@ -65,22 +78,38 @@ TEST(TestMecabridgeHardwareInterface, load_urdf_and_check_interfaces)
     const auto &command_interfaces = rm.command_interface_keys();
     const auto &state_interfaces = rm.state_interface_keys();
 
-    ASSERT_EQ(command_interfaces.size(), 4);
-    ASSERT_EQ(state_interfaces.size(), 8);
+    ASSERT_EQ(command_interfaces.size(), 8u);
+    ASSERT_EQ(state_interfaces.size(), 12u);
 
-    EXPECT_EQ(command_interfaces[0], "front_left_wheel_joint/velocity");
-    EXPECT_EQ(command_interfaces[1], "front_right_wheel_joint/velocity");
-    EXPECT_EQ(command_interfaces[2], "rear_left_wheel_joint/velocity");
-    EXPECT_EQ(command_interfaces[3], "rear_right_wheel_joint/velocity");
+    using ::testing::ElementsAre;
 
-    EXPECT_EQ(state_interfaces[0], "front_left_wheel_joint/velocity");
-    EXPECT_EQ(state_interfaces[1], "front_left_wheel_joint/position");
-    EXPECT_EQ(state_interfaces[2], "front_right_wheel_joint/velocity");
-    EXPECT_EQ(state_interfaces[3], "front_right_wheel_joint/position");
-    EXPECT_EQ(state_interfaces[4], "rear_left_wheel_joint/velocity");
-    EXPECT_EQ(state_interfaces[5], "rear_left_wheel_joint/position");
-    EXPECT_EQ(state_interfaces[6], "rear_right_wheel_joint/velocity");
-    EXPECT_EQ(state_interfaces[7], "rear_right_wheel_joint/position");
+    EXPECT_THAT(
+      command_interfaces,
+      ElementsAre(
+        "front_left_wheel_joint/velocity",
+        "front_right_wheel_joint/velocity",
+        "rear_left_wheel_joint/velocity",
+        "rear_right_wheel_joint/velocity",
+        "pan_servo_joint/position",
+        "rot_servo_joint/velocity",
+        "esc_left_joint/velocity",
+        "esc_right_joint/velocity"));
+
+    EXPECT_THAT(
+      state_interfaces,
+      ElementsAre(
+        "front_left_wheel_joint/velocity",
+        "front_left_wheel_joint/position",
+        "front_right_wheel_joint/velocity",
+        "front_right_wheel_joint/position",
+        "rear_left_wheel_joint/velocity",
+        "rear_left_wheel_joint/position",
+        "rear_right_wheel_joint/velocity",
+        "rear_right_wheel_joint/position",
+        "pan_servo_joint/position",
+        "rot_servo_joint/velocity",
+        "esc_left_joint/velocity",
+        "esc_right_joint/velocity"));
   }
   catch (const std::exception &e)
   {
