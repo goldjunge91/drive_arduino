@@ -8,16 +8,16 @@ It supports differential, mecanum, and four-wheel independent drive types.
 
 Usage:
     # Differential drive (default)
-    ros2 launch drive_arduino tb6612_hardware.launch.py
+    ros2 launch drive_arduino mecabridge_hardware.launch.py
     
     # Mecanum drive
-    ros2 launch drive_arduino tb6612_hardware.launch.py drive_type:=mecanum
+    ros2 launch drive_arduino mecabridge_hardware.launch.py drive_type:=mecanum
     
     # Four wheel independent
-    ros2 launch drive_arduino tb6612_hardware.launch.py drive_type:=four_wheel
+    ros2 launch drive_arduino mecabridge_hardware.launch.py drive_type:=four_wheel
     
     # With custom parameters
-    ros2 launch drive_arduino tb6612_hardware.launch.py drive_type:=differential device:=/dev/ttyUSB0 has_encoders:=true
+    ros2 launch drive_arduino mecabridge_hardware.launch.py drive_type:=differential device:=/dev/ttyUSB0 has_encoders:=true
 """
 
 from launch import LaunchDescription
@@ -40,9 +40,9 @@ def launch_setup(context, *args, **kwargs):
 
     # Determine controller configuration file based on drive type
     controller_configs = {
-        "differential": "tb6612_differential_enhanced.yaml",
-        "mecanum": "tb6612_mecanum_enhanced.yaml",
-        "four_wheel": "tb6612_four_wheel_controller.yaml"
+        "differential": "mecabridge_differential_enhanced.yaml",
+        "mecanum": "mecabridge_mecanum_enhanced.yaml",
+        "four_wheel": "mecabridge_four_wheel_controller.yaml"
     }
 
     # Determine controller name based on drive type
@@ -60,7 +60,7 @@ def launch_setup(context, *args, **kwargs):
     }
 
     # Get the appropriate configuration file
-    controller_config = controller_configs.get(drive_type, "tb6612_differential_enhanced.yaml")
+    controller_config = controller_configs.get(drive_type, "mecabridge_differential_enhanced.yaml")
     controller_name = controller_names.get(drive_type, "diff_cont")
     urdf_file = urdf_files.get(drive_type, "tb6612_differential.urdf.xacro")
 
@@ -108,7 +108,7 @@ def launch_setup(context, *args, **kwargs):
         [
             FindPackageShare("drive_arduino"),
             "controllers",
-            "tb6612_hardware_params.yaml",
+            "mecabridge_hardware_params.yaml",
         ]
     )
 

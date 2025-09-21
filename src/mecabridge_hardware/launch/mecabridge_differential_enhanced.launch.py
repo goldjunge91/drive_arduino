@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 
 """
-TB6612 Four Wheel Independent Drive Launch File
+TB6612 Differential Drive Launch File (Enhanced)
 
-This launch file starts the TB6612 hardware interface configured for independent
-control of 4 wheels without specific kinematics constraints.
+This launch file starts the TB6612 hardware interface configured for differential drive
+with 2 wheels and comprehensive parameter support.
 
 Usage:
-    ros2 launch drive_arduino tb6612_four_wheel.launch.py
-    ros2 launch drive_arduino tb6612_four_wheel.launch.py use_mock_hardware:=true
-    ros2 launch drive_arduino tb6612_four_wheel.launch.py device:=/dev/ttyUSB0
+    ros2 launch drive_arduino mecabridge_differential_enhanced.launch.py
+    ros2 launch drive_arduino mecabridge_differential_enhanced.launch.py use_mock_hardware:=true
+    ros2 launch drive_arduino mecabridge_differential_enhanced.launch.py device:=/dev/ttyUSB0
 """
 
 from launch import LaunchDescription
@@ -53,12 +53,20 @@ def generate_launch_description():
             description="Serial communication baud rate.",
         )
     )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "has_encoders",
+            default_value="false",
+            description="Whether the robot setup includes encoder feedback.",
+        )
+    )
 
     # Initialize Arguments
     use_mock_hardware = LaunchConfiguration("use_mock_hardware")
     mock_sensor_commands = LaunchConfiguration("mock_sensor_commands")
     device = LaunchConfiguration("device")
     baud_rate = LaunchConfiguration("baud_rate")
+    has_encoders = LaunchConfiguration("has_encoders")
 
     # Get URDF via xacro
     robot_description_content = Command(
@@ -80,6 +88,9 @@ def generate_launch_description():
             " ",
             "baud_rate:=",
             baud_rate,
+            " ",
+            "has_encoders:=",
+            has_encoders,
         ]
     )
     robot_description = {"robot_description": robot_description_content}
@@ -98,7 +109,7 @@ def generate_launch_description():
         [
             FindPackageShare("drive_arduino"),
             "controllers",
-            "tb6612_hardware_params.yaml",
+            "mecabridge_hardware_params.yaml",
         ]
     )
 
@@ -129,11 +140,11 @@ def generate_launch_description():
         output="screen",
     )
 
-    # Four wheel controller spawner
+    # Differential drive controller spawner
     robot_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["four_wheel_cont"],
+        arguments=["diff_cont"],
         output="screen",
     )
 

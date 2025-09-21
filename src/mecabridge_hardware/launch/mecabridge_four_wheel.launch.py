@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 
 """
-TB6612 Mecanum Drive Launch File
+TB6612 Four Wheel Independent Drive Launch File
 
-This launch file starts the TB6612 hardware interface configured for mecanum drive
-with 4 wheels supporting omnidirectional movement.
+This launch file starts the TB6612 hardware interface configured for independent
+control of 4 wheels without specific kinematics constraints.
 
 Usage:
-    ros2 launch drive_arduino tb6612_mecanum.launch.py
-    ros2 launch drive_arduino tb6612_mecanum.launch.py use_mock_hardware:=true
-    ros2 launch drive_arduino tb6612_mecanum.launch.py device:=/dev/ttyUSB0
+    ros2 launch drive_arduino mecabridge_four_wheel.launch.py
+    ros2 launch drive_arduino mecabridge_four_wheel.launch.py use_mock_hardware:=true
+    ros2 launch drive_arduino mecabridge_four_wheel.launch.py device:=/dev/ttyUSB0
 """
 
 from launch import LaunchDescription
@@ -98,7 +98,7 @@ def generate_launch_description():
         [
             FindPackageShare("drive_arduino"),
             "controllers",
-            "tb6612_hardware_params.yaml",
+            "mecabridge_hardware_params.yaml",
         ]
     )
 
@@ -129,11 +129,11 @@ def generate_launch_description():
         output="screen",
     )
 
-    # Mecanum controller spawner
+    # Four wheel controller spawner
     robot_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["mecanum_cont"],
+        arguments=["four_wheel_cont"],
         output="screen",
     )
 
