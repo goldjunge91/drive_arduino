@@ -1,12 +1,20 @@
-#ifndef MECABRIDGE_HARDWARE__MECABRIDGE__TESTABLE_MECABRIDGE_SERIAL_PROTOCOL__H_
-#define MECABRIDGE_HARDWARE__MECABRIDGE__TESTABLE_MECABRIDGE_SERIAL_PROTOCOL__H_
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#ifndef MECABRIDGE__TESTABLE_MECABRIDGE_SERIAL_PROTOCOL_H_
+#define MECABRIDGE__TESTABLE_MECABRIDGE_SERIAL_PROTOCOL_H_
 
 
+
+
+
+#include "mock_serial.h"
 
 #include <string>
 #include <vector>
 #include <memory>
-#include "mock_serial.h"
 
 namespace mecabridge_hardware
 {
@@ -69,4 +77,5 @@ private:
 
 }  // namespace mecabridge_hardware
 
-#endif  // MECABRIDGE_HARDWARE__MECABRIDGE__TESTABLE_MECABRIDGE_SERIAL_PROTOCOL__H_
+#endif  // MECABRIDGE_HARDWARE__MECABRIDGE__TESTABLE_MECABRIDGE_SERIAL_PROTOCOL_H_
+#endif  // MECABRIDGE__TESTABLE_MECABRIDGE_SERIAL_PROTOCOL_H_

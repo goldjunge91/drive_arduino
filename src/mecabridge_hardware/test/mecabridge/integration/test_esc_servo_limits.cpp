@@ -1,9 +1,15 @@
-#include <gtest/gtest.h>
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #include "mecabridge_utils/protocol/frame.hpp"
+
 #include <memory>
+
+#include <gtest/gtest.h>
 #include <cmath>
 
-using namespace mecabridge::protocol;
 
 /**
  * @brief Integration test for ESC and servo limit clamping

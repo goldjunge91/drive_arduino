@@ -1,3 +1,8 @@
+#
+# Copyright (c) 2024 MecaBridge Project
+# SPDX-License-Identifier: Apache-2.0
+#
+
 # Copyright 2020 ROS2-Control Development Team (2020)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,13 +18,10 @@
 # limitations under the License.
 
 import os
-
+import xacro
 from ament_index_python.packages import get_package_share_directory
-
 from launch import LaunchDescription
 from launch_ros.actions import Node
-
-import xacro
 
 
 def generate_launch_description():

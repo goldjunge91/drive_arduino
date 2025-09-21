@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 ﻿#include "mecabridge_hardware/mecabridge_hardware.hpp"
 
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
@@ -38,7 +43,7 @@ hardware_interface::CallbackReturn MecaBridgeHardware::on_init(
 
   // Initialize vectors based on joints from config and compile-time features
   size_t num_joints = 8;  // 4 wheels * 2 (velocity + position)
-
+  
 #if MECABRIDGE_ENABLE_SERVOS
   if (cfg_.features.enable_servos) {
     num_joints += 2;  // positional + continuous servo
@@ -76,7 +81,7 @@ std::vector<hardware_interface::StateInterface> MecaBridgeHardware::export_state
   }
 
   size_t offset = 8;  // After 4 wheels * 2 states each
-
+  
 #if MECABRIDGE_ENABLE_SERVOS
   if (cfg_.features.enable_servos) {
     si.emplace_back(
@@ -120,7 +125,7 @@ std::vector<hardware_interface::CommandInterface> MecaBridgeHardware::export_com
   }
 
   size_t offset = 4;
-
+  
 #if MECABRIDGE_ENABLE_SERVOS
   if (cfg_.features.enable_servos) {
     ci.emplace_back(
@@ -372,7 +377,7 @@ void MecaBridgeHardware::updateStateFromFrame(
 
   // Update servo and ESC states if enabled
   size_t offset = 4;
-
+  
 #if MECABRIDGE_ENABLE_SERVOS
   if (cfg_.features.enable_servos) {
     if (offset < hw_states_.size()) {
@@ -408,7 +413,7 @@ void MecaBridgeHardware::buildCommandFromState(
 
   // Set servo and ESC commands if enabled
   size_t offset = 4;
-
+  
 #if MECABRIDGE_ENABLE_SERVOS
   if (cfg_.features.enable_servos) {
     if (offset < hw_commands_.size()) {

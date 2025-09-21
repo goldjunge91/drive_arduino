@@ -1,13 +1,13 @@
-#include <gtest/gtest.h>
 #include <memory>
 #include <string>
+
+#include <gtest/gtest.h>
 #include <stdexcept>
 #include <rclcpp/rclcpp.hpp>
 #include <sstream>
 
 // Include the actual MecaBridgeSerialProtocol header for testing
 #include "mecabridge_hardware/mecabridge_serial_protocol.h"
-using namespace mecabridge_hardware;
 
 class MecaBridgeSerialProtocolSimpleTest : public ::testing::Test
 {

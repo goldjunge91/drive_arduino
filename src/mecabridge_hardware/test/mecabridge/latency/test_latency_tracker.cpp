@@ -1,11 +1,16 @@
-#include <gtest/gtest.h>
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #include "mecabridge_utils/latency/latency_tracker.hpp"
+
 #include <chrono>
 #include <thread>
 #include <memory>
 
-using namespace mecabridge::latency;
-using namespace std::chrono_literals;
+#include <gtest/gtest.h>
+
 
 class LatencyTrackerTest : public ::testing::Test
 {

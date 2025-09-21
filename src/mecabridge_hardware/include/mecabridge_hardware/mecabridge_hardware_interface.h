@@ -1,7 +1,10 @@
-#ifndef MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE_INTERFACE__H_
-#define MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE_INTERFACE__H_
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-
+#ifndef mecabridge_hardware_mecabridge_hardware_INTERFACE_H
+#define mecabridge_hardware_mecabridge_hardware_INTERFACE_H
 
 #include <memory>
 #include <string>
@@ -78,4 +81,4 @@ private:
 
 }  // namespace mecabridge_hardware
 
-#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE_INTERFACE__H_
+#endif  // mecabridge_hardware_mecabridge_hardware_INTERFACE_H

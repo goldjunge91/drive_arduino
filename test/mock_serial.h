@@ -1,8 +1,10 @@
-#ifndef MOCK_SERIAL_H
-#define MOCK_SERIAL_H
+#ifndef DRIVE_ARDUINO__MOCK_SERIAL_H_
+#define DRIVE_ARDUINO__MOCK_SERIAL_H_
+
+
+#include <string>
 
 #include <gmock/gmock.h>
-#include <string>
 #include <serial/serial.h>
 
 // Mock class for serial::Serial to enable unit testing without hardware
@@ -29,4 +31,4 @@ public:
   MOCK_METHOD(void, waitByteTimes, (size_t count));
 };
 
-#endif // MOCK_SERIAL_H
+#endif  // DRIVE_ARDUINO__MOCK_SERIAL_H_

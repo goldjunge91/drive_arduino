@@ -1,3 +1,7 @@
+#ifndef DRIVE_ARDUINO__FIRMWARE__MECABRIDGE_PICO__FRAME_PARSER_HPP_
+#define DRIVE_ARDUINO__FIRMWARE__MECABRIDGE_PICO__FRAME_PARSER_HPP_
+
+
 #pragma once
 
 #include <cstdint>
@@ -97,12 +101,12 @@ enum class ParseResult {
 class CRC16 {
 public:
     CRC16() : crc_(0xFFFF) {}
-    
+
     void reset() { crc_ = 0xFFFF; }
     void update(uint8_t byte);
     void update(const uint8_t* data, size_t len);
     uint16_t finalize() const { return crc_; }
-    
+
     // Static function for one-shot calculation
     static uint16_t calculate(const uint8_t* data, size_t len);
 
@@ -114,16 +118,16 @@ private:
 class FrameParser {
 public:
     FrameParser();
-    
+
     // Parse incoming bytes, returns result and updates frame if complete
     ParseResult parseByte(uint8_t byte, Frame& frame);
-    
+
     // Reset parser state
     void reset();
-    
+
     // Get current error state
     ErrorCode getLastError() const { return last_error_; }
-    
+
 private:
     ParseState state_;
     Frame current_frame_;
@@ -131,7 +135,7 @@ private:
     size_t expected_payload_len_;
     CRC16 crc_calculator_;
     ErrorCode last_error_;
-    
+
     bool isValidFrameId(uint8_t frame_id);
     bool isValidPayloadLength(uint8_t frame_id, uint8_t len);
 };
@@ -141,12 +145,13 @@ class FrameEncoder {
 public:
     // Encode command frame
     static size_t encodeCommand(const CommandFramePayload& payload, uint8_t* buffer, size_t buffer_size);
-    
+
     // Encode state frame
     static size_t encodeState(const StateFramePayload& payload, uint8_t* buffer, size_t buffer_size);
-    
+
 private:
     static size_t encodeFrame(FrameId frame_id, const void* payload, size_t payload_size, uint8_t* buffer, size_t buffer_size);
 };
 
 } // namespace mecabridge
+#endif  // DRIVE_ARDUINO__FIRMWARE__MECABRIDGE_PICO__FRAME_PARSER_HPP_

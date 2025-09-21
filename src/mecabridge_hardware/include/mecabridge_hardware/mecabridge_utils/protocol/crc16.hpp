@@ -1,5 +1,12 @@
-#ifndef MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__PROTOCOL__CRC16__HPP_
-#define MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__PROTOCOL__CRC16__HPP_
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#ifndef MECABRIDGE_UTILS__PROTOCOL__CRC16_HPP_
+#define MECABRIDGE_UTILS__PROTOCOL__CRC16_HPP_
+
+
 
 
 #pragma once
@@ -17,4 +24,5 @@ inline uint16_t crc16_ccitt_false(const uint8_t * data, size_t len)
 {
   return ::mecabridge::protocol::crc16_ccitt_false(data, len);
 }
-#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__PROTOCOL__CRC16__HPP_
+#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__PROTOCOL__CRC16_HPP_
+#endif  // MECABRIDGE_UTILS__PROTOCOL__CRC16_HPP_

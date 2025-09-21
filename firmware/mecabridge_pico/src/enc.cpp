@@ -1,6 +1,6 @@
+#include "enc.h"
 #include "pico/stdlib.h"
 #include "hardware/sync.h"
-#include "enc.h"
 #include "config.h"
 
 // enum

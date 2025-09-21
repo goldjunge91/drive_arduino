@@ -1,6 +1,6 @@
+#include "motors.h"
 #include "pico/stdlib.h"
 #include "hardware/pwm.h"
-#include "motors.h"
 #include "config.h"
 
 static uint slice_m[4], ch_m[4];

@@ -1,13 +1,19 @@
-#ifndef MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__LATENCY__LATENCY_TRACKER__HPP_
-#define MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__LATENCY__LATENCY_TRACKER__HPP_
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
+// Header guard
+#ifndef MECABRIDGE_UTILS__LATENCY__LATENCY_TRACKER_HPP_
+#define MECABRIDGE_UTILS__LATENCY__LATENCY_TRACKER_HPP_
 
 #pragma once
 
 #include <chrono>
 #include <vector>
-#include <cstdint>
 #include <algorithm>
+
+#include <cstdint>
 
 namespace mecabridge
 {
@@ -102,4 +108,5 @@ private:
 
 } // namespace latency
 } // namespace mecabridge
-#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__LATENCY__LATENCY_TRACKER__HPP_
+
+#endif  // MECABRIDGE_UTILS__LATENCY__LATENCY_TRACKER_HPP_

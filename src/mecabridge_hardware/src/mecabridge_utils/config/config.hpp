@@ -1,13 +1,21 @@
-#ifndef MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__CONFIG__HPP_
-#define MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__CONFIG__HPP_
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#ifndef MECABRIDGE_UTILS__CONFIG__CONFIG_HPP_
+#define MECABRIDGE_UTILS__CONFIG__CONFIG_HPP_
+
+
 
 
 ﻿#pragma once
 
-#include <cstdint>
 #include <string>
-#include <stdexcept>
 #include <array>
+
+#include <cstdint>
+#include <stdexcept>
 
 namespace mecabridge
 {
@@ -115,4 +123,5 @@ Config parse_from_yaml_file(const std::string & path);
 
 }   // namespace config
 } // namespace mecabridge
-#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__CONFIG__HPP_
+#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__CONFIG__CONFIG_HPP_
+#endif  // MECABRIDGE_UTILS__CONFIG__CONFIG_HPP_

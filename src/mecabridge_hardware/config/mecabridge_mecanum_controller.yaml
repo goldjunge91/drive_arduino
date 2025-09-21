@@ -26,8 +26,8 @@ mecanum_cont:
     publish_rate: 50.0
     odom_frame_id: odom
     base_frame_id: base_link
-    pose_covariance_diagonal : [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
-    twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
+    pose_covariance_diagonal: [ 0.001, 0.001, 0.001, 0.001, 0.001, 0.01 ]
+    twist_covariance_diagonal: [ 0.001, 0.001, 0.001, 0.001, 0.001, 0.01 ]
 
     open_loop: true
     enable_odom_tf: true

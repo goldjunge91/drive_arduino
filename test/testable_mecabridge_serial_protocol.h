@@ -1,10 +1,12 @@
-#ifndef TESTABLE_mecabridge_COMMS_H
-#define TESTABLE_mecabridge_COMMS_H
+#ifndef DRIVE_ARDUINO__TESTABLE_MECABRIDGE_SERIAL_PROTOCOL_H_
+#define DRIVE_ARDUINO__TESTABLE_MECABRIDGE_SERIAL_PROTOCOL_H_
+
+
+#include "mock_serial.h"
 
 #include <string>
 #include <vector>
 #include <memory>
-#include "mock_serial.h"
 
 namespace mecabridge_hardware
 {
@@ -67,4 +69,4 @@ private:
 
 }  // namespace mecabridge_hardware
 
-#endif  // TESTABLE_mecabridge_COMMS_H
+#endif  // DRIVE_ARDUINO__TESTABLE_MECABRIDGE_SERIAL_PROTOCOL_H_

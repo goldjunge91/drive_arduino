@@ -1,5 +1,11 @@
-#ifndef MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__FEATURE_CONFIG__HPP_
-#define MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__FEATURE_CONFIG__HPP_
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#ifndef MECABRIDGE_HARDWARE__FEATURE_CONFIG_HPP_
+#define MECABRIDGE_HARDWARE__FEATURE_CONFIG_HPP_
+
 
 
 #endif
@@ -43,4 +49,4 @@ constexpr int kTotalInterfaces = kWheelInterfaces + kServoInterfaces + kESCInter
 constexpr int kWheelStartIndex = 0;
 constexpr int kServoStartIndex = kWheelStartIndex + kWheelInterfaces;
 constexpr int kESCStartIndex = kServoStartIndex + kServoInterfaces;
-#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__FEATURE_CONFIG__HPP_
+#endif  // MECABRIDGE_HARDWARE__FEATURE_CONFIG_HPP_

@@ -23,7 +23,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-TARGET = ROOT / 'src' / 'mecabridge_hardware'
+DEFAULT_SCOPE = 'src'  # operate across entire src tree
+TARGET = ROOT / DEFAULT_SCOPE
 HEADER_EXTS = {'.h', '.hpp'}
 SOURCE_EXTS = {'.c', '.cc', '.cxx', '.cpp'}
 
@@ -50,31 +51,40 @@ EXPLICIT_INCLUDES = {
 def desired_guard(path: Path) -> str:
     """Compute header guard approximating cpplint suggestions.
 
-    Rules distilled from cpplint output examples:
-      * Drop leading 'src'.
-      * Use the LAST occurrence of one of root tokens: mecabridge_utils, mecabridge_hardware, mecabridge.
-      * Start guard from that token onward.
-      * Skip directory markers: include, src, test.
-      * Collapse consecutive duplicate tokens (e.g., mecabridge_hardware/mecabridge_hardware).
-      * Separate path components with double underscore and append trailing underscore.
+    Empirically derived rules from current cpplint diagnostics:
+      * Strip leading 'src/' component (repo build root noise).
+      * Choose the LAST occurrence of a root token (so nested mecabridge_utils wins over outer mecabridge_hardware).
+      * Root tokens (ordered by preference when multiple exist): mecabridge_utils, mecabridge_hardware, mecabridge.
+      * Skip structural directories: include, src, test.
+      * Preserve remaining directory names (deduplicate consecutive duplicates).
+      * File component becomes STEM_EXT (e.g. config.hpp -> CONFIG_HPP) to match cpplint style.
+      * Join components with double underscores and append trailing underscore.
     """
     rel_parts = list(path.relative_to(ROOT).parts)
-    # Drop leading 'src'
     if rel_parts and rel_parts[0] == 'src':
         rel_parts = rel_parts[1:]
-    # Identify root token (prefer specific ordering)
-    priority = ['mecabridge_hardware', 'mecabridge_utils', 'mecabridge']
+    if not rel_parts:
+        return ''
+    root_tokens = ['mecabridge_utils', 'mecabridge_hardware', 'mecabridge']
+    # Find last matching root token (prefer earlier in root_tokens ordering if multiple at same index?)
     root_index = 0
+    last_match = -1
+    preferred_token = None
     for i, part in enumerate(rel_parts):
-        if part in priority:
-            root_index = i
-            break
+        if part in root_tokens:
+            # weight by index priority (lower index in root_tokens => higher priority)
+            priority_rank = root_tokens.index(part)
+            # Accept later occurrences OR higher priority at same position
+            if i >= last_match or preferred_token is None or priority_rank < root_tokens.index(preferred_token):
+                last_match = i
+                root_index = i
+                preferred_token = part
     after = rel_parts[root_index:]
-    # Filter out common structural dirs
     structural = {'include', 'src', 'test'}
-    raw_tokens = [t for t in after[:-1] if t not in structural]
     path_tokens: list[str] = []
-    for t in raw_tokens:
+    for t in after[:-1]:
+        if t in structural:
+            continue
         if not path_tokens or path_tokens[-1] != t:
             path_tokens.append(t)
     filename = after[-1]
@@ -83,17 +93,13 @@ def desired_guard(path: Path) -> str:
         file_token = f"{stem}_{ext}".upper()
     else:
         file_token = filename.upper()
-    # Compose: ROOT + subdirs + FILE_TOKEN
-    root_token = after[0]
-    components = [root_token] + path_tokens + [file_token]
-    # Collapse duplicates
+    components = path_tokens + [file_token]
     collapsed: list[str] = []
-    for c in components:
-        up = c.upper()
+    for comp in components:
+        up = comp.upper()
         if not collapsed or collapsed[-1].upper() != up:
-            collapsed.append(c)
-    guard = '__'.join(c.upper().replace('.', '_') for c in collapsed) + '_'
-    return guard
+            collapsed.append(comp)
+    return '__'.join(c.upper().replace('.', '_') for c in collapsed) + '_'
 
 
 def process_header_guard(lines: list[str], path: Path) -> list[str]:
@@ -204,6 +210,65 @@ def insert_includes(lines: list[str], rel: str) -> list[str]:
     return lines[:insertion_index] + [snippet] + lines[insertion_index:]
 
 
+def reorder_includes(lines: list[str]) -> list[str]:
+    """Reorder contiguous include block to: project, C system, C++ system, other.
+
+    Project includes are quoted or starting with mecabridge_. C system heuristically: <stdio.h>, <stdint.h>, etc.
+    C++ system: <vector>, <string>, <memory>, <algorithm>, etc.
+    Other: remaining angle-bracket includes.
+    """
+    include_block_start = None
+    include_block_end = None
+    for i, l in enumerate(lines[:100]):
+        if l.startswith('#include'):
+            if include_block_start is None:
+                include_block_start = i
+            include_block_end = i
+        elif include_block_start is not None:
+            break
+    if include_block_start is None or include_block_end is None:
+        return lines
+    block = lines[include_block_start:include_block_end+1]
+    project = []
+    c_system = []
+    cpp_system = []
+    other = []
+    c_pattern = re.compile(r'<(assert.h|ctype.h|errno.h|inttypes.h|limits.h|math.h|signal.h|stdarg.h|stdbool.h|stddef.h|stdint.h|stdio.h|stdlib.h|string.h|time.h)>')
+    cpp_pattern = re.compile(r'<(algorithm|array|chrono|deque|functional|future|initializer_list|iostream|iterator|map|memory|mutex|optional|set|string|thread|tuple|type_traits|unordered_map|unordered_set|utility|vector)>')
+    for raw in block:
+        line = raw.rstrip('\n')
+        if not line.startswith('#include'):
+            continue
+        if '"' in line:
+            project.append(line)
+        elif c_pattern.search(line):
+            c_system.append(line)
+        elif cpp_pattern.search(line):
+            cpp_system.append(line)
+        else:
+            # treat <mecabridge_...> as project if ever used in angle form
+            if '<mecabridge_' in line:
+                project.append(line)
+            else:
+                other.append(line)
+    # If no diversity, skip
+    classified_total = len(project)+len(c_system)+len(cpp_system)+len(other)
+    if classified_total < 2:
+        return lines
+    # Preserve relative ordering within each group (already in encounter order)
+    new_block = []
+    for group in (project, c_system, cpp_system, other):
+        if not group:
+            continue
+        new_block.extend(group)
+        new_block.append('')  # blank line separator
+    if new_block and new_block[-1] == '':
+        new_block.pop()
+    # Replace
+    new_block_lines = [b+'\n' for b in new_block]
+    return lines[:include_block_start] + new_block_lines + lines[include_block_end+1:]
+
+
 def remove_duplicate_self_include(lines: list[str], path: Path) -> list[str]:
     # If a line includes its own header twice, remove duplicates
     filename = path.name
@@ -227,10 +292,110 @@ def strip_trailing_ws_and_ensure_newline(text: str) -> str:
     return '\n'.join(lines) + '\n'
 
 
+def remove_using_namespace(lines: list[str]) -> list[str]:
+    """Remove blanket 'using namespace X;' lines. Keep explicit 'using std::foo;' untouched.
+
+    This is conservative: remove only lines that match exactly 'using namespace <word>;' optionally
+    prefixed/suffixed by whitespace.
+    """
+    new = []
+    for l in lines:
+        if re.match(r'\s*using\s+namespace\s+[A-Za-z0-9_:]+\s*;\s*$', l):
+            # drop blanket using namespace lines
+            continue
+        new.append(l)
+    return new
+
+
+def strip_namespace_indentation(lines: list[str], ns: str) -> list[str]:
+    """If a namespace block 'namespace <ns> {' exists, remove one level of indentation
+    for lines between the opening and matching closing brace. This normalizes style where
+    files were indented inside namespace.
+    """
+    out = []
+    in_ns = False
+    brace_depth = 0
+    for l in lines:
+        stripped = l.lstrip('\t ')
+        if not in_ns:
+            out.append(l)
+            if re.match(rf'\s*namespace\s+{re.escape(ns)}\s*{{', l):
+                in_ns = True
+                # count braces starting on this line
+                brace_depth = l.count('{') - l.count('}')
+        else:
+            brace_depth += l.count('{') - l.count('}')
+            if brace_depth <= 0:
+                # end of namespace block
+                out.append(l)
+                in_ns = False
+                continue
+            # remove a single level of leading indentation (tab or 2-4 spaces)
+            if l.startswith('\t'):
+                out.append(l[1:])
+            elif l.startswith('    '):
+                out.append(l[4:])
+            elif l.startswith('  '):
+                out.append(l[2:])
+            else:
+                out.append(l)
+    return out
+
+
+def ensure_self_header_first(lines: list[str], path: Path) -> list[str]:
+    """Ensure that if a matching header exists (same stem, .h/.hpp), it is the first include.
+
+    If the header is missing, do nothing. If present but not first (after guard), move it to the
+    top of the include block.
+    """
+    stem = path.stem
+    dirp = path.parent
+    candidates = [dirp / f"{stem}.hpp", dirp / f"{stem}.h"]
+    header_name = None
+    for c in candidates:
+        if c.exists():
+            header_name = c.name
+            break
+    if not header_name:
+        return lines
+    # find include block
+    include_block_start = None
+    include_block_end = None
+    for i, l in enumerate(lines[:120]):
+        if l.startswith('#include'):
+            if include_block_start is None:
+                include_block_start = i
+            include_block_end = i
+        elif include_block_start is not None:
+            break
+    if include_block_start is None:
+        return lines
+    if include_block_end is None:
+        include_block_end = include_block_start
+    block = lines[include_block_start:include_block_end+1]
+    # find self include if present
+    self_include_idx = None
+    for i, l in enumerate(block):
+        if f'"{header_name}"' in l or f'<{header_name}>' in l:
+            self_include_idx = i
+            break
+    if self_include_idx is None:
+        # not present -> insert at top of include block
+        return lines[:include_block_start] + [f'#include "{header_name}"\n'] + lines[include_block_start:]
+    if self_include_idx == 0:
+        return lines
+    # move it to first position
+    new_block = [block[self_include_idx]] + block[:self_include_idx] + block[self_include_idx+1:]
+    return lines[:include_block_start] + new_block + lines[include_block_end+1:]
+
+
 def transform_file(path: Path):
     rel = path.relative_to(ROOT).as_posix()
     original = path.read_text(encoding='utf-8', errors='ignore')
     new_text = original
+    # Normalize CRLF -> LF to avoid cpplint \r complaints
+    if '\r\n' in new_text:
+        new_text = new_text.replace('\r\n', '\n')
     # Step 1 strip trailing whitespace + ensure final newline early
     new_text = strip_trailing_ws_and_ensure_newline(new_text)
     lines = new_text.splitlines(keepends=True)
@@ -239,9 +404,17 @@ def transform_file(path: Path):
         lines = process_header_guard(lines, path)
     # Remove duplicate self-include (particular issue in watchdog.hpp)
     lines = remove_duplicate_self_include(lines, path)
+    # Remove blanket using namespace directives (they trigger readability/namespace issues)
+    lines = remove_using_namespace(lines)
+    # Strip namespace indentation for mecabridge_hardware to match project style
+    lines = strip_namespace_indentation(lines, 'mecabridge_hardware')
     # Insert missing includes heuristically
     if path.suffix in HEADER_EXTS or path.suffix in SOURCE_EXTS:
         lines = insert_includes(lines, rel)
+        lines = reorder_includes(lines)
+        # Ensure source files include their matching header first
+        if path.suffix in SOURCE_EXTS:
+            lines = ensure_self_header_first(lines, path)
 
     final_text = ''.join(lines)
     if final_text != original:
@@ -251,17 +424,32 @@ def transform_file(path: Path):
 
 
 def main():
-    changed = 0
-    examined = 0
-    for p in TARGET.rglob('*'):
-        if not p.is_file():
+    import argparse
+    parser = argparse.ArgumentParser(description='Normalize headers/guards/includes across source tree.')
+    parser.add_argument('--scope', action='append', default=[DEFAULT_SCOPE],
+                        help='Path relative to repo root. Can be repeated. Default: src')
+    args = parser.parse_args()
+    total_changed = 0
+    total_examined = 0
+    for scope in args.scope:
+        scope_path = (ROOT / scope).resolve()
+        if not scope_path.exists():
+            print(f"[WARN] Scope path does not exist, skipping: {scope_path}", file=sys.stderr)
             continue
-        if p.suffix not in HEADER_EXTS | SOURCE_EXTS:
-            continue
-        examined += 1
-        if transform_file(p):
-            changed += 1
-    print(f"Processed {examined} files. Modified {changed}.")
+        changed = 0
+        examined = 0
+        for p in scope_path.rglob('*'):
+            if not p.is_file():
+                continue
+            if p.suffix not in (HEADER_EXTS | SOURCE_EXTS):
+                continue
+            examined += 1
+            if transform_file(p):
+                changed += 1
+        total_changed += changed
+        total_examined += examined
+        print(f"Scope {scope}: processed {examined} files. Modified {changed}.")
+    print(f"TOTAL: processed {total_examined} files. Modified {total_changed}.")
 
 if __name__ == '__main__':
     main()

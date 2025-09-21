@@ -1,8 +1,14 @@
-#include <gtest/gtest.h>
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #include "mecabridge_hardware/mecabridge_utils/safety/watchdog.hpp"
+
 #include <thread>
 
-using namespace mecabridge::safety;
+#include <gtest/gtest.h>
+
 
 TEST(WatchdogTest, TripsAfterTimeout) {
   // Use a shorter timeout for testing purposes

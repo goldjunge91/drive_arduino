@@ -1,7 +1,13 @@
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #include <memory>
 #include <string>
+
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include <stdexcept>
 #include <rclcpp/rclcpp.hpp>
 #include <sstream>
@@ -12,7 +18,6 @@
 #include "mecabridge_hardware/mecabridge_serial_protocol.h"
 #include "mock_serial.h"
 
-using namespace mecabridge_hardware;
 using ::testing::_;
 using ::testing::Return;
 using ::testing::Throw;

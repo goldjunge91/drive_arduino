@@ -10,25 +10,23 @@ Requirements tested:
 - 4.4: Parameter loading from YAML files
 """
 
-import os
-import sys
-import unittest
-import tempfile
-import yaml
-from pathlib import Path
-
 import launch
 import launch_ros
+import os
+import rclpy
+import sys
+import tempfile
+import threading
+import time
+import unittest
+import yaml
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-
-import rclpy
+from pathlib import Path
 from rclpy.node import Node as RclpyNode
-import threading
-import time
 
 
 class LaunchFunctionalityTest(unittest.TestCase):
@@ -45,22 +43,22 @@ class LaunchFunctionalityTest(unittest.TestCase):
         """Test that all expected launch files exist"""
         expected_launch_files = [
             "mecabridge_hardware.launch.py",
-            "mecabridge_differential.launch.py", 
+            "mecabridge_differential.launch.py",
             "mecabridge_mecanum.launch.py",
             "mecabridge_four_wheel.launch.py"
         ]
 
         for launch_file in expected_launch_files:
             launch_path = self.launch_dir / launch_file
-            self.assertTrue(launch_path.exists(), 
-                          f"Launch file {launch_file} does not exist at {launch_path}")
+            self.assertTrue(launch_path.exists(),
+                            f"Launch file {launch_file} does not exist at {launch_path}")
 
     def test_controller_config_files_exist(self):
         """Test that all expected controller configuration files exist"""
         expected_config_files = [
             "mecabridge_differential_controller.yaml",
             "mecabridge_differential_enhanced.yaml",
-            "mecabridge_mecanum_controller.yaml", 
+            "mecabridge_mecanum_controller.yaml",
             "mecabridge_mecanum_enhanced.yaml",
             "mecabridge_four_wheel_controller.yaml",
             "mecabridge_hardware_params.yaml"
@@ -69,14 +67,14 @@ class LaunchFunctionalityTest(unittest.TestCase):
         for config_file in expected_config_files:
             config_path = self.controllers_dir / config_file
             self.assertTrue(config_path.exists(),
-                          f"Controller config file {config_file} does not exist at {config_path}")
+                            f"Controller config file {config_file} does not exist at {config_path}")
 
     def test_launch_file_syntax(self):
         """Test that launch files have valid Python syntax"""
         launch_files = [
             "mecabridge_hardware.launch.py",
             "mecabridge_differential.launch.py",
-            "mecabridge_mecanum.launch.py", 
+            "mecabridge_mecanum.launch.py",
             "mecabridge_four_wheel.launch.py"
         ]
 
@@ -96,7 +94,7 @@ class LaunchFunctionalityTest(unittest.TestCase):
         """Test that YAML configuration files have valid syntax"""
         yaml_files = [
             "mecabridge_differential_controller.yaml",
-            "mecabridge_differential_enhanced.yaml", 
+            "mecabridge_differential_enhanced.yaml",
             "mecabridge_mecanum_controller.yaml",
             "mecabridge_mecanum_enhanced.yaml",
             "mecabridge_four_wheel_controller.yaml",
@@ -126,16 +124,16 @@ class LaunchFunctionalityTest(unittest.TestCase):
         # Test controller manager configuration
         self.assertIn('controller_manager', config)
         cm_config = config['controller_manager']
-        
+
         # Test that ros2_control_node parameters exist
         self.assertIn('ros2_control_node', cm_config)
-        
+
         # Test diff_drive_controller configuration
         if 'diff_cont' in config:
             diff_config = config['diff_cont']
             self.assertIn('ros__parameters', diff_config)
             params = diff_config['ros__parameters']
-            
+
             # Test required parameters for diff_drive_controller
             expected_params = ['left_wheel_names', 'right_wheel_names', 'wheel_separation', 'wheel_radius']
             for param in expected_params:
@@ -152,13 +150,13 @@ class LaunchFunctionalityTest(unittest.TestCase):
 
         # Test controller manager configuration
         self.assertIn('controller_manager', config)
-        
+
         # Test mecanum controller configuration if present
         if 'mecanum_cont' in config:
             mecanum_config = config['mecanum_cont']
             self.assertIn('ros__parameters', mecanum_config)
             params = mecanum_config['ros__parameters']
-            
+
             # Test required parameters for mecanum controller
             expected_params = ['wheel_names', 'wheel_separation_x', 'wheel_separation_y', 'wheel_radius']
             for param in expected_params:
@@ -179,7 +177,7 @@ class LaunchFunctionalityTest(unittest.TestCase):
             hw_config = config['hardware_interface']
             self.assertIn('ros__parameters', hw_config)
             params = hw_config['ros__parameters']
-            
+
             # Test expected hardware parameters
             expected_params = ['device', 'baud_rate', 'timeout', 'loop_rate']
             for param in expected_params:
@@ -204,16 +202,16 @@ class LaunchFunctionalityTest(unittest.TestCase):
                 spec = importlib.util.spec_from_file_location("test_launch", launch_path)
                 module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(module)
-                
+
                 # Test that generate_launch_description function exists
                 self.assertTrue(hasattr(module, 'generate_launch_description'),
-                              f"Launch file {launch_file} missing generate_launch_description function")
-                
+                                f"Launch file {launch_file} missing generate_launch_description function")
+
                 # Test that function returns LaunchDescription
                 launch_desc = module.generate_launch_description()
                 self.assertIsInstance(launch_desc, LaunchDescription,
-                                    f"generate_launch_description in {launch_file} should return LaunchDescription")
-                
+                                      f"generate_launch_description in {launch_file} should return LaunchDescription")
+
             except Exception as e:
                 self.fail(f"Error importing launch file {launch_file}: {e}")
 
@@ -228,20 +226,20 @@ class LaunchFunctionalityTest(unittest.TestCase):
             spec = importlib.util.spec_from_file_location("test_launch", launch_path)
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
-            
+
             launch_desc = module.generate_launch_description()
-            
+
             # Extract declared arguments
             declared_args = []
             for entity in launch_desc.entities:
                 if isinstance(entity, DeclareLaunchArgument):
                     declared_args.append(entity.name)
-            
+
             # Test expected arguments
             expected_args = ['drive_type', 'use_mock_hardware', 'device', 'baud_rate', 'has_encoders']
             for arg in expected_args:
                 self.assertIn(arg, declared_args, f"Missing launch argument: {arg}")
-                
+
         except Exception as e:
             self.fail(f"Error testing launch arguments: {e}")
 
@@ -255,12 +253,12 @@ class LaunchFunctionalityTest(unittest.TestCase):
             content = f.read()
 
         # Test that LaunchConfiguration is used for parameter substitution
-        self.assertIn('LaunchConfiguration', content, 
-                     "Launch file should use LaunchConfiguration for parameter substitution")
-        
+        self.assertIn('LaunchConfiguration', content,
+                      "Launch file should use LaunchConfiguration for parameter substitution")
+
         # Test that parameters are passed to nodes
         self.assertIn('parameters=', content,
-                     "Launch file should pass parameters to nodes")
+                      "Launch file should pass parameters to nodes")
 
     def test_node_configuration(self):
         """Test that launch files configure nodes correctly"""
@@ -273,9 +271,9 @@ class LaunchFunctionalityTest(unittest.TestCase):
             spec = importlib.util.spec_from_file_location("test_launch", launch_path)
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
-            
+
             launch_desc = module.generate_launch_description()
-            
+
             # Find nodes in launch description
             nodes = []
             for entity in launch_desc.entities:
@@ -289,10 +287,10 @@ class LaunchFunctionalityTest(unittest.TestCase):
             # Test that expected nodes are present
             node_packages = [node.package for node in nodes]
             expected_packages = ['controller_manager', 'robot_state_publisher']
-            
+
             for expected_pkg in expected_packages:
                 self.assertIn(expected_pkg, node_packages,
-                            f"Expected node package {expected_pkg} not found in launch file")
+                              f"Expected node package {expected_pkg} not found in launch file")
 
         except Exception as e:
             self.fail(f"Error testing node configuration: {e}")
@@ -308,7 +306,7 @@ class MockControllerManagerTest(unittest.TestCase):
         self.node = rclpy.create_node('test_controller_manager')
         self.executor = rclpy.executors.SingleThreadedExecutor()
         self.executor.add_node(self.node)
-        
+
         # Start executor in separate thread
         self.executor_thread = threading.Thread(target=self.executor.spin)
         self.executor_thread.daemon = True
@@ -326,7 +324,7 @@ class MockControllerManagerTest(unittest.TestCase):
         # This test verifies the expected service names that controller_manager provides
         expected_services = [
             '/controller_manager/list_controllers',
-            '/controller_manager/load_controller', 
+            '/controller_manager/load_controller',
             '/controller_manager/configure_controller',
             '/controller_manager/switch_controller'
         ]
@@ -336,23 +334,23 @@ class MockControllerManagerTest(unittest.TestCase):
         for service_name in expected_services:
             # Test that service name is valid
             self.assertTrue(service_name.startswith('/controller_manager/'),
-                          f"Service name {service_name} should start with /controller_manager/")
+                            f"Service name {service_name} should start with /controller_manager/")
 
     def test_diff_drive_controller_compatibility(self):
         """Test compatibility with diff_drive_controller interface requirements"""
         # Test that our hardware interface provides the interfaces that diff_drive_controller expects
-        
+
         # diff_drive_controller expects these command interfaces:
         expected_command_interfaces = [
             'left_wheel_joint/velocity',
             'right_wheel_joint/velocity'
         ]
-        
+
         # diff_drive_controller expects these state interfaces:
         expected_state_interfaces = [
             'left_wheel_joint/position',
             'left_wheel_joint/velocity',
-            'right_wheel_joint/position', 
+            'right_wheel_joint/position',
             'right_wheel_joint/velocity'
         ]
 
@@ -362,8 +360,8 @@ class MockControllerManagerTest(unittest.TestCase):
             self.assertEqual(len(parts), 2, f"Interface {interface} should have format 'joint/type'")
             joint_name, interface_type = parts
             self.assertTrue(joint_name.endswith('_joint'), f"Joint name {joint_name} should end with '_joint'")
-            self.assertIn(interface_type, ['position', 'velocity'], 
-                         f"Interface type {interface_type} should be 'position' or 'velocity'")
+            self.assertIn(interface_type, ['position', 'velocity'],
+                          f"Interface type {interface_type} should be 'position' or 'velocity'")
 
     def test_topic_compatibility(self):
         """Test that expected topics would be published/subscribed"""

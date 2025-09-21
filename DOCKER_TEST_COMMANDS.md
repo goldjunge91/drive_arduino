@@ -16,7 +16,7 @@ This Docker setup provides a complete ROS 2 Humble development environment prelo
 docker-compose up --build -d
 
 # Enter the running container
-docker-compose exec ros2-dev bash
+docker-compose exec ros2_drive_dev bash
 
 # Stop the container when finished
 docker-compose down
@@ -79,7 +79,7 @@ When an optional package is unavailable on your ROS mirror, the build logs a war
 
 - `Dockerfile` ? installs dependencies and copies the repository into `/ros2_ws/src/drive_arduino`
 - `Dockerfile.basic` ? slimmer variant with only the essentials
-- `docker-compose.yml` ? defines the `ros2-dev` service and bind-mounts the host repo
+- `docker-compose.yml` ? defines the `ros2_drive_dev` service and bind-mounts the host repo
 - `.dockerignore` ? keeps build artifacts, VCS data, and generated files out of the build context
 - Named volumes `ros2_build_cache`, `ros2_install_cache`, `ros2_log_cache` store build outputs
 
@@ -107,80 +107,70 @@ docker system prune -f
 docker-compose up --build
 ```
 
-# Docker Test Commands for MecaBridgeSerialProtocol Unit Tests
+# Docker Test Commands for the Workspace
 
-Since you're running in a Docker container, here are the commands to build and test the MecaBridgeSerialProtocol unit tests:
+Use these recipes to build the workspace and run the mecabridge hardware test suites via Docker. Run them from the repository root unless noted.
 
-## Method 1: Direct Docker Commands
+## One-Shot Test Run (from the host)
+
+Run the full build, test, and report flow in a disposable container:
 
 ```bash
-# Start your Docker container
-docker-compose run --rm robot bash
-
-# Inside the container, run these commands:
-colcon build --packages-select drive_arduino --cmake-args -DBUILD_TESTING=ON
-colcon test --packages-select drive_arduino
-colcon test-result --all --verbose
+docker-compose run --rm ros2_drive_dev bash -lc '
+  set -euo pipefail
+  source /opt/ros/humble/setup.bash
+  cd /ros2_ws
+  colcon build --symlink-install
+  colcon test --packages-select drive_arduino mecabridge_hardware
+  colcon test-result --all --verbose
+'
 ```
 
-## Method 2: Using the Docker Test Script
+## Split Steps for Iteration (from the host)
 
-From your host machine (outside Docker):
+When you want to re-run portions of the pipeline without repeating the whole script:
+
 ```bash
-./test_mecabridge_comms_docker.sh
+# Build + test in one container session
+docker-compose run --rm ros2_drive_dev bash -lc '
+  source /opt/ros/humble/setup.bash
+  cd /ros2_ws
+  colcon build --symlink-install
+  colcon test --packages-select drive_arduino mecabridge_hardware
+'
+
+# Re-run result aggregation after tests have completed
+docker-compose run --rm ros2_drive_dev bash -lc '
+  source /opt/ros/humble/setup.bash
+  cd /ros2_ws
+  colcon test-result --all --verbose
+'
 ```
 
-## Method 3: Manual Commands in Running Container
+## Reusing a Running Container
 
-If you already have a running container:
+If you already have `ros2_drive_dev` running (for example via `docker-compose up -d` or `./scripts/dev.sh`):
+
 ```bash
-# Enter the container
-docker exec -it <container_name> bash
+# Attach to the container
+docker exec -it ros2_drive_dev bash
 
-# Run the tests
-cd /ros2_ws
-colcon build --packages-select drive_arduino --cmake-args -DBUILD_TESTING=ON
-colcon test --packages-select drive_arduino
-colcon test-result --all --verbose
-```
-
-## Expected Test Results
-
-The tests are designed to run without hardware and should show:
-- Connection tests that properly handle missing hardware
-- Motor command tests that validate input parameters
-- Encoder reading tests that handle disconnected state
-- Error handling tests that verify proper exception handling
-
-## Troubleshooting
-
-If you get ROS environment errors:
-```bash
-# Try sourcing ROS setup manually
+# Inside the container
 source /opt/ros/humble/setup.bash
-# or
-source /ros_entrypoint.sh
+cd /ros2_ws
+colcon build --symlink-install
+colcon test --packages-select drive_arduino mecabridge_hardware
+colcon test-result --all --verbose
 ```
 
-If colcon is not found:
+## Supporting Test Scripts
+
+Automation wrappers live under `test/` for CI-style runs:
+
 ```bash
-# Install colcon in the container
-apt-get update
-apt-get install -y python3-colcon-common-extensions
+./test/run_tests.sh                      # Legacy aggregate harness (sources ROS)
+./test_mecabridge_comms_docker.sh        # Communication stack tests
+./test_mecabridge_integration_docker.sh  # Integration smoke tests
 ```
 
-## Test Files Location
-
-The test files are located at:
-- `/ros2_ws/src/drive_arduino/test/test_mecabridge_comms_simple.cpp`
-- `/ros2_ws/src/drive_arduino/test/test_mecabridge_comms_comprehensive.cpp`
-- `/ros2_ws/src/drive_arduino/test/README.md` (detailed documentation)
-
-## Build Output Location
-
-After building, test executables will be in:
-- `/ros2_ws/build/drive_arduino/`
-
-Test results will be in:
-- `/ros2_ws/build/drive_arduino/Testing/`
-
+Each script handles its own environment setup; check the script header for additional flags or hardware prerequisites.

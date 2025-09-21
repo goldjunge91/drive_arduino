@@ -1,3 +1,8 @@
+#
+# Copyright (c) 2024 MecaBridge Project
+# SPDX-License-Identifier: Apache-2.0
+#
+
 #!/usr/bin/env python3
 
 """
@@ -11,17 +16,18 @@ This launch file:
 """
 
 import os
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, OpaqueFunction, IncludeLaunchDescription
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-from ament_index_python.packages import get_package_share_directory
+
 
 def launch_setup(context, *args, **kwargs):
     # Get package directory
     pkg_share = get_package_share_directory('mecabridge_hardware')
-    
+
     # Robot description
     urdf_file = os.path.join(pkg_share, 'test', 'urdf', 'test_robot.urdf')
     with open(urdf_file, 'r') as f:
@@ -29,7 +35,7 @@ def launch_setup(context, *args, **kwargs):
 
     # Hardware config
     hardware_config = os.path.join(pkg_share, 'test', 'config', 'test_mecabridge_hardware.yaml')
-    
+
     # Controller config  
     controller_config = os.path.join(pkg_share, 'test', 'config', 'test_controllers.yaml')
 
@@ -102,6 +108,7 @@ def launch_setup(context, *args, **kwargs):
 
     return nodes
 
+
 def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument(
@@ -109,6 +116,6 @@ def generate_launch_description():
             default_value='false',
             description='Use simulation time'
         ),
-        
+
         OpaqueFunction(function=launch_setup)
     ])

@@ -1,13 +1,19 @@
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#include <chrono>
+#include <vector>
+#include <memory>
+#include <set>
+
 #include <rclcpp/rclcpp.hpp>
 #include <geometry_msgs/msg/twist.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
 #include <std_msgs/msg/float64.hpp>
 #include <std_msgs/msg/float64_multi_array.hpp>
-#include <chrono>
-#include <vector>
-#include <memory>
 
-using namespace std::chrono_literals;
 
 /**
  * @brief Integration test node for MecaBridge hardware interface
@@ -51,6 +57,7 @@ public:
       std::bind(&IntegrationTestNode::jointStatesCallback, this, std::placeholders::_1));
 
     // Test timer
+    using namespace std::chrono_literals; // enable 100ms literal
     test_timer_ =
       create_wall_timer(100ms, std::bind(&IntegrationTestNode::testTimerCallback, this));
 

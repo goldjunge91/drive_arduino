@@ -1,5 +1,11 @@
-#ifndef MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__HPP_
-#define MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__HPP_
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#ifndef MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE_HPP_
+#define MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE_HPP_
+
 
 
 #pragma once
@@ -87,4 +93,4 @@ private:
 };
 
 } // namespace mecabridge_hardware
-#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__HPP_
+#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE_HPP_

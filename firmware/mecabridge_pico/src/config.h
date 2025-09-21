@@ -1,10 +1,7 @@
-/*
- *  ROBOT_core – UNO open-loop (no encoders), 2x TB6612, 4 motors
- *  GPLv3 – derived work
- */
+#ifndef DRIVE_ARDUINO__FIRMWARE__MECABRIDGE_PICO__CONFIG_H_
+#define DRIVE_ARDUINO__FIRMWARE__MECABRIDGE_PICO__CONFIG_H_
 
-#ifndef CONFIG_H_
-#define CONFIG_H_
+
 
 // ===== Laufzeit-Defaults =====
 #define PWM_MAX            255   // UNO PWM 8-bit
@@ -65,4 +62,4 @@
 #define GEAR_PIN   16
 
 
-#endif // CONFIG_H_
+#endif  // DRIVE_ARDUINO__FIRMWARE__MECABRIDGE_PICO__CONFIG_H_

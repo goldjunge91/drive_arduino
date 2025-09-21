@@ -1,6 +1,13 @@
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #include "latency_tracker.hpp"
-#include <numeric>
+
 #include <algorithm>
+
+#include <numeric>
 
 namespace mecabridge
 {

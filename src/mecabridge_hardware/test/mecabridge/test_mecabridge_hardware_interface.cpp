@@ -1,7 +1,13 @@
-#include <gtest/gtest.h>
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #include <memory>
 #include <string>
 #include <vector>
+
+#include <gtest/gtest.h>
 
 #include "hardware_interface/hardware_info.hpp"
 #include "hardware_interface/types/hardware_interface_return_values.hpp"
@@ -11,7 +17,6 @@
 #include "mecabridge_hardware/mecabridge_hardware_interface.h"
 #include "mecabridge_hardware/mecabridge_drive_config.h"
 
-using namespace mecabridge_hardware;
 
 class MecaBridgeHardwareInterfaceTest : public ::testing::Test
 {

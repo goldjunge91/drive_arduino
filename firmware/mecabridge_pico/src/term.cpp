@@ -1,12 +1,13 @@
 // term.cpp
+#include "term.h"
 #include "pico/stdlib.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include "motors.h"
 #include "esc_servo.h"
 #include "enc.h"
-#include "term.h"
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 #define MAX_CMD_LEN 128
 #define MAX_ARGS 5

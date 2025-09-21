@@ -1,5 +1,11 @@
-#ifndef MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__WHEEL__H_
-#define MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__WHEEL__H_
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#ifndef MECABRIDGE_HARDWARE__WHEEL_H_
+#define MECABRIDGE_HARDWARE__WHEEL_H_
+
 
 
 
@@ -31,4 +37,4 @@ public:
 
 }  // namespace mecabridge_hardware
 
-#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__WHEEL__H_
+#endif  // MECABRIDGE_HARDWARE__WHEEL_H_

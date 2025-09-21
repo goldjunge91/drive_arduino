@@ -1,6 +1,12 @@
-#include <gtest/gtest.h>
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #include "mecabridge_hardware/mecabridge_hardware.hpp"
 #include "mecabridge_hardware/feature_config.hpp"
+
+#include <gtest/gtest.h>
 
 namespace mecabridge_hardware
 {

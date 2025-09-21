@@ -15,9 +15,11 @@
 - Execute unit and lint suites via `colcon test --packages-select mecabridge_hardware` followed by `colcon test-result --all --verbose`.
 - Legacy mecabridge coverage still runs through `./test/run_tests.sh`, which sources ROS and prints verbose GTest summaries.
 
+
 ## Coding Style & Naming Conventions
 
 - C++ targets C++17 with `-Wall -Wextra -Wpedantic`; prefer `PascalCase` for types, `snake_case` for functions and members with trailing underscores for storage fields.
+
 - Keep protocol helpers exception-safe and align with patterns in `mecabridge_utils`; add comments only where control flow is non-obvious.
 - Python utilities under `robot/` follow PEP 8 (4-space indents, explicit cleanup); annotate new GPIO-facing APIs with docstrings and type hints.
 - Run `colcon test --packages-select mecabridge_hardware --ctest-args -R lint` before submitting to satisfy `ament_lint_auto` format checks.

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #include "watchdog.hpp"
 #include "mecabridge_utils/protocol/frame.hpp"
 

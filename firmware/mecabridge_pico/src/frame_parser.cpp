@@ -1,4 +1,5 @@
 #include "frame_parser.hpp"
+
 #include <cstring>
 
 namespace mecabridge {
@@ -28,7 +29,7 @@ uint16_t CRC16::calculate(const uint8_t* data, size_t len) {
 }
 
 // FrameParser implementation
-FrameParser::FrameParser() 
+FrameParser::FrameParser()
     : state_(ParseState::WAITING_START)
     , payload_bytes_read_(0)
     , expected_payload_len_(0)
@@ -79,7 +80,7 @@ ParseResult FrameParser::parseByte(uint8_t byte, Frame& frame) {
                 state_ = ParseState::WAITING_FRAME_ID;
             }
             return ParseResult::NEED_MORE_DATA;
-            
+
         case ParseState::WAITING_FRAME_ID:
             current_frame_.frame_id = byte;
             if (!isValidFrameId(byte)) {
@@ -90,7 +91,7 @@ ParseResult FrameParser::parseByte(uint8_t byte, Frame& frame) {
             crc_calculator_.update(byte);
             state_ = ParseState::WAITING_LENGTH;
             return ParseResult::NEED_MORE_DATA;
-            
+
         case ParseState::WAITING_LENGTH:
             current_frame_.len = byte;
             if (!isValidPayloadLength(current_frame_.frame_id, byte)) {
@@ -100,32 +101,32 @@ ParseResult FrameParser::parseByte(uint8_t byte, Frame& frame) {
             }
             expected_payload_len_ = byte;
             crc_calculator_.update(byte);
-            
+
             if (expected_payload_len_ == 0) {
                 state_ = ParseState::WAITING_CRC_HIGH;
             } else {
                 state_ = ParseState::READING_PAYLOAD;
             }
             return ParseResult::NEED_MORE_DATA;
-            
+
         case ParseState::READING_PAYLOAD:
             current_frame_.raw_payload[payload_bytes_read_] = byte;
             crc_calculator_.update(byte);
             payload_bytes_read_++;
-            
+
             if (payload_bytes_read_ >= expected_payload_len_) {
                 state_ = ParseState::WAITING_CRC_HIGH;
             }
             return ParseResult::NEED_MORE_DATA;
-            
+
         case ParseState::WAITING_CRC_HIGH:
             current_frame_.crc16 = (uint16_t)byte << 8;
             state_ = ParseState::WAITING_CRC_LOW;
             return ParseResult::NEED_MORE_DATA;
-            
+
         case ParseState::WAITING_CRC_LOW:
             current_frame_.crc16 |= byte;
-            
+
             // Verify CRC
             uint16_t calculated_crc = crc_calculator_.finalize();
             if (calculated_crc != current_frame_.crc16) {
@@ -133,12 +134,12 @@ ParseResult FrameParser::parseByte(uint8_t byte, Frame& frame) {
                 reset();
                 return ParseResult::CRC_MISMATCH;
             }
-            
+
             // Frame is complete and valid
             frame = current_frame_;
             reset();
             return ParseResult::FRAME_COMPLETE;
-            
+
         default:
             reset();
             return ParseResult::FRAME_ERROR;
@@ -157,35 +158,35 @@ size_t FrameEncoder::encodeState(const StateFramePayload& payload, uint8_t* buff
 size_t FrameEncoder::encodeFrame(FrameId frame_id, const void* payload, size_t payload_size, uint8_t* buffer, size_t buffer_size) {
     // Calculate required buffer size: start_byte(1) + frame_id(1) + len(1) + payload + crc(2)
     size_t required_size = 3 + payload_size + 2;
-    
+
     if (buffer_size < required_size) {
         return 0; // Buffer too small
     }
-    
+
     size_t offset = 0;
-    
+
     // Start byte
     buffer[offset++] = START_BYTE;
-    
+
     // Frame ID
     buffer[offset++] = static_cast<uint8_t>(frame_id);
-    
+
     // Length
     buffer[offset++] = static_cast<uint8_t>(payload_size);
-    
+
     // Payload
     if (payload_size > 0) {
         memcpy(&buffer[offset], payload, payload_size);
         offset += payload_size;
     }
-    
+
     // Calculate CRC over frame_id + len + payload
     uint16_t crc = CRC16::calculate(&buffer[1], offset - 1);
-    
+
     // CRC (MSB first)
     buffer[offset++] = (crc >> 8) & 0xFF;
     buffer[offset++] = crc & 0xFF;
-    
+
     return offset;
 }
 

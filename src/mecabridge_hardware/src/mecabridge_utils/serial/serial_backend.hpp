@@ -1,9 +1,14 @@
-#ifndef MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__SERIAL__SERIAL_BACKEND__HPP_
-#define MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__SERIAL__SERIAL_BACKEND__HPP_
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
+// Header guard
+#ifndef MECABRIDGE_UTILS__SERIAL__SERIAL_BACKEND_HPP_
+#define MECABRIDGE_UTILS__SERIAL__SERIAL_BACKEND_HPP_
 
 #include <algorithm>
-﻿#pragma once
+#pragma once
 
 #include <cstdint>
 #include <cstddef>
@@ -78,4 +83,5 @@ private:
 
 } // namespace serial
 } // namespace mecabridge
-#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__SERIAL__SERIAL_BACKEND__HPP_
+
+#endif  // MECABRIDGE_UTILS__SERIAL__SERIAL_BACKEND_HPP_

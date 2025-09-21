@@ -1,6 +1,6 @@
+#include "esc_servo.h"
 #include "pico/stdlib.h"
 #include "hardware/pwm.h"
-#include "esc_servo.h"
 enum
 {
   ESC1 = 14,

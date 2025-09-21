@@ -69,7 +69,6 @@ services:
       - ROS_DOMAIN_ID=42
     volumes:
       - ./src:/ros2_ws/src:rw
-      - ./scripts:/ros2_ws/scripts:ro
       - ros2_build_cache:/ros2_ws/build
       - ros2_install_cache:/ros2_ws/install
       - ros2_log_cache:/ros2_ws/log
@@ -77,9 +76,6 @@ services:
       bash -lc "
       set -eo pipefail;
       source /opt/ros/humble/setup.bash &&
-      if [ -f /ros2_ws/scripts/add_copyright_headers.sh ]; then \
-        bash /ros2_ws/scripts/add_copyright_headers.sh --scope src/mecabridge_hardware || true; \
-      fi &&
       export AMENT_CPPCHECK_ALLOW_SLOW_VERSIONS=1 &&
       ament_cpplint src &&
       ament_cppcheck src &&

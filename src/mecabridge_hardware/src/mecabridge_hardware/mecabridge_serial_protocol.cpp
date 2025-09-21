@@ -1,12 +1,19 @@
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #include "mecabridge_hardware/mecabridge_serial_protocol.h"
+
+#include <thread>
+#include <chrono>
+#include <memory>
+#include <algorithm>
+
 #include <rclcpp/rclcpp.hpp>
 #include <sstream>
 #include <cstdlib>
-#include <thread>
-#include <chrono>
 #include <stdexcept>
-#include <memory>
-#include <algorithm>
 
 #ifdef TESTING_MODE
 #include "../test/mock_serial.h"

@@ -1,3 +1,8 @@
+#
+# Copyright (c) 2024 MecaBridge Project
+# SPDX-License-Identifier: Apache-2.0
+#
+
 from launch import LaunchDescription
 from launch.actions import RegisterEventHandler, DeclareLaunchArgument
 from launch.conditions import IfCondition

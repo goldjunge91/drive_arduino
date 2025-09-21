@@ -2,7 +2,10 @@
 
 ## Overview
 
-The MecaBridge Hardware Interface is a ROS 2 `SystemInterface` implementation that provides a bridge between high-level ROS 2 control systems and low-level Raspberry Pi Pico firmware for robotics platforms. The system supports multiple drive configurations (differential, mecanum, four-wheel) with deterministic serial communication and safety-first design principles.
+The MecaBridge Hardware Interface is a ROS 2 `SystemInterface` implementation that provides a bridge between high-level
+ROS 2 control systems and low-level Raspberry Pi Pico firmware for robotics platforms. The system supports multiple
+drive configurations (differential, mecanum, four-wheel) with deterministic serial communication and safety-first design
+principles.
 
 ### Key Features
 
@@ -281,59 +284,59 @@ colcon test --packages-select mecabridge_hardware --ctest-args -R test_mecabridg
 #### Public Methods
 
 - `hardware_interface::CallbackReturn on_init(const hardware_interface::HardwareInfo& info)`
-  - Initializes hardware with ROS parameters
-  - Returns SUCCESS on successful initialization
+    - Initializes hardware with ROS parameters
+    - Returns SUCCESS on successful initialization
 
 - `std::vector<hardware_interface::StateInterface> export_state_interfaces()`
-  - Returns state interfaces for all configured joints
-  - Includes position, velocity, and effort for each wheel
+    - Returns state interfaces for all configured joints
+    - Includes position, velocity, and effort for each wheel
 
 - `std::vector<hardware_interface::CommandInterface> export_command_interfaces()`
-  - Returns command interfaces for velocity control
-  - One command interface per wheel joint
+    - Returns command interfaces for velocity control
+    - One command interface per wheel joint
 
 - `hardware_interface::return_type read(const rclcpp::Time& time, const rclcpp::Duration& period)`
-  - Reads current joint states from hardware
-  - Updates encoder positions and velocities
+    - Reads current joint states from hardware
+    - Updates encoder positions and velocities
 
 - `hardware_interface::return_type write(const rclcpp::Time& time, const rclcpp::Duration& period)`
-  - Sends velocity commands to hardware
-  - Converts rad/s to motor commands
+    - Sends velocity commands to hardware
+    - Converts rad/s to motor commands
 
 #### Private Methods
 
 - `bool attemptConnectionRecovery()`
-  - Attempts to recover from communication failures
-  - Returns true if recovery successful
+    - Attempts to recover from communication failures
+    - Returns true if recovery successful
 
 - `int convertVelocityToMotorCommand(double wheel_vel_rad_s)`
-  - Converts wheel velocity to motor command value
-  - Scales and clamps to valid motor range
+    - Converts wheel velocity to motor command value
+    - Scales and clamps to valid motor range
 
 ### MecaBridgeSerialProtocol API
 
 #### Public Methods
 
 - `void setup(const std::string& serial_device, int32_t baud_rate, int32_t timeout_ms)`
-  - Configures serial connection parameters
+    - Configures serial connection parameters
 
 - `void sendPing()`
-  - Sends ping command for Arduino synchronization
+    - Sends ping command for Arduino synchronization
 
 - `void setDifferentialMotors(int left_val, int right_val)`
-  - Sends velocity commands for differential drive
+    - Sends velocity commands for differential drive
 
 - `void setFourMotors(int fl, int fr, int rl, int rr)`
-  - Sends velocity commands for four-wheel drive
+    - Sends velocity commands for four-wheel drive
 
 - `bool connected() const`
-  - Returns current connection status
+    - Returns current connection status
 
 - `bool attemptReconnection()`
-  - Attempts to reconnect to serial device
+    - Attempts to reconnect to serial device
 
 - `void getConnectionStats(int& write_errors, int& read_errors, int& reconnection_attempts) const`
-  - Retrieves error statistics
+    - Retrieves error statistics
 
 ### MecaBridgeDriveConfig API
 
@@ -411,24 +414,24 @@ The system includes comprehensive unit tests with mock injection:
 ### Common Issues
 
 1. **Serial Connection Failed**
-   - Check device permissions: `sudo usermod -a -G dialout $USER`
-   - Verify device path and baud rate
-   - Check USB connection and Pico firmware
+    - Check device permissions: `sudo usermod -a -G dialout $USER`
+    - Verify device path and baud rate
+    - Check USB connection and Pico firmware
 
 2. **Watchdog Timeouts**
-   - Verify loop rate matches firmware expectations
-   - Check serial communication latency
-   - Monitor CPU usage and timing
+    - Verify loop rate matches firmware expectations
+    - Check serial communication latency
+    - Monitor CPU usage and timing
 
 3. **Encoder Data Issues**
-   - Verify encoder configuration in firmware
-   - Check encoder wiring and power
-   - Validate encoder counts per revolution
+    - Verify encoder configuration in firmware
+    - Check encoder wiring and power
+    - Validate encoder counts per revolution
 
 4. **Velocity Control Problems**
-   - Verify joint names match between hardware and controller
-   - Check velocity limits and scaling
-   - Monitor command transmission
+    - Verify joint names match between hardware and controller
+    - Check velocity limits and scaling
+    - Monitor command transmission
 
 ### Debug Tools
 
@@ -447,13 +450,17 @@ The system includes comprehensive unit tests with mock injection:
 
 ---
 
-*This documentation is maintained alongside the codebase. Please update it when making significant changes to the system.*
+*This documentation is maintained alongside the codebase. Please update it when making significant changes to the
+system.*
 
 # MecaBridge Hardware Interface Dokumentation
 
 ## Übersicht
 
-Das MecaBridge Hardware Interface ist eine ROS 2 `SystemInterface`-Implementierung, die eine Brücke zwischen hochlevel ROS 2-Steuerungssystemen und niederlevel Raspberry Pi Pico-Firmware für Robotik-Plattformen bereitstellt. Das System unterstützt mehrere Antriebskonfigurationen (Differential, Mecanum, Vier-Rad) mit deterministischer serieller Kommunikation und sicherheitsorientierten Design-Prinzipien.
+Das MecaBridge Hardware Interface ist eine ROS 2 `SystemInterface`-Implementierung, die eine Brücke zwischen hochlevel
+ROS 2-Steuerungssystemen und niederlevel Raspberry Pi Pico-Firmware für Robotik-Plattformen bereitstellt. Das System
+unterstützt mehrere Antriebskonfigurationen (Differential, Mecanum, Vier-Rad) mit deterministischer serieller
+Kommunikation und sicherheitsorientierten Design-Prinzipien.
 
 ### Hauptmerkmale
 
@@ -732,59 +739,59 @@ colcon test --packages-select mecabridge_hardware --ctest-args -R test_mecabridg
 #### Öffentliche Methoden
 
 - `hardware_interface::CallbackReturn on_init(const hardware_interface::HardwareInfo& info)`
-  - Initialisiert Hardware mit ROS-Parametern
-  - Gibt SUCCESS bei erfolgreicher Initialisierung zurück
+    - Initialisiert Hardware mit ROS-Parametern
+    - Gibt SUCCESS bei erfolgreicher Initialisierung zurück
 
 - `std::vector<hardware_interface::StateInterface> export_state_interfaces()`
-  - Gibt State-Interfaces für alle konfigurierten Joints zurück
-  - Beinhaltet Position, Geschwindigkeit und Effort für jedes Rad
+    - Gibt State-Interfaces für alle konfigurierten Joints zurück
+    - Beinhaltet Position, Geschwindigkeit und Effort für jedes Rad
 
 - `std::vector<hardware_interface::CommandInterface> export_command_interfaces()`
-  - Gibt Command-Interfaces für Geschwindigkeitssteuerung zurück
-  - Ein Command-Interface pro Rad-Joint
+    - Gibt Command-Interfaces für Geschwindigkeitssteuerung zurück
+    - Ein Command-Interface pro Rad-Joint
 
 - `hardware_interface::return_type read(const rclcpp::Time& time, const rclcpp::Duration& period)`
-  - Liest aktuelle Joint-Zustände von der Hardware
-  - Aktualisiert Encoder-Positionen und -Geschwindigkeiten
+    - Liest aktuelle Joint-Zustände von der Hardware
+    - Aktualisiert Encoder-Positionen und -Geschwindigkeiten
 
 - `hardware_interface::return_type write(const rclcpp::Time& time, const rclcpp::Duration& period)`
-  - Sendet Geschwindigkeitsbefehle an die Hardware
-  - Konvertiert rad/s zu Motor-Befehlen
+    - Sendet Geschwindigkeitsbefehle an die Hardware
+    - Konvertiert rad/s zu Motor-Befehlen
 
 #### Private Methoden
 
 - `bool attemptConnectionRecovery()`
-  - Versucht Wiederherstellung von Kommunikationsfehlern
-  - Gibt true zurück wenn Wiederherstellung erfolgreich
+    - Versucht Wiederherstellung von Kommunikationsfehlern
+    - Gibt true zurück wenn Wiederherstellung erfolgreich
 
 - `int convertVelocityToMotorCommand(double wheel_vel_rad_s)`
-  - Konvertiert Rad-Geschwindigkeit zu Motor-Befehlswert
-  - Skaliert und begrenzt auf gültigen Motor-Bereich
+    - Konvertiert Rad-Geschwindigkeit zu Motor-Befehlswert
+    - Skaliert und begrenzt auf gültigen Motor-Bereich
 
 ### MecaBridgeSerialProtocol API
 
 #### Methoden
 
 - `void setup(const std::string& serial_device, int32_t baud_rate, int32_t timeout_ms)`
-  - Konfiguriert serielle Verbindungs-Parameter
+    - Konfiguriert serielle Verbindungs-Parameter
 
 - `void sendPing()`
-  - Sendet Ping-Befehl für Arduino-Synchronisation
+    - Sendet Ping-Befehl für Arduino-Synchronisation
 
 - `void setDifferentialMotors(int left_val, int right_val)`
-  - Sendet Geschwindigkeitsbefehle für Differential-Antrieb
+    - Sendet Geschwindigkeitsbefehle für Differential-Antrieb
 
 - `void setFourMotors(int fl, int fr, int rl, int rr)`
-  - Sendet Geschwindigkeitsbefehle für Vier-Rad-Antrieb
+    - Sendet Geschwindigkeitsbefehle für Vier-Rad-Antrieb
 
 - `bool connected() const`
-  - Gibt aktuellen Verbindungsstatus zurück
+    - Gibt aktuellen Verbindungsstatus zurück
 
 - `bool attemptReconnection()`
-  - Versucht Reconnection zum seriellen Gerät
+    - Versucht Reconnection zum seriellen Gerät
 
 - `void getConnectionStats(int& write_errors, int& read_errors, int& reconnection_attempts) const`
-  - Ruft Fehler-Statistiken ab
+    - Ruft Fehler-Statistiken ab
 
 ### MecaBridgeDriveConfig API
 
@@ -862,24 +869,24 @@ Das System beinhaltet umfassende Unit-Tests mit Mock-Injection:
 ### Häufige Probleme
 
 1. **Serielle Verbindung fehlgeschlagen**
-   - Geräte-Berechtigungen prüfen: `sudo usermod -a -G dialout $USER`
-   - Geräte-Pfad und Baudrate verifizieren
-   - USB-Verbindung und Pico-Firmware prüfen
+    - Geräte-Berechtigungen prüfen: `sudo usermod -a -G dialout $USER`
+    - Geräte-Pfad und Baudrate verifizieren
+    - USB-Verbindung und Pico-Firmware prüfen
 
 2. **Watchdog-Timeouts**
-   - Schleifenrate mit Firmware-Erwartungen verifizieren
-   - Serielle Kommunikations-Latenz prüfen
-   - CPU-Auslastung und Timing überwachen
+    - Schleifenrate mit Firmware-Erwartungen verifizieren
+    - Serielle Kommunikations-Latenz prüfen
+    - CPU-Auslastung und Timing überwachen
 
 3. **Encoder-Daten-Probleme**
-   - Encoder-Konfiguration in Firmware verifizieren
-   - Encoder-Verkabelung und Stromversorgung prüfen
-   - Encoder-Counts pro Umdrehung validieren
+    - Encoder-Konfiguration in Firmware verifizieren
+    - Encoder-Verkabelung und Stromversorgung prüfen
+    - Encoder-Counts pro Umdrehung validieren
 
 4. **Geschwindigkeitssteuerungs-Probleme**
-   - Joint-Namen zwischen Hardware und Controller abgleichen
-   - Geschwindigkeits-Limits und Skalierung prüfen
-   - Befehls-Übertragung überwachen
+    - Joint-Namen zwischen Hardware und Controller abgleichen
+    - Geschwindigkeits-Limits und Skalierung prüfen
+    - Befehls-Übertragung überwachen
 
 ### Debug-Tools
 
@@ -898,4 +905,5 @@ Das System beinhaltet umfassende Unit-Tests mit Mock-Injection:
 
 ---
 
-*Diese Dokumentation wird neben dem Codebase gepflegt. Bitte aktualisieren Sie sie bei wesentlichen Änderungen am System.*
+*Diese Dokumentation wird neben dem Codebase gepflegt. Bitte aktualisieren Sie sie bei wesentlichen Änderungen am
+System.*

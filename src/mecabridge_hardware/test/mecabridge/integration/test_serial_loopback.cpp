@@ -1,12 +1,17 @@
-#include <gtest/gtest.h>
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #include "mecabridge_utils/serial/loopback_serial_backend.hpp"
 #include "mecabridge_utils/protocol/frame.hpp"
+
 #include <memory>
 #include <chrono>
 #include <thread>
 
-using namespace mecabridge::serial;
-using namespace mecabridge::protocol;
+#include <gtest/gtest.h>
+
 
 class SerialLoopbackTest : public ::testing::Test
 {

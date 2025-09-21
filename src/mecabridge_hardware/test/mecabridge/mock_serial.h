@@ -1,10 +1,18 @@
-#ifndef MECABRIDGE_HARDWARE__MECABRIDGE__MOCK_SERIAL__H_
-#define MECABRIDGE_HARDWARE__MECABRIDGE__MOCK_SERIAL__H_
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#ifndef MECABRIDGE__MOCK_SERIAL_H_
+#define MECABRIDGE__MOCK_SERIAL_H_
 
 
+
+
+
+#include <string>
 
 #include <gmock/gmock.h>
-#include <string>
 #include <serial/serial.h>
 
 // Mock class for serial::Serial to enable unit testing without hardware
@@ -31,4 +39,5 @@ public:
   MOCK_METHOD(void, waitByteTimes, (size_t count));
 };
 
-#endif  // MECABRIDGE_HARDWARE__MECABRIDGE__MOCK_SERIAL__H_
+#endif  // MECABRIDGE_HARDWARE__MECABRIDGE__MOCK_SERIAL_H_
+#endif  // MECABRIDGE__MOCK_SERIAL_H_

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2024 MecaBridge Project
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #include "mecabridge_hardware/mecabridge_hardware_interface.h"
 
 #include "hardware_interface/types/hardware_interface_type_values.hpp"

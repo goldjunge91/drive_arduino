@@ -1,6 +1,7 @@
+#include <iostream>
+
 #include <cstddef>
 #include <cstdint>
-#include <iostream>
 
 struct StateFramePayload
 {
