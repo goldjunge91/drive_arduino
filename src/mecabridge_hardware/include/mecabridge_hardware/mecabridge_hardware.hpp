@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <chrono>
 
 #include "hardware_interface/system_interface.hpp"
 #include "hardware_interface/handle.hpp"
@@ -10,27 +11,45 @@
 #include "rclcpp/rclcpp.hpp"
 
 #include "mecabridge_utils/config/config.hpp"
+#include "mecabridge_utils/protocol/frame.hpp"
+#include "mecabridge_utils/serial/serial_backend.hpp"
+#include "mecabridge_utils/serial/mock_serial_backend.hpp"
+#include "mecabridge_utils/serial/loopback_serial_backend.hpp"
+#include "mecabridge_utils/safety/watchdog.hpp"
+#include "mecabridge_utils/latency/latency_tracker.hpp"
+#include "mecabridge_hardware/feature_config.hpp"
 
-namespace mecabridge_hardware {
+namespace mecabridge_hardware
+{
 
-class MecaBridgeHardware : public hardware_interface::SystemInterface {
+class MecaBridgeHardware : public hardware_interface::SystemInterface
+{
 public:
   RCLCPP_SHARED_PTR_DEFINITIONS(MecaBridgeHardware)
 
   MecaBridgeHardware() = default;
   ~MecaBridgeHardware() override = default;
 
-  hardware_interface::CallbackReturn on_init(const hardware_interface::HardwareInfo & info) override;
+  hardware_interface::CallbackReturn on_init(
+    const hardware_interface::HardwareInfo & info) override;
   std::vector<hardware_interface::StateInterface> export_state_interfaces() override;
   std::vector<hardware_interface::CommandInterface> export_command_interfaces() override;
 
-  hardware_interface::CallbackReturn on_configure(const rclcpp_lifecycle::State & previous_state) override;
-  hardware_interface::CallbackReturn on_cleanup(const rclcpp_lifecycle::State & previous_state) override;
-  hardware_interface::CallbackReturn on_activate(const rclcpp_lifecycle::State & previous_state) override;
-  hardware_interface::CallbackReturn on_deactivate(const rclcpp_lifecycle::State & previous_state) override;
+  hardware_interface::CallbackReturn on_configure(const rclcpp_lifecycle::State & previous_state)
+  override;
+  hardware_interface::CallbackReturn on_cleanup(const rclcpp_lifecycle::State & previous_state)
+  override;
+  hardware_interface::CallbackReturn on_activate(const rclcpp_lifecycle::State & previous_state)
+  override;
+  hardware_interface::CallbackReturn on_deactivate(const rclcpp_lifecycle::State & previous_state)
+  override;
 
-  hardware_interface::return_type read(const rclcpp::Time & time, const rclcpp::Duration & period) override;
-  hardware_interface::return_type write(const rclcpp::Time & time, const rclcpp::Duration & period) override;
+  hardware_interface::return_type read(
+    const rclcpp::Time & time,
+    const rclcpp::Duration & period) override;
+  hardware_interface::return_type write(
+    const rclcpp::Time & time,
+    const rclcpp::Duration & period) override;
 
 private:
   // Deterministic joint ordering: 4 wheels (vel), 1 positional servo (pos), 1 continuous servo (vel), 2 ESC (vel normalized)
@@ -39,9 +58,28 @@ private:
 
   mecabridge::config::Config cfg_;
 
+  // Protocol and serial communication
+  std::unique_ptr<mecabridge::serial::SerialBackend> serial_backend_;
+  mecabridge::safety::Watchdog watchdog_;
+  uint16_t command_sequence_{0};
+  std::chrono::steady_clock::time_point last_state_time_;
+
+  // Frame buffers
+  uint8_t tx_buffer_[128];
+  uint8_t rx_buffer_[128];
+
   bool configured_ = false;
   bool active_ = false;
+
+  // Latency measurement
+  mecabridge::latency::LatencyTracker latency_tracker_;
+
+  // Helper methods for protocol integration
+  hardware_interface::return_type readStateFrame();
+  hardware_interface::return_type writeCommandFrame();
+  void updateStateFromFrame(const mecabridge::protocol::StateFramePayload & state_payload);
+  void buildCommandFromState(mecabridge::protocol::CommandFramePayload & command_payload);
+  void logLatencyStats();
 };
 
 } // namespace mecabridge_hardware
-

@@ -5,50 +5,59 @@
 #include <string>
 #include <vector>
 
-namespace mecabridge {
-namespace serial {
+namespace mecabridge
+{
+namespace serial
+{
 
-struct SerialOptions {
+struct SerialOptions
+{
   std::string device;
   int baud_rate = 115200;
   int read_timeout_ms = 20;
   int write_timeout_ms = 20;
 };
 
-class SerialBackend {
+class SerialBackend
+{
 public:
   virtual ~SerialBackend() = default;
 
-  virtual bool open(const SerialOptions& opts) = 0;
+  virtual bool open(const SerialOptions & opts) = 0;
   virtual void close() = 0;
   virtual bool is_open() const = 0;
 
   // Returns bytes read; 0 on timeout; negative on error
-  virtual int read(uint8_t* buf, size_t len) = 0;
+  virtual int read(uint8_t * buf, size_t len) = 0;
   // Returns bytes written; negative on error
-  virtual int write(const uint8_t* buf, size_t len) = 0;
+  virtual int write(const uint8_t * buf, size_t len) = 0;
 };
 
 // A simple in-memory loopback stub for tests/integration skeletons
-class LoopbackBackend : public SerialBackend {
+class LoopbackBackend : public SerialBackend
+{
 public:
   LoopbackBackend() = default;
-  bool open(const SerialOptions& opts) override { opts_ = opts; open_ = true; return true; }
-  void close() override { open_ = false; rx_.clear(); tx_.clear(); }
-  bool is_open() const override { return open_; }
+  bool open(const SerialOptions & opts) override {opts_ = opts; open_ = true; return true;}
+  void close() override {open_ = false; rx_.clear(); tx_.clear();}
+  bool is_open() const override {return open_;}
 
-  int read(uint8_t* buf, size_t len) override {
-    if (!open_) return -1;
+  int read(uint8_t * buf, size_t len) override
+  {
+    if (!open_) {return -1;}
     size_t n = rx_.size();
-    if (n == 0) return 0; // timeout behavior for stub
+    if (n == 0) {
+      return 0;            // timeout behavior for stub
+    }
     size_t to_copy = (len < n) ? len : n;
     std::copy(rx_.begin(), rx_.begin() + to_copy, buf);
     rx_.erase(rx_.begin(), rx_.begin() + to_copy);
     return static_cast<int>(to_copy);
   }
 
-  int write(const uint8_t* buf, size_t len) override {
-    if (!open_) return -1;
+  int write(const uint8_t * buf, size_t len) override
+  {
+    if (!open_) {return -1;}
     // Echo written bytes to rx_ for loopback
     tx_.insert(tx_.end(), buf, buf + len);
     rx_.insert(rx_.end(), buf, buf + len);
@@ -64,4 +73,3 @@ private:
 
 } // namespace serial
 } // namespace mecabridge
-

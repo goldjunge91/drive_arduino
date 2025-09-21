@@ -9,44 +9,43 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 pico_sdk_init()
 
-add_executable(Testing
+add_executable(MecaBridge
   src/main.cpp
-  src/motors.cpp
-  src/esc_servo.cpp
-  src/term.cpp
-  src/enc.cpp
+  src/frame_parser.cpp
+  src/actuators.cpp
 )
 
 # enable usb output
-pico_enable_stdio_usb(Testing 1)
+pico_enable_stdio_usb(MecaBridge 1)
 
 # Headers live in src/ (e.g., config.h)
-target_include_directories(Testing PRIVATE src)
+target_include_directories(MecaBridge PRIVATE src)
 
 # Link against required pico-sdk libs
-target_link_libraries(Testing
+target_link_libraries(MecaBridge
   pico_stdlib
   hardware_pwm
   hardware_gpio
   hardware_sync
+  hardware_timer
 )
 # erlauben: reboot via 1200-baud und via Vendor-Interface (picotool)
-target_compile_definitions(Testing PRIVATE
+target_compile_definitions(MecaBridge PRIVATE
   PICO_STDIO_USB_ENABLE_RESET_VIA_BAUD_RATE=1
   PICO_STDIO_USB_ENABLE_RESET_VIA_VENDOR_INTERFACE=1
 )
 
 
 # USB stdio on, UART off
-pico_enable_stdio_usb(Testing 1)
-pico_enable_stdio_uart(Testing 0)
+pico_enable_stdio_usb(MecaBridge 1)
+pico_enable_stdio_uart(MecaBridge 0)
 
 # Create UF2/ELF/bin
-pico_add_extra_outputs(Testing)
+pico_add_extra_outputs(MecaBridge)
 
 # --- convenience targets ---
 add_custom_target(flash
-  COMMAND picotool load -f ${CMAKE_CURRENT_BINARY_DIR}/Testing.uf2
-  DEPENDS Testing
+  COMMAND picotool load -f ${CMAKE_CURRENT_BINARY_DIR}/MecaBridge.uf2
+  DEPENDS MecaBridge
   COMMENT "Flashing Testing.uf2 via picotool"
 )

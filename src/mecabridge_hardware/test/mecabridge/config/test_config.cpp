@@ -4,7 +4,8 @@
 using mecabridge::config::Config;
 using mecabridge::config::parse_from_yaml_string;
 
-static const char* kValidYaml = R"YAML(
+static const char * kValidYaml =
+  R"YAML(
 mecabridge_hardware:
   serial_port: /dev/ttyACM0
   baud_rate: 115200
@@ -65,11 +66,12 @@ TEST(ConfigLoader, ParsesValidConfig) {
   EXPECT_EQ(cfg.features.enable_servos, true);
 }
 
-static void expect_parse_error(const std::string& yaml, const char* msg_contains) {
+static void expect_parse_error(const std::string & yaml, const char * msg_contains)
+{
   try {
     (void)parse_from_yaml_string(yaml);
     FAIL() << "Expected parse/validation error";
-  } catch (const std::exception& e) {
+  } catch (const std::exception & e) {
     std::string m = e.what();
     if (msg_contains) {
       ASSERT_NE(m.find(msg_contains), std::string::npos) << m;
@@ -90,7 +92,7 @@ TEST(ConfigLoader, PublishRateOutOfRange) {
   auto pos = y.find("state_publish_rate_hz:");
   ASSERT_NE(pos, std::string::npos);
   auto end = y.find('\n', pos);
-  y.replace(pos, end-pos, "state_publish_rate_hz: 5");
+  y.replace(pos, end - pos, "state_publish_rate_hz: 5");
   expect_parse_error(y, "state_publish_rate_hz out of range");
 }
 
@@ -99,7 +101,7 @@ TEST(ConfigLoader, WheelRadiusPositive) {
   auto pos = y.find("wheel_radius:");
   ASSERT_NE(pos, std::string::npos);
   auto end = y.find('\n', pos);
-  y.replace(pos, end-pos, "wheel_radius: 0.0");
+  y.replace(pos, end - pos, "wheel_radius: 0.0");
   expect_parse_error(y, "wheel_radius must be >0");
 }
 
@@ -108,7 +110,7 @@ TEST(ConfigLoader, SeparationPositive) {
   auto pos = y.find("wheel_separation_x:");
   ASSERT_NE(pos, std::string::npos);
   auto end = y.find('\n', pos);
-  y.replace(pos, end-pos, "wheel_separation_x: 0.0");
+  y.replace(pos, end - pos, "wheel_separation_x: 0.0");
   expect_parse_error(y, "wheel separation must be >0");
 }
 
@@ -117,7 +119,7 @@ TEST(ConfigLoader, EncoderTicksPositive) {
   auto pos = y.find("encoder_ticks_per_rev:");
   ASSERT_NE(pos, std::string::npos);
   auto end = y.find('\n', pos);
-  y.replace(pos, end-pos, "encoder_ticks_per_rev: 0");
+  y.replace(pos, end - pos, "encoder_ticks_per_rev: 0");
   expect_parse_error(y, "encoder_ticks_per_rev must be >0");
 }
 
@@ -127,7 +129,9 @@ TEST(ConfigLoader, DuplicateEncoderIndex) {
   auto pos = y.find("front_right:");
   ASSERT_NE(pos, std::string::npos);
   auto end = y.find('\n', pos);
-  y.replace(pos, end-pos, "front_right: { encoder_index: 0, joint_name: front_right_wheel_joint }");
+  y.replace(
+    pos, end - pos,
+    "front_right: { encoder_index: 0, joint_name: front_right_wheel_joint }");
   expect_parse_error(y, "duplicate or invalid encoder_index");
 }
 
@@ -137,7 +141,9 @@ TEST(ConfigLoader, DuplicateJointName) {
   auto pos = y.find("rear_right:");
   ASSERT_NE(pos, std::string::npos);
   auto end = y.find('\n', pos);
-  y.replace(pos, end-pos, "rear_right:  { encoder_index: 3, joint_name: front_left_wheel_joint }");
+  y.replace(
+    pos, end - pos,
+    "rear_right:  { encoder_index: 3, joint_name: front_left_wheel_joint }");
   expect_parse_error(y, "duplicate joint_name");
 }
 
@@ -146,7 +152,7 @@ TEST(ConfigLoader, ServoMinLessThanMax) {
   auto pos = y.find("min_rad:");
   ASSERT_NE(pos, std::string::npos);
   auto end = y.find('\n', pos);
-  y.replace(pos, end-pos, "min_rad: 3.2");
+  y.replace(pos, end - pos, "min_rad: 3.2");
   expect_parse_error(y, "servo positional min>=max");
 }
 
@@ -155,6 +161,6 @@ TEST(ConfigLoader, EscPwmRange) {
   auto pos = y.find("esc_max_pwm:");
   ASSERT_NE(pos, std::string::npos);
   auto end = y.find('\n', pos);
-  y.replace(pos, end-pos, "esc_max_pwm: 900");
+  y.replace(pos, end - pos, "esc_max_pwm: 900");
   expect_parse_error(y, "esc pwm range invalid");
 }

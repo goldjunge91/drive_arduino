@@ -7,7 +7,8 @@
 
 TEST(TestMecabridgeHardwareInterface, load_urdf_and_check_interfaces)
 {
-  std::string urdf_string = R"(
+  std::string urdf_string =
+    R"(
 <robot name="TestRobot">
   <ros2_control name="MecaBridgeSystem" type="system">
     <hardware>
@@ -55,8 +56,8 @@ TEST(TestMecabridgeHardwareInterface, load_urdf_and_check_interfaces)
   try {
     hardware_interface::ResourceManager rm(urdf_string);
 
-    const auto& command_interfaces = rm.command_interface_keys();
-    const auto& state_interfaces = rm.state_interface_keys();
+    const auto & command_interfaces = rm.command_interface_keys();
+    const auto & state_interfaces = rm.state_interface_keys();
 
     ASSERT_EQ(command_interfaces.size(), 8);
     ASSERT_EQ(state_interfaces.size(), 8);
@@ -79,7 +80,7 @@ TEST(TestMecabridgeHardwareInterface, load_urdf_and_check_interfaces)
     EXPECT_EQ(state_interfaces[6], "esc_left_joint/velocity");
     EXPECT_EQ(state_interfaces[7], "esc_right_joint/velocity");
 
-  } catch (const std::exception& e) {
+  } catch (const std::exception & e) {
     FAIL() << "Exception thrown: " << e.what();
   }
 

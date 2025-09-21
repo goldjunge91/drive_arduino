@@ -449,7 +449,6 @@ The system includes comprehensive unit tests with mock injection:
 
 *This documentation is maintained alongside the codebase. Please update it when making significant changes to the system.*
 
-
 # MecaBridge Hardware Interface Dokumentation
 
 ## Übersicht
