@@ -360,7 +360,8 @@ std::vector<hardware_interface::StateInterface> MecaBridgeHardwareInterface::exp
   return state_interfaces;
 }
 
-std::vector<hardware_interface::CommandInterface> MecaBridgeHardwareInterface::export_command_interfaces()
+std::vector<hardware_interface::CommandInterface> MecaBridgeHardwareInterface::
+export_command_interfaces()
 {
   std::vector<hardware_interface::CommandInterface> command_interfaces;
 

@@ -76,16 +76,23 @@ TEST_F(mecabridgeIntegrationTest, TestPluginLoading)
         break;
       }
     }
-    EXPECT_TRUE(found_mecabridge) << "MecaBridgeHardwareInterface plugin not found in declared classes";
+    EXPECT_TRUE(found_mecabridge) <<
+      "MecaBridgeHardwareInterface plugin not found in declared classes";
 
     // Test plugin instantiation
-    auto hardware_interface = loader.createSharedInstance("drive_arduino/MecaBridgeHardwareInterface");
-    ASSERT_NE(hardware_interface, nullptr) << "Failed to create MecaBridgeHardwareInterface instance";
+    auto hardware_interface = loader.createSharedInstance(
+      "drive_arduino/MecaBridgeHardwareInterface");
+    ASSERT_NE(
+      hardware_interface,
+      nullptr) << "Failed to create MecaBridgeHardwareInterface instance";
 
     // Verify it's the correct type
-    auto mecabridge_interface = std::dynamic_pointer_cast<mecabridge_hardware::MecaBridgeHardwareInterface>(
+    auto mecabridge_interface =
+      std::dynamic_pointer_cast<mecabridge_hardware::MecaBridgeHardwareInterface>(
       hardware_interface);
-    EXPECT_NE(mecabridge_interface, nullptr) << "Plugin is not of correct type MecaBridgeHardwareInterface";
+    EXPECT_NE(
+      mecabridge_interface,
+      nullptr) << "Plugin is not of correct type MecaBridgeHardwareInterface";
 
   } catch (const std::exception & e) {
     FAIL() << "Exception during plugin loading: " << e.what();
@@ -101,7 +108,8 @@ TEST_F(mecabridgeIntegrationTest, TestHardwareInterfaceConfiguration)
   pluginlib::ClassLoader<hardware_interface::SystemInterface> loader(
     "hardware_interface", "hardware_interface::SystemInterface");
 
-  auto hardware_interface = loader.createSharedInstance("drive_arduino/MecaBridgeHardwareInterface");
+  auto hardware_interface =
+    loader.createSharedInstance("drive_arduino/MecaBridgeHardwareInterface");
   ASSERT_NE(hardware_interface, nullptr);
 
   // Test differential drive configuration
@@ -158,7 +166,8 @@ TEST_F(mecabridgeIntegrationTest, TestHardwareInterfaceConfiguration)
 
   // Test mecanum drive configuration
   {
-    auto mecanum_interface = loader.createSharedInstance("drive_arduino/MecaBridgeHardwareInterface");
+    auto mecanum_interface =
+      loader.createSharedInstance("drive_arduino/MecaBridgeHardwareInterface");
     ASSERT_NE(mecanum_interface, nullptr);
 
     hardware_interface::HardwareInfo info;
@@ -215,7 +224,8 @@ TEST_F(mecabridgeIntegrationTest, TestHardwareInterfaceLifecycle)
   pluginlib::ClassLoader<hardware_interface::SystemInterface> loader(
     "hardware_interface", "hardware_interface::SystemInterface");
 
-  auto hardware_interface = loader.createSharedInstance("drive_arduino/MecaBridgeHardwareInterface");
+  auto hardware_interface =
+    loader.createSharedInstance("drive_arduino/MecaBridgeHardwareInterface");
   ASSERT_NE(hardware_interface, nullptr);
 
   // Configure hardware interface
@@ -282,7 +292,8 @@ TEST_F(mecabridgeIntegrationTest, TestInterfaceNaming)
   pluginlib::ClassLoader<hardware_interface::SystemInterface> loader(
     "hardware_interface", "hardware_interface::SystemInterface");
 
-  auto hardware_interface = loader.createSharedInstance("drive_arduino/MecaBridgeHardwareInterface");
+  auto hardware_interface =
+    loader.createSharedInstance("drive_arduino/MecaBridgeHardwareInterface");
   ASSERT_NE(hardware_interface, nullptr);
 
   // Configure for differential drive
@@ -367,7 +378,8 @@ TEST_F(mecabridgeIntegrationTest, TestParameterValidation)
   pluginlib::ClassLoader<hardware_interface::SystemInterface> loader(
     "hardware_interface", "hardware_interface::SystemInterface");
 
-  auto hardware_interface = loader.createSharedInstance("drive_arduino/MecaBridgeHardwareInterface");
+  auto hardware_interface =
+    loader.createSharedInstance("drive_arduino/MecaBridgeHardwareInterface");
   ASSERT_NE(hardware_interface, nullptr);
 
   // Test with missing required parameters (should use defaults)
@@ -403,7 +415,8 @@ TEST_F(mecabridgeIntegrationTest, TestParameterValidation)
 
   // Test with invalid parameters (should handle gracefully)
   {
-    auto invalid_interface = loader.createSharedInstance("drive_arduino/MecaBridgeHardwareInterface");
+    auto invalid_interface =
+      loader.createSharedInstance("drive_arduino/MecaBridgeHardwareInterface");
     ASSERT_NE(invalid_interface, nullptr);
 
     hardware_interface::HardwareInfo info;
@@ -448,7 +461,8 @@ TEST_F(mecabridgeIntegrationTest, TestReadWriteOperations)
   pluginlib::ClassLoader<hardware_interface::SystemInterface> loader(
     "hardware_interface", "hardware_interface::SystemInterface");
 
-  auto hardware_interface = loader.createSharedInstance("drive_arduino/MecaBridgeHardwareInterface");
+  auto hardware_interface =
+    loader.createSharedInstance("drive_arduino/MecaBridgeHardwareInterface");
   ASSERT_NE(hardware_interface, nullptr);
 
   // Configure hardware interface

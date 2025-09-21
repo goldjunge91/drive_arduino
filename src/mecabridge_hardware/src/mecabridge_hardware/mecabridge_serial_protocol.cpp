@@ -31,12 +31,16 @@ MecaBridgeSerialProtocol::MecaBridgeSerialProtocol()
 #endif
 }
 
-MecaBridgeSerialProtocol::MecaBridgeSerialProtocol(const std::string & serial_device, int32_t baud_rate, int32_t timeout_ms)
+MecaBridgeSerialProtocol::MecaBridgeSerialProtocol(
+  const std::string & serial_device,
+  int32_t baud_rate, int32_t timeout_ms)
 {
   setup(serial_device, baud_rate, timeout_ms);
 }
 
-void MecaBridgeSerialProtocol::setup(const std::string & serial_device, int32_t baud_rate, int32_t timeout_ms)
+void MecaBridgeSerialProtocol::setup(
+  const std::string & serial_device, int32_t baud_rate,
+  int32_t timeout_ms)
 {
   std::string port_to_use = serial_device;
 
@@ -51,7 +55,9 @@ void MecaBridgeSerialProtocol::setup(const std::string & serial_device, int32_t 
         rclcpp::get_logger(
           "MecaBridgeSerialProtocol"), "Auto-detected serial port: %s", port_to_use.c_str());
     } catch (const std::exception & e) {
-      RCLCPP_ERROR(rclcpp::get_logger("MecaBridgeSerialProtocol"), "Auto-detection failed: %s", e.what());
+      RCLCPP_ERROR(
+        rclcpp::get_logger(
+          "MecaBridgeSerialProtocol"), "Auto-detection failed: %s", e.what());
       throw std::runtime_error("Serial port auto-detection failed. Please specify device parameter.");
     }
   } else {
@@ -62,7 +68,9 @@ void MecaBridgeSerialProtocol::setup(const std::string & serial_device, int32_t 
 
   // Validate parameters
   if (baud_rate <= 0) {
-    RCLCPP_WARN(rclcpp::get_logger("MecaBridgeSerialProtocol"), "Invalid baud rate %d, using 115200", baud_rate);
+    RCLCPP_WARN(
+      rclcpp::get_logger(
+        "MecaBridgeSerialProtocol"), "Invalid baud rate %d, using 115200", baud_rate);
     baud_rate = 115200;
   }
 
@@ -83,7 +91,9 @@ void MecaBridgeSerialProtocol::setup(const std::string & serial_device, int32_t 
       serial::Timeout tt = serial::Timeout::simpleTimeout(timeout_ms);
       mock_serial_->setTimeout(tt);
 
-      RCLCPP_INFO(rclcpp::get_logger("MecaBridgeSerialProtocol"), "Opening mock serial connection...");
+      RCLCPP_INFO(
+        rclcpp::get_logger(
+          "MecaBridgeSerialProtocol"), "Opening mock serial connection...");
       mock_serial_->open();
 
       if (!mock_serial_->isOpen()) {
@@ -106,14 +116,20 @@ void MecaBridgeSerialProtocol::setup(const std::string & serial_device, int32_t 
   }
 #endif
 
-    RCLCPP_INFO(rclcpp::get_logger("MecaBridgeSerialProtocol"), "Serial connection established successfully");
+    RCLCPP_INFO(
+      rclcpp::get_logger(
+        "MecaBridgeSerialProtocol"), "Serial connection established successfully");
 
     // Wait for Arduino reset (matching Python behavior)
-    RCLCPP_INFO(rclcpp::get_logger("MecaBridgeSerialProtocol"), "Waiting for Arduino reset (2 seconds)...");
+    RCLCPP_INFO(
+      rclcpp::get_logger(
+        "MecaBridgeSerialProtocol"), "Waiting for Arduino reset (2 seconds)...");
     std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
     // Send initial PING for synchronization
-    RCLCPP_INFO(rclcpp::get_logger("MecaBridgeSerialProtocol"), "Sending initial synchronization ping...");
+    RCLCPP_INFO(
+      rclcpp::get_logger(
+        "MecaBridgeSerialProtocol"), "Sending initial synchronization ping...");
     sendPing();
 
     // Store connection parameters for potential reconnection
@@ -121,22 +137,31 @@ void MecaBridgeSerialProtocol::setup(const std::string & serial_device, int32_t 
     last_baud_rate_ = baud_rate;
     last_timeout_ms_ = timeout_ms;
 
-    RCLCPP_INFO(rclcpp::get_logger("MecaBridgeSerialProtocol"), "mecabridge communication setup complete");
+    RCLCPP_INFO(
+      rclcpp::get_logger(
+        "MecaBridgeSerialProtocol"), "mecabridge communication setup complete");
     RCLCPP_INFO(
       rclcpp::get_logger("MecaBridgeSerialProtocol"), "Port: %s, Baud: %d, Timeout: %d ms",
       port_to_use.c_str(), baud_rate, timeout_ms);
   } catch (const std::exception & e) {
     RCLCPP_ERROR(
-      rclcpp::get_logger("MecaBridgeSerialProtocol"), "Failed to setup serial communication on port %s: %s",
+      rclcpp::get_logger(
+        "MecaBridgeSerialProtocol"), "Failed to setup serial communication on port %s: %s",
       port_to_use.c_str(), e.what());
     RCLCPP_ERROR(rclcpp::get_logger("MecaBridgeSerialProtocol"), "Possible causes:");
-    RCLCPP_ERROR(rclcpp::get_logger("MecaBridgeSerialProtocol"), "  - Device not connected or powered");
+    RCLCPP_ERROR(
+      rclcpp::get_logger(
+        "MecaBridgeSerialProtocol"), "  - Device not connected or powered");
     RCLCPP_ERROR(
       rclcpp::get_logger(
         "MecaBridgeSerialProtocol"), "  - Incorrect port permissions (try: sudo chmod 666 %s)",
       port_to_use.c_str());
-    RCLCPP_ERROR(rclcpp::get_logger("MecaBridgeSerialProtocol"), "  - Port already in use by another process");
-    RCLCPP_ERROR(rclcpp::get_logger("MecaBridgeSerialProtocol"), "  - Hardware failure or incorrect baud rate");
+    RCLCPP_ERROR(
+      rclcpp::get_logger(
+        "MecaBridgeSerialProtocol"), "  - Port already in use by another process");
+    RCLCPP_ERROR(
+      rclcpp::get_logger(
+        "MecaBridgeSerialProtocol"), "  - Hardware failure or incorrect baud rate");
     throw;
   }
 }
@@ -147,8 +172,12 @@ void MecaBridgeSerialProtocol::sendPing()
     sendMsg("PING\n");
     RCLCPP_DEBUG(rclcpp::get_logger("MecaBridgeSerialProtocol"), "PING sent successfully");
   } catch (const std::exception & e) {
-    RCLCPP_WARN(rclcpp::get_logger("MecaBridgeSerialProtocol"), "Failed to send PING: %s", e.what());
-    RCLCPP_WARN(rclcpp::get_logger("MecaBridgeSerialProtocol"), "Arduino synchronization may be incomplete");
+    RCLCPP_WARN(
+      rclcpp::get_logger("MecaBridgeSerialProtocol"), "Failed to send PING: %s",
+      e.what());
+    RCLCPP_WARN(
+      rclcpp::get_logger(
+        "MecaBridgeSerialProtocol"), "Arduino synchronization may be incomplete");
   }
 }
 
@@ -237,7 +266,8 @@ void MecaBridgeSerialProtocol::readDifferentialEncoders(int & left_enc, int & ri
           "MecaBridgeSerialProtocol"), "Encoder values: L=%d, R=%d", left_enc, right_enc);
     } catch (const std::exception & e) {
       RCLCPP_WARN(
-        rclcpp::get_logger("MecaBridgeSerialProtocol"), "Failed to convert encoder values ('%s', '%s'): %s",
+        rclcpp::get_logger(
+          "MecaBridgeSerialProtocol"), "Failed to convert encoder values ('%s', '%s'): %s",
         left_str.c_str(), right_str.c_str(), e.what());
       throw std::runtime_error("Failed to parse encoder response: " + std::string(e.what()));
     }
@@ -271,7 +301,8 @@ void MecaBridgeSerialProtocol::readFourEncoders(int & fl, int & fr, int & rl, in
         rr = std::stoi(rr_str);
         RCLCPP_DEBUG(
           rclcpp::get_logger(
-            "MecaBridgeSerialProtocol"), "Four encoder values: FL=%d, FR=%d, RL=%d, RR=%d", fl, fr, rl, rr);
+            "MecaBridgeSerialProtocol"), "Four encoder values: FL=%d, FR=%d, RL=%d, RR=%d", fl, fr, rl,
+          rr);
       } catch (const std::exception & e) {
         RCLCPP_WARN(
           rclcpp::get_logger(
@@ -292,7 +323,8 @@ void MecaBridgeSerialProtocol::readFourEncoders(int & fl, int & fr, int & rl, in
 
     if (encoder_error_count % 20 == 1) {  // Log every 20 failures to avoid spam
       RCLCPP_ERROR(
-        rclcpp::get_logger("MecaBridgeSerialProtocol"), "Failed to read four encoders (error count: %d): %s",
+        rclcpp::get_logger(
+          "MecaBridgeSerialProtocol"), "Failed to read four encoders (error count: %d): %s",
         encoder_error_count, e.what());
     }
     throw;  // Re-throw the exception instead of setting to 0
@@ -340,12 +372,17 @@ std::string MecaBridgeSerialProtocol::findSerialPort(const std::string & preferr
     } catch (const std::exception & e) {
       RCLCPP_WARN(
         rclcpp::get_logger(
-          "MecaBridgeSerialProtocol"), "Preferred port %s failed: %s", preferred_port.c_str(), e.what());
-      RCLCPP_INFO(rclcpp::get_logger("MecaBridgeSerialProtocol"), "Falling back to auto-detection...");
+          "MecaBridgeSerialProtocol"), "Preferred port %s failed: %s",
+        preferred_port.c_str(), e.what());
+      RCLCPP_INFO(
+        rclcpp::get_logger(
+          "MecaBridgeSerialProtocol"), "Falling back to auto-detection...");
     }
   }
 
-  RCLCPP_INFO(rclcpp::get_logger("MecaBridgeSerialProtocol"), "Scanning for available serial ports...");
+  RCLCPP_INFO(
+    rclcpp::get_logger(
+      "MecaBridgeSerialProtocol"), "Scanning for available serial ports...");
 
   // Try each candidate port
   std::vector<std::string> failed_ports;
@@ -361,7 +398,9 @@ std::string MecaBridgeSerialProtocol::findSerialPort(const std::string & preferr
         return port;
       }
     } catch (const std::exception & e) {
-      RCLCPP_DEBUG(rclcpp::get_logger("MecaBridgeSerialProtocol"), "Port %s failed: %s", port.c_str(), e.what());
+      RCLCPP_DEBUG(
+        rclcpp::get_logger("MecaBridgeSerialProtocol"), "Port %s failed: %s",
+        port.c_str(), e.what());
       failed_ports.push_back(port + " (" + e.what() + ")");
       continue;
     }
@@ -378,17 +417,22 @@ std::string MecaBridgeSerialProtocol::findSerialPort(const std::string & preferr
   RCLCPP_ERROR(rclcpp::get_logger("MecaBridgeSerialProtocol"), "Troubleshooting steps:");
   RCLCPP_ERROR(
     rclcpp::get_logger(
-      "MecaBridgeSerialProtocol"), "  1. Check that the mecabridge device is connected and powered");
-  RCLCPP_ERROR(rclcpp::get_logger("MecaBridgeSerialProtocol"), "  2. Verify USB cable is functional");
+      "MecaBridgeSerialProtocol"),
+    "  1. Check that the mecabridge device is connected and powered");
+  RCLCPP_ERROR(
+    rclcpp::get_logger("MecaBridgeSerialProtocol"),
+    "  2. Verify USB cable is functional");
   RCLCPP_ERROR(
     rclcpp::get_logger(
       "MecaBridgeSerialProtocol"), "  3. Check port permissions: ls -l /dev/ttyUSB* /dev/ttyACM*");
   RCLCPP_ERROR(
     rclcpp::get_logger(
-      "MecaBridgeSerialProtocol"), "  4. Add user to dialout group: sudo usermod -a -G dialout $USER");
+      "MecaBridgeSerialProtocol"),
+    "  4. Add user to dialout group: sudo usermod -a -G dialout $USER");
   RCLCPP_ERROR(
     rclcpp::get_logger(
-      "MecaBridgeSerialProtocol"), "  5. Specify device parameter explicitly if using non-standard port");
+      "MecaBridgeSerialProtocol"),
+    "  5. Specify device parameter explicitly if using non-standard port");
 
   throw std::runtime_error("No serial port found. Check device connection and permissions.");
 }
@@ -492,7 +536,8 @@ bool MecaBridgeSerialProtocol::attemptReconnection()
   reconnection_attempts_++;
   RCLCPP_WARN(
     rclcpp::get_logger(
-      "MecaBridgeSerialProtocol"), "Attempting to reconnect to mecabridge (attempt #%d)...", reconnection_attempts_);
+      "MecaBridgeSerialProtocol"), "Attempting to reconnect to mecabridge (attempt #%d)...",
+    reconnection_attempts_);
 
   try {
     // Close any existing connection
@@ -512,11 +557,15 @@ bool MecaBridgeSerialProtocol::attemptReconnection()
     setup(last_device_, last_baud_rate_, last_timeout_ms_);
 
     if (connected()) {
-      RCLCPP_INFO(rclcpp::get_logger("MecaBridgeSerialProtocol"), "Successfully reconnected to mecabridge");
+      RCLCPP_INFO(
+        rclcpp::get_logger(
+          "MecaBridgeSerialProtocol"), "Successfully reconnected to mecabridge");
       return true;
     }
   } catch (const std::exception & e) {
-    RCLCPP_ERROR(rclcpp::get_logger("MecaBridgeSerialProtocol"), "Reconnection attempt failed: %s", e.what());
+    RCLCPP_ERROR(
+      rclcpp::get_logger(
+        "MecaBridgeSerialProtocol"), "Reconnection attempt failed: %s", e.what());
   }
 
   RCLCPP_ERROR(rclcpp::get_logger("MecaBridgeSerialProtocol"), "Failed to reconnect to mecabridge");

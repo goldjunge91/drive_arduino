@@ -7,7 +7,6 @@
 #define MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE_HPP_
 
 
-
 #pragma once
 
 #include <string>

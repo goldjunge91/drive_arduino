@@ -23,7 +23,7 @@ protected:
   void SetUp() override
   {
     // Create loopback backend instance
-  loopback_backend_ = std::make_shared<LoopbackSerialBackend>();
+    loopback_backend_ = std::make_shared<LoopbackSerialBackend>();
 
     // Initialize with test configuration
     setupTestConfig();

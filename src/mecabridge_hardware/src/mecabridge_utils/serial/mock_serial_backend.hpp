@@ -7,8 +7,6 @@
 #define MECABRIDGE_UTILS__SERIAL__MOCK_SERIAL_BACKEND_HPP_
 
 
-
-
 #pragma once
 
 #include "serial_backend.hpp"

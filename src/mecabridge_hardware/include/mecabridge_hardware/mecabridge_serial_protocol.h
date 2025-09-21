@@ -17,7 +17,9 @@ namespace mecabridge_hardware
   {
 public:
     MecaBridgeSerialProtocol();
-    MecaBridgeSerialProtocol(const std::string & serial_device, int32_t baud_rate, int32_t timeout_ms);
+    MecaBridgeSerialProtocol(
+      const std::string & serial_device, int32_t baud_rate,
+      int32_t timeout_ms);
 
     void setup(const std::string & serial_device, int32_t baud_rate, int32_t timeout_ms);
     void sendPing(); // Sends "PING\n" for Arduino reset sync

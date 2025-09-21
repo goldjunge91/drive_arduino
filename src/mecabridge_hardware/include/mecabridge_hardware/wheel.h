@@ -7,8 +7,6 @@
 #define MECABRIDGE_HARDWARE__WHEEL_H_
 
 
-
-
 #include <string>
 
 namespace mecabridge_hardware

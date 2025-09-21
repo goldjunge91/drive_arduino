@@ -21,7 +21,8 @@ protected:
     hw_info.hardware_parameters["config_file"] = "test_config.yaml";
 
     // Set up a test config file content
-    test_config_content_ = R"(
+    test_config_content_ =
+      R"(
 serial_port: "/dev/ttyUSB0"
 state_publish_rate_hz: 50
 wheel_radius: 0.0325

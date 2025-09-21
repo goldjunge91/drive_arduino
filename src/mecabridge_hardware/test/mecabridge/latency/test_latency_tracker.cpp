@@ -21,7 +21,7 @@ class LatencyTrackerTest : public ::testing::Test
 protected:
   void SetUp() override
   {
-  tracker_ = std::make_unique<LatencyTracker>(10);     // Small window for testing
+    tracker_ = std::make_unique<LatencyTracker>(10);   // Small window for testing
   }
 
   std::unique_ptr<LatencyTracker> tracker_;

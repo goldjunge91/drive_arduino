@@ -2,7 +2,6 @@
 #define DRIVE_ARDUINO__FIRMWARE__MECABRIDGE_PICO__CONFIG_H_
 
 
-
 // ===== Laufzeit-Defaults =====
 #define PWM_MAX            255   // UNO PWM 8-bit
 #define WATCHDOG_MS        300   // Stop, wenn solange kein Kommando

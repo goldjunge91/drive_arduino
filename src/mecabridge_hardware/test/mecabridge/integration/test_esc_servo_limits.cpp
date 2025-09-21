@@ -18,9 +18,11 @@ using namespace mecabridge::protocol; // use SafetyFlags, CommandFramePayload, e
  * This test verifies that over-limit commands are properly clamped
  * and appropriate flag bits are set when limits are exceeded.
  */
-class ESCServoLimitClampTest : public ::testing::Test {
+class ESCServoLimitClampTest : public ::testing::Test
+{
 protected:
-  void SetUp() override {
+  void SetUp() override
+  {
     // Setup test limits
     servo_pos_min_rad_ = -1.57;  // -90 degrees
     servo_pos_max_rad_ = 1.57;   // +90 degrees
@@ -32,7 +34,8 @@ protected:
   /**
    * @brief Apply servo position limits and return flags
    */
-  uint16_t clampServoPosition(float& value) {
+  uint16_t clampServoPosition(float & value)
+  {
     uint16_t flags = 0;
 
     if (value > servo_pos_max_rad_) {
@@ -49,7 +52,8 @@ protected:
   /**
    * @brief Apply servo velocity limits and return flags
    */
-  uint16_t clampServoVelocity(float& value) {
+  uint16_t clampServoVelocity(float & value)
+  {
     uint16_t flags = 0;
 
     if (std::abs(value) > servo_cont_max_vel_rad_s_) {
@@ -63,7 +67,8 @@ protected:
   /**
    * @brief Apply ESC limits and return flags
    */
-  uint16_t clampESC(float& value) {
+  uint16_t clampESC(float & value)
+  {
     uint16_t flags = 0;
 
     if (value > esc_max_norm_) {
