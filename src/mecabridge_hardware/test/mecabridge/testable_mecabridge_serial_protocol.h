@@ -6,7 +6,7 @@
 #ifndef MECABRIDGE__TESTABLE_MECABRIDGE_SERIAL_PROTOCOL_H_
 #define MECABRIDGE__TESTABLE_MECABRIDGE_SERIAL_PROTOCOL_H_
 
-#include "mock_serial.h"
+#include "mock_serial.hpp"
 
 #include <string>
 #include <vector>

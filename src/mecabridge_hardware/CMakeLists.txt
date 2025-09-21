@@ -43,6 +43,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 find_package(ament_cmake REQUIRED)
 find_package(hardware_interface REQUIRED)
 find_package(pluginlib REQUIRED)
+find_package(ament_index_cpp REQUIRED)
+find_package(rcpputils REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 
@@ -97,6 +99,10 @@ install(TARGETS mecabridge_protocol ${PROJECT_NAME}
 
 install(DIRECTORY include/
         DESTINATION include
+)
+
+install(FILES test/mecabridge/hardware/test_mecabridge_hardware_interface.yaml
+        DESTINATION share/${PROJECT_NAME}/test/mecabridge/hardware
 )
 
 # Testing
@@ -209,7 +215,7 @@ if (BUILD_TESTING)
     )
     target_link_libraries(test_mecabridge_hardware_interface ${PROJECT_NAME})
     target_include_directories(test_mecabridge_hardware_interface PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    ament_target_dependencies(test_mecabridge_hardware_interface pluginlib hardware_interface)
+    ament_target_dependencies(test_mecabridge_hardware_interface pluginlib hardware_interface ament_index_cpp rcpputils)
 
     # Integration test node executable
     find_package(geometry_msgs REQUIRED)

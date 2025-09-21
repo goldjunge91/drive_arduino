@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef MECABRIDGE__MOCK_SERIAL_H_
-#define MECABRIDGE__MOCK_SERIAL_H_
+#ifndef MECABRIDGE__MOCK_SERIAL_HPP_
+#define MECABRIDGE__MOCK_SERIAL_HPP_
 
 #include <string>
+#include <cstdint>
 
 #include <gmock/gmock.h>
 #include <serial/serial.h>
@@ -35,4 +36,4 @@ public:
   MOCK_METHOD(void, waitByteTimes, (size_t count));
 };
 
-#endif // MECABRIDGE__MOCK_SERIAL_H_
+#endif // MECABRIDGE__MOCK_SERIAL_HPP_

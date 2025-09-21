@@ -11,7 +11,7 @@
 #include <rclcpp/rclcpp.hpp>
 
 // Mock serial library for testing
-#include "mock_serial.h"
+#include "mock_serial.hpp"
 #include "testable_mecabridge_serial_protocol.h"
 
 using namespace mecabridge_hardware;

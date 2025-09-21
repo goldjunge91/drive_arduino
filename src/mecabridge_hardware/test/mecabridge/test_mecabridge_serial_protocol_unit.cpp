@@ -16,7 +16,7 @@
 #define TESTING_MODE
 
 #include "mecabridge_hardware/mecabridge_serial_protocol.h"
-#include "mock_serial.h"
+#include "mock_serial.hpp"
 
 using ::testing::_;
 using ::testing::Return;

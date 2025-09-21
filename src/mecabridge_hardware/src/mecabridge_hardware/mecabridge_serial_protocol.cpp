@@ -16,7 +16,7 @@
 #include <stdexcept>
 
 #ifdef TESTING_MODE
-#include "../test/mock_serial.h"
+#include "../test/mock_serial.hpp"
 #endif
 
 namespace mecabridge_hardware

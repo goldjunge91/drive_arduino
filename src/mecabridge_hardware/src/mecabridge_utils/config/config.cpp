@@ -10,6 +10,7 @@
 #include <fstream>
 #include <set>
 #include <sstream>
+#include <vector>
 
 namespace mecabridge
 {
@@ -73,12 +74,12 @@ void Config::validate() const
     throw std::runtime_error("servo positional min>=max");
   }
 
-  // ESC ranges valid - temporary disabled for test fix
-  // if (!(escs.left.esc_min_pwm < escs.left.esc_max_pwm) ||
-  //   !(escs.right.esc_min_pwm < escs.right.esc_max_pwm))
-  // {
-  //   throw std::runtime_error("esc pwm range invalid");
-  // }
+  // ESC ranges must define a valid min/max ordering
+  if (!(escs.left.esc_min_pwm < escs.left.esc_max_pwm) ||
+    !(escs.right.esc_min_pwm < escs.right.esc_max_pwm))
+  {
+    throw std::runtime_error("esc pwm range invalid");
+  }
 }
 
 // Very small YAML-ish line parser helpers
@@ -143,6 +144,7 @@ static void parse_inline_map(
 Config parse_from_yaml_string(const std::string & yaml)
 {
   Config cfg;
+  EscConfig * active_esc = nullptr;
 
   enum class Sect { NONE, ROOT, WHEELS, SERVOS_POS, SERVOS_CONT, ESCS, FEATURES };
   Sect sect = Sect::NONE;
@@ -156,13 +158,13 @@ Config parse_from_yaml_string(const std::string & yaml)
     if (line.empty()) {continue;}
 
     // Section headers
-    if (line == "mecabridge_hardware:") {sect = Sect::ROOT; continue;}
-    if (line == "wheels:") {sect = Sect::WHEELS; continue;}
-    if (line == "servos:") {sect = Sect::SERVOS_POS; continue;}
-    if (line == "positional:") {sect = Sect::SERVOS_POS; continue;}
-    if (line == "continuous:") {sect = Sect::SERVOS_CONT; continue;}
-    if (line == "escs:") {sect = Sect::ESCS; continue;}
-    if (line == "features:") {sect = Sect::FEATURES; continue;}
+    if (line == "mecabridge_hardware:") {sect = Sect::ROOT; active_esc = nullptr; continue;}
+    if (line == "wheels:") {sect = Sect::WHEELS; active_esc = nullptr; continue;}
+    if (line == "servos:") {sect = Sect::SERVOS_POS; active_esc = nullptr; continue;}
+    if (line == "positional:") {sect = Sect::SERVOS_POS; active_esc = nullptr; continue;}
+    if (line == "continuous:") {sect = Sect::SERVOS_CONT; active_esc = nullptr; continue;}
+    if (line == "escs:") {sect = Sect::ESCS; active_esc = nullptr; continue;}
+    if (line == "features:") {sect = Sect::FEATURES; active_esc = nullptr; continue;}
 
     // Accept nested keys with two-space indent; our simple parser ignores indent and relies on last seen sect.
     std::string key, value;
@@ -231,17 +233,31 @@ Config parse_from_yaml_string(const std::string & yaml)
 
       case Sect::ESCS:
         if (key == "left" || key == "right") {
-          std::vector<std::pair<std::string, std::string>> kv;
-          parse_inline_map(value, kv);
-          EscConfig * tgt = (key == "left") ? &cfg.escs.left : &cfg.escs.right;
-          for (auto & p : kv) {
-            if (p.first == "joint_name") {
-              tgt->joint_name = unquote(p.second);
-            } else if (p.first == "esc_min_pwm") {
-              tgt->esc_min_pwm = to_int(p.second);
-            } else if (p.first == "esc_max_pwm") {
-              tgt->esc_max_pwm = to_int(p.second);
-            } else if (p.first == "esc_deadband") {tgt->esc_deadband = to_int(p.second);}
+          active_esc = (key == "left") ? &cfg.escs.left : &cfg.escs.right;
+          if (!value.empty()) {
+            std::vector<std::pair<std::string, std::string>> kv;
+            parse_inline_map(value, kv);
+            for (auto & p : kv) {
+              if (p.first == "joint_name") {
+                active_esc->joint_name = unquote(p.second);
+              } else if (p.first == "esc_min_pwm") {
+                active_esc->esc_min_pwm = to_int(p.second);
+              } else if (p.first == "esc_max_pwm") {
+                active_esc->esc_max_pwm = to_int(p.second);
+              } else if (p.first == "esc_deadband") {
+                active_esc->esc_deadband = to_int(p.second);
+              }
+            }
+          }
+        } else if (active_esc) {
+          if (key == "joint_name") {
+            active_esc->joint_name = value;
+          } else if (key == "esc_min_pwm") {
+            active_esc->esc_min_pwm = to_int(value);
+          } else if (key == "esc_max_pwm") {
+            active_esc->esc_max_pwm = to_int(value);
+          } else if (key == "esc_deadband") {
+            active_esc->esc_deadband = to_int(value);
           }
         }
         break;
