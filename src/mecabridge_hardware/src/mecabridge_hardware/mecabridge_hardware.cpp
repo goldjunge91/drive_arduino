@@ -37,7 +37,7 @@ hardware_interface::CallbackReturn MecaBridgeHardware::on_init(
   }
 
   // Initialize vectors based on joints from config and compile-time features
-  size_t num_joints = 4;  // Always have 4 wheels
+  size_t num_joints = 8;  // 4 wheels * 2 (velocity + position)
   
 #if MECABRIDGE_ENABLE_SERVOS
   if (cfg_.features.enable_servos) {
@@ -61,7 +61,7 @@ hardware_interface::CallbackReturn MecaBridgeHardware::on_init(
 std::vector<hardware_interface::StateInterface> MecaBridgeHardware::export_state_interfaces()
 {
   std::vector<hardware_interface::StateInterface> si;
-  si.reserve(hw_states_.size());
+  si.reserve(hw_states_.size() * 2);  // Each wheel has velocity + position
 
   auto wheel_names = cfg_.wheel_joint_names();
   for (size_t i = 0; i < 4; ++i) {
@@ -69,9 +69,13 @@ std::vector<hardware_interface::StateInterface> MecaBridgeHardware::export_state
       hardware_interface::StateInterface(
         wheel_names[i],
         hardware_interface::HW_IF_VELOCITY, &hw_states_[i]));
+    si.emplace_back(
+      hardware_interface::StateInterface(
+        wheel_names[i],
+        hardware_interface::HW_IF_POSITION, &hw_states_[i + 4]));  // Use separate positions
   }
 
-  size_t offset = 4;
+  size_t offset = 8;  // After 4 wheels * 2 states each
   
 #if MECABRIDGE_ENABLE_SERVOS
   if (cfg_.features.enable_servos) {
