@@ -37,17 +37,18 @@ namespace Flags {
     constexpr uint16_t ENCODER_STALE = (1 << 4);
 }
 
-// Command frame payload (35 bytes)
+// Command frame payload (36 bytes)
 struct CommandFramePayload {
     float wheel_vel_rad_s[4];      // 16 bytes: FL, FR, RL, RR
     float servo_pos_rad;           // 4 bytes
     float servo_cont_vel_norm;     // 4 bytes
     float esc_norm[2];             // 8 bytes
     uint16_t seq;                  // 2 bytes
+    uint8_t protocol_version;      // 1 byte
     uint8_t reserved_flags;        // 1 byte
 } __attribute__((packed));
 
-// State frame payload (39 bytes)
+// State frame payload (40 bytes)
 struct StateFramePayload {
     uint32_t encoder_counts[4];    // 16 bytes
     uint16_t dt_ms;                // 2 bytes
@@ -57,6 +58,7 @@ struct StateFramePayload {
     uint16_t seq_echo;             // 2 bytes
     uint16_t flags;                // 2 bytes
     uint8_t error_code;            // 1 byte
+    uint8_t protocol_version;      // 1 byte
 } __attribute__((packed));
 
 // Frame structure

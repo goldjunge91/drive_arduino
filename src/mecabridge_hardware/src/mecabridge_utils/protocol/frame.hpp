@@ -89,7 +89,7 @@ struct StateFramePayload
   uint8_t protocol_version;         // Protocol version of the firmware
 } __attribute__((packed));
 
-static_assert(sizeof(StateFramePayload) >= 40, "StateFramePayload must be at least 40 bytes");
+static_assert(sizeof(StateFramePayload) == 40, "StateFramePayload must be 40 bytes");
 
 // Generic frame structure for parsing
 struct Frame

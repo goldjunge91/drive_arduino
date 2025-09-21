@@ -74,6 +74,9 @@ void sendStateFrame() {
     StateFramePayload state;
     memset(&state, 0, sizeof(state));
     
+    // Set protocol version
+    state.protocol_version = PROTOCOL_VERSION;
+    
     // Get current actuator state
     actuators.getCurrentState(state);
     
