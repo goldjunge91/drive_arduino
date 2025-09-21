@@ -13,7 +13,7 @@ protected:
     // Create a minimal hardware info for testing
     hardware_interface::HardwareInfo hw_info;
     hw_info.hardware_parameters["config_file"] = "test_config.yaml";
-    
+
     // Set up a test config file content
     test_config_content_ = R"(
 serial_port: "/dev/ttyUSB0"
@@ -64,14 +64,14 @@ features:
   enable_diagnostics: true
 )";
   }
-  
+
   std::string test_config_content_;
 };
 
 TEST_F(FeatureToggleTest, CompileTimeFeatureFlags)
 {
   // Test that compile-time feature flags are correctly defined
-  
+
 #if MECABRIDGE_ENABLE_SERVOS
   EXPECT_TRUE(kEnableServos);
   EXPECT_EQ(kServoInterfaces, 2);
@@ -97,7 +97,7 @@ TEST_F(FeatureToggleTest, CompileTimeFeatureFlags)
   // Test interface counts
   EXPECT_EQ(kWheelInterfaces, 4);  // Always 4 wheels
   EXPECT_EQ(kTotalInterfaces, kWheelInterfaces + kServoInterfaces + kESCInterfaces);
-  
+
   // Test index mappings
   EXPECT_EQ(kWheelStartIndex, 0);
   EXPECT_EQ(kServoStartIndex, kWheelStartIndex + kWheelInterfaces);
@@ -109,14 +109,14 @@ TEST_F(FeatureToggleTest, InterfaceCountWithAllFeaturesEnabled)
   // This test assumes all features are enabled at compile time
 #if MECABRIDGE_ENABLE_SERVOS && MECABRIDGE_ENABLE_ESCS
   MecaBridgeHardware hardware;
-  
+
   // Create hardware info with test config
   hardware_interface::HardwareInfo hw_info;
   hw_info.hardware_parameters["config_file"] = "test_config.yaml";
-  
+
   // Note: This test would need actual config file or mock config loading
   // For now, just test the feature flag constants
-  
+
   EXPECT_EQ(kTotalInterfaces, 8);  // 4 wheels + 2 servos + 2 ESCs
 #endif
 }

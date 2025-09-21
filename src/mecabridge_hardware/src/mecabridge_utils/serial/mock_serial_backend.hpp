@@ -1,3 +1,7 @@
+#ifndef MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__SERIAL__MOCK_SERIAL_BACKEND__HPP_
+#define MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__SERIAL__MOCK_SERIAL_BACKEND__HPP_
+
+
 #pragma once
 
 #include "serial_backend.hpp"
@@ -50,3 +54,4 @@ private:
 
 } // namespace serial
 } // namespace mecabridge
+#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__SERIAL__MOCK_SERIAL_BACKEND__HPP_

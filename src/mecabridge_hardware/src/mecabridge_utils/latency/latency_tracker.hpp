@@ -1,3 +1,7 @@
+#ifndef MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__LATENCY__LATENCY_TRACKER__HPP_
+#define MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__LATENCY__LATENCY_TRACKER__HPP_
+
+
 #pragma once
 
 #include <chrono>
@@ -98,3 +102,4 @@ private:
 
 } // namespace latency
 } // namespace mecabridge
+#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__LATENCY__LATENCY_TRACKER__HPP_

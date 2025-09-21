@@ -1,4 +1,8 @@
-﻿#pragma once
+#ifndef MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__HPP_
+#define MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__HPP_
+
+
+#pragma once
 
 #include <string>
 #include <vector>
@@ -83,3 +87,4 @@ private:
 };
 
 } // namespace mecabridge_hardware
+#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__HPP_

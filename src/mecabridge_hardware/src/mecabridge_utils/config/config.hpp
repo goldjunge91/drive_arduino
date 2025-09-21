@@ -1,3 +1,7 @@
+#ifndef MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__CONFIG__HPP_
+#define MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__CONFIG__HPP_
+
+
 ﻿#pragma once
 
 #include <cstdint>
@@ -111,3 +115,4 @@ Config parse_from_yaml_file(const std::string & path);
 
 }   // namespace config
 } // namespace mecabridge
+#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__CONFIG__HPP_

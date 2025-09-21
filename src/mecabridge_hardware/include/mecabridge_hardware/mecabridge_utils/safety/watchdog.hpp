@@ -1,3 +1,7 @@
+#ifndef MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__SAFETY__WATCHDOG__HPP_
+#define MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__SAFETY__WATCHDOG__HPP_
+
+
 #pragma once
 
 // Wrapper header to provide the package-prefixed include path
@@ -9,3 +13,4 @@
 #pragma once
 
 #include "mecabridge_utils/safety/watchdog.hpp"
+#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__SAFETY__WATCHDOG__HPP_

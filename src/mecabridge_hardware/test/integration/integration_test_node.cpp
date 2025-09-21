@@ -5,6 +5,7 @@
 #include <std_msgs/msg/float64_multi_array.hpp>
 #include <chrono>
 #include <vector>
+#include <memory>
 
 using namespace std::chrono_literals;
 

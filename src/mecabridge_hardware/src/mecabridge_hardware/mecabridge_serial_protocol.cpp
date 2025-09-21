@@ -5,6 +5,8 @@
 #include <thread>
 #include <chrono>
 #include <stdexcept>
+#include <memory>
+#include <algorithm>
 
 #ifdef TESTING_MODE
 #include "../test/mock_serial.h"

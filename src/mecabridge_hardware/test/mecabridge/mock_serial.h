@@ -1,5 +1,7 @@
-#ifndef MOCK_SERIAL_H
-#define MOCK_SERIAL_H
+#ifndef MECABRIDGE_HARDWARE__MECABRIDGE__MOCK_SERIAL__H_
+#define MECABRIDGE_HARDWARE__MECABRIDGE__MOCK_SERIAL__H_
+
+
 
 #include <gmock/gmock.h>
 #include <string>
@@ -29,4 +31,4 @@ public:
   MOCK_METHOD(void, waitByteTimes, (size_t count));
 };
 
-#endif // MOCK_SERIAL_H
+#endif  // MECABRIDGE_HARDWARE__MECABRIDGE__MOCK_SERIAL__H_

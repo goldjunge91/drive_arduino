@@ -1,3 +1,4 @@
+#include <memory>
 /**
  * @file test_mecabridge_integration.cpp
  * @brief Integration tests for mecabridge Hardware Interface

@@ -1,10 +1,7 @@
-#pragma once
+#ifndef MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__FEATURE_CONFIG__HPP_
+#define MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__FEATURE_CONFIG__HPP_
 
-// Feature toggle macros for MecaBridge
-// These can be set at compile time to enable/disable specific features
 
-#ifndef MECABRIDGE_ENABLE_SERVOS
-#define MECABRIDGE_ENABLE_SERVOS 1
 #endif
 
 #ifndef MECABRIDGE_ENABLE_ESCS
@@ -46,3 +43,4 @@ constexpr int kTotalInterfaces = kWheelInterfaces + kServoInterfaces + kESCInter
 constexpr int kWheelStartIndex = 0;
 constexpr int kServoStartIndex = kWheelStartIndex + kWheelInterfaces;
 constexpr int kESCStartIndex = kServoStartIndex + kServoInterfaces;
+#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__FEATURE_CONFIG__HPP_

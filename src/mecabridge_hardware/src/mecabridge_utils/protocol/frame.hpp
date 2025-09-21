@@ -1,3 +1,7 @@
+#ifndef MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__PROTOCOL__FRAME__HPP_
+#define MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__PROTOCOL__FRAME__HPP_
+
+
 // Copyright 2024 MecaBridge Project
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -163,3 +167,4 @@ void clampCommandValues(CommandFramePayload & command, uint16_t & flags_set);
 
 } // namespace protocol
 } // namespace mecabridge
+#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__PROTOCOL__FRAME__HPP_

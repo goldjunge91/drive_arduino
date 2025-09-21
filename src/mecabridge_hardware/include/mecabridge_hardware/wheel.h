@@ -1,5 +1,7 @@
-#ifndef mecabridge_hardware_WHEEL_H
-#define mecabridge_hardware_WHEEL_H
+#ifndef MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__WHEEL__H_
+#define MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__WHEEL__H_
+
+
 
 #include <string>
 
@@ -29,4 +31,4 @@ public:
 
 }  // namespace mecabridge_hardware
 
-#endif // mecabridge_hardware_WHEEL_H
+#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__WHEEL__H_

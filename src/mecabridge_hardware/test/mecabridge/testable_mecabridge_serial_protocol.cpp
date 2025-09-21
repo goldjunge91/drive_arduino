@@ -5,6 +5,8 @@
 #include <thread>
 #include <chrono>
 #include <stdexcept>
+#include <memory>
+#include <algorithm>
 
 namespace mecabridge_hardware
 {

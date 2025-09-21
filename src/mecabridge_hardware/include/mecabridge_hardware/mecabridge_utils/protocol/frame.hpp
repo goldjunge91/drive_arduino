@@ -1,3 +1,7 @@
+#ifndef MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__PROTOCOL__FRAME__HPP_
+#define MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__PROTOCOL__FRAME__HPP_
+
+
 #pragma once
 
 // Wrapper header so tests and external code can include the package-prefixed path
@@ -9,3 +13,4 @@
 // #pragma once
 
 // #include "mecabridge_utils/protocol/frame.hpp"
+#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__PROTOCOL__FRAME__HPP_

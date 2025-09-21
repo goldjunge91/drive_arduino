@@ -1,3 +1,7 @@
+#ifndef MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__SAFETY__WATCHDOG__HPP_
+#define MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__SAFETY__WATCHDOG__HPP_
+
+
 #pragma once
 
 #include <chrono>
@@ -29,3 +33,4 @@ private:
 
 } // namespace safety
 } // namespace mecabridge
+#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__SAFETY__WATCHDOG__HPP_

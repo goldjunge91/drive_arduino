@@ -2,6 +2,7 @@
 #include "mecabridge_utils/latency/latency_tracker.hpp"
 #include <chrono>
 #include <thread>
+#include <memory>
 
 using namespace mecabridge::latency;
 using namespace std::chrono_literals;

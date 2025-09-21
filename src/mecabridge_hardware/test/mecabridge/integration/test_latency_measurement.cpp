@@ -4,6 +4,7 @@
 #include <chrono>
 #include <random>
 #include <vector>
+#include <algorithm>
 
 using namespace mecabridge::latency;
 using namespace std::chrono_literals;
@@ -78,7 +79,7 @@ TEST_F(LatencyMeasurementTest, LowVariabilityDistribution)
 
     auto p95_duration = latency_tracker_->getP95Latency();
     ASSERT_GT(p95_duration.count(), 0) << "Should have p95 measurement";
-    
+
     double p95_ms = std::chrono::duration<double, std::milli>(p95_duration).count();
     EXPECT_LE(p95_ms, 20.0) << "p95 latency should be ≤ 20ms for low variability";
     EXPECT_LE(p95_ms, 10.0) << "p95 should be reasonable for 3-7ms distribution";
@@ -148,7 +149,7 @@ TEST_F(LatencyMeasurementTest, BoundaryConditionTesting)
 
     auto p95_duration = latency_tracker_->getP95Latency();
     ASSERT_GT(p95_duration.count(), 0) << "Should have p95 measurement";
-    
+
     double p95_ms = std::chrono::duration<double, std::milli>(p95_duration).count();
     EXPECT_LE(p95_ms, 20.0) << "19.9ms constant should meet ≤20ms requirement";
     EXPECT_NEAR(p95_ms, 19.9, 0.5) << "p95 should be close to input value";

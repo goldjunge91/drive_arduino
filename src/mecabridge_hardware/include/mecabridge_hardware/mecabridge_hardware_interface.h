@@ -1,5 +1,7 @@
-#ifndef mecabridge_hardware_mecabridge_hardware_INTERFACE_H
-#define mecabridge_hardware_mecabridge_hardware_INTERFACE_H
+#ifndef MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE_INTERFACE__H_
+#define MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE_INTERFACE__H_
+
+
 
 #include <memory>
 #include <string>
@@ -76,4 +78,4 @@ private:
 
 }  // namespace mecabridge_hardware
 
-#endif  // mecabridge_hardware_mecabridge_hardware_INTERFACE_H
+#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE_INTERFACE__H_

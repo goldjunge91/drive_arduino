@@ -26,27 +26,27 @@ TEST(ProtocolHandshakeTest, VersionMismatch) {
   // 2. Manually encode this frame to preserve the wrong version
   uint8_t buffer[128];
   size_t offset = 0;
-  
+
   // START_BYTE
   buffer[offset++] = START_BYTE;
-  
-  // FRAME_ID  
+
+  // FRAME_ID
   buffer[offset++] = static_cast<uint8_t>(FrameId::STATE);
-  
+
   // LEN (payload size)
   buffer[offset++] = sizeof(StateFramePayload);
-  
+
   // PAYLOAD - copy the struct directly with wrong version
   std::memcpy(&buffer[offset], &state_payload, sizeof(StateFramePayload));
   offset += sizeof(StateFramePayload);
-  
+
   // Calculate CRC over FRAME_ID + LEN + PAYLOAD
   uint16_t crc = mecabridge::protocol::crc16_ccitt_false(&buffer[1], offset - 1);
-  
+
   // CRC16 (MSB first)
   buffer[offset++] = static_cast<uint8_t>((crc >> 8) & 0xFF);
   buffer[offset++] = static_cast<uint8_t>(crc & 0xFF);
-  
+
   size_t bytes_written = offset;
 
   // 3. Attempt to parse the frame

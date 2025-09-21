@@ -1,5 +1,7 @@
-#ifndef TESTABLE_mecabridge_COMMS_H
-#define TESTABLE_mecabridge_COMMS_H
+#ifndef MECABRIDGE_HARDWARE__MECABRIDGE__TESTABLE_MECABRIDGE_SERIAL_PROTOCOL__H_
+#define MECABRIDGE_HARDWARE__MECABRIDGE__TESTABLE_MECABRIDGE_SERIAL_PROTOCOL__H_
+
+
 
 #include <string>
 #include <vector>
@@ -67,4 +69,4 @@ private:
 
 }  // namespace mecabridge_hardware
 
-#endif  // TESTABLE_mecabridge_COMMS_H
+#endif  // MECABRIDGE_HARDWARE__MECABRIDGE__TESTABLE_MECABRIDGE_SERIAL_PROTOCOL__H_

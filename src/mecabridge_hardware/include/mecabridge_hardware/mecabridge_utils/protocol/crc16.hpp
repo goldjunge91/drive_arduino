@@ -1,3 +1,7 @@
+#ifndef MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__PROTOCOL__CRC16__HPP_
+#define MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__PROTOCOL__CRC16__HPP_
+
+
 #pragma once
 
 // Wrapper header to expose package-prefixed include path
@@ -13,3 +17,4 @@ inline uint16_t crc16_ccitt_false(const uint8_t * data, size_t len)
 {
   return ::mecabridge::protocol::crc16_ccitt_false(data, len);
 }
+#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__PROTOCOL__CRC16__HPP_
