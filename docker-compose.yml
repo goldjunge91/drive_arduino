@@ -55,6 +55,39 @@ services:
       source install/setup.bash && 
       bash"
 
+  lint:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        INSTALL_DESKTOP_TOOLS: 1
+        INSTALL_GAZEBO: 1
+        INSTALL_ROBOT: 1
+    container_name: ros2_drive_lint
+    working_dir: /ros2_ws
+    environment:
+      - ROS_DOMAIN_ID=42
+    volumes:
+      - ./src:/ros2_ws/src:rw
+      - ros2_build_cache:/ros2_ws/build
+      - ros2_install_cache:/ros2_ws/install
+      - ros2_log_cache:/ros2_ws/log
+    command: >-
+      bash -lc "
+      set -eo pipefail;
+      source /opt/ros/humble/setup.bash &&
+      export AMENT_CPPCHECK_ALLOW_SLOW_VERSIONS=1 &&
+      ament_cpplint src &&
+      ament_cppcheck src &&
+      ament_lint_cmake src &&
+      ament_flake8 src &&
+      ament_pep257 src &&
+      ament_xmllint src &&
+      ament_uncrustify --all src
+      "
+    profiles:
+      - lint
+
 volumes:
   ros2_build_cache:
   ros2_install_cache:
