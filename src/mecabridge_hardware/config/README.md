@@ -12,7 +12,7 @@ This directory contains configuration files for the TB6612 hardware interface su
 - `tb6612_four_wheel_controller.yaml` - Four wheel independent drive controller
 
 ### Hardware Interface Parameters
-- `tb6612_hardware_params.yaml` - Complete hardware interface parameter documentation
+- `mecabridge_hardware_params.yaml` - Complete hardware interface parameter documentation
 - `tb6612_example_configs.yaml` - Example configurations for all drive types
 
 ## Supported Drive Types
@@ -91,31 +91,31 @@ track_width: 0.3     # Distance between left and right wheels (m)
 ### Launch Differential Drive
 ```bash
 # Basic differential drive
-ros2 launch tb6612_hardware tb6612_differential.launch.py
+ros2 launch tb6612_hardware mecabridge_differential.launch.py
 
 # With specific serial device
-ros2 launch tb6612_hardware tb6612_differential_enhanced.launch.py device:=/dev/ttyUSB0
+ros2 launch tb6612_hardware mecabridge_differential_enhanced.launch.py device:=/dev/ttyUSB0
 
 # With encoder support
-ros2 launch tb6612_hardware tb6612_differential_enhanced.launch.py has_encoders:=true
+ros2 launch tb6612_hardware mecabridge_differential_enhanced.launch.py has_encoders:=true
 ```
 
 ### Launch Mecanum Drive
 ```bash
 # Basic mecanum drive
-ros2 launch tb6612_hardware tb6612_mecanum.launch.py
+ros2 launch tb6612_hardware mecabridge_mecanum.launch.py
 
 # With mock hardware for testing
-ros2 launch tb6612_hardware tb6612_mecanum.launch.py use_mock_hardware:=true
+ros2 launch tb6612_hardware mecabridge_mecanum.launch.py use_mock_hardware:=true
 ```
 
 ### Launch Four Wheel Independent
 ```bash
 # Four wheel independent control
-ros2 launch tb6612_hardware tb6612_four_wheel.launch.py
+ros2 launch tb6612_hardware mecabridge_four_wheel.launch.py
 
 # With custom baud rate
-ros2 launch tb6612_hardware tb6612_four_wheel.launch.py baud_rate:=57600
+ros2 launch tb6612_hardware mecabridge_four_wheel.launch.py baud_rate:=57600
 ```
 
 ## Serial Port Auto-Detection

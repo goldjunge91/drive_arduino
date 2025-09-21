@@ -211,7 +211,7 @@ tb6612_hardware_node:
 ### Launch Configuration
 
 ```python
-# launch/tb6612_differential.launch.py
+# launch/mecabridge_differential.launch.py
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
@@ -235,7 +235,7 @@ def generate_launch_description():
 ### Controller Configuration
 
 ```yaml
-# config/tb6612_differential_controller.yaml
+# config/mecabridge_differential_controller.yaml
 controller_manager:
   ros__parameters:
     update_rate: 20  # Hz
@@ -662,7 +662,7 @@ tb6612_hardware_node:
 ### Launch-Konfiguration
 
 ```python
-# launch/tb6612_differential.launch.py
+# launch/mecabridge_differential.launch.py
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
@@ -686,7 +686,7 @@ def generate_launch_description():
 ### Controller-Konfiguration
 
 ```yaml
-# config/tb6612_differential_controller.yaml
+# config/mecabridge_differential_controller.yaml
 controller_manager:
   ros__parameters:
     update_rate: 20  # Hz
