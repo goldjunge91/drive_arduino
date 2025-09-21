@@ -274,3 +274,6 @@ firmware/mecabridge_pico/
 - Lokale ROS 2 control Doku: `.docs/ros2_control/`
 - micro-ROS Ressourcen: `Implementierung_raspberry pi.md`
 
+
+
+docker compose exec -T ros2_drive_dev bash -c "colcon build --packages-select drive_arduino mecabridge_hardware && colcon test --packages-select mecabridge_hardware && colcon test-result --all --verbose" *> test_results_5.log
