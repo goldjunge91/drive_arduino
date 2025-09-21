@@ -18,6 +18,7 @@ public:
   void updateOnValidFrame(TimePoint now);
   bool tripped(TimePoint now);
   void reset();
+  void reset(TimePoint now);
   uint16_t flags();
 
 private:

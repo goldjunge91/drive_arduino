@@ -62,8 +62,8 @@ TEST_F(WatchdogEndToEndTest, WatchdogResetResumesNormalOperation) {
   now += 200ms;
   EXPECT_TRUE(watchdog_->tripped(now));
   
-  // Reset watchdog
-  watchdog_->reset();
+  // Reset watchdog to current time
+  watchdog_->reset(now);
   EXPECT_FALSE(watchdog_->tripped(now));
   
   // Update with valid frame
@@ -139,7 +139,7 @@ TEST_F(WatchdogEndToEndTest, WatchdogRecoveryAfterFrameResume) {
   
   // Resume sending frames
   watchdog_->updateOnValidFrame(now);
-  watchdog_->reset();  // Reset after resuming communication
+  // Note: updateOnValidFrame() already resets the watchdog
   
   EXPECT_FALSE(watchdog_->tripped(now))
     << "Watchdog should reset when frames resume";

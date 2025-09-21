@@ -37,6 +37,12 @@ void Watchdog::reset()
   tripped_ = false;
 }
 
+void Watchdog::reset(TimePoint now)
+{
+  last_valid_frame_time_ = now;
+  tripped_ = false;
+}
+
 uint16_t Watchdog::flags()
 {
   if (tripped_) {
