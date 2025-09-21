@@ -92,15 +92,15 @@ TEST_F(FrameRoundtripTest, CommandFrameSize) {
 
   // Now that encoding is implemented, test the actual results
   EXPECT_EQ(result, mecabridge::protocol::ErrorCode::OK);
-  EXPECT_EQ(bytes_written, 40);    // Total frame size
+  EXPECT_EQ(bytes_written, 41);        // Total frame size with protocol_version
   EXPECT_EQ(buffer[0], 0xAA);      // START_BYTE
   EXPECT_EQ(buffer[1], 0x01);      // FRAME_ID::COMMAND
-  EXPECT_EQ(buffer[2], 35);        // LEN (payload size)
+  EXPECT_EQ(buffer[2], 36);        // LEN (payload size)
 }
 
 TEST_F(FrameRoundtripTest, StateFrameSize) {
   // Test that state frame has expected total size
-  // Structure: START_BYTE(1) + FRAME_ID(1) + LEN(1) + PAYLOAD(39) + CRC16(2) = 44 bytes
+  // Structure: START_BYTE(1) + FRAME_ID(1) + LEN(1) + PAYLOAD(40) + CRC16(2) = 45 bytes
 
   mecabridge::protocol::StateFramePayload state = createTestStatePayload();
   uint8_t buffer[64];
@@ -111,16 +111,16 @@ TEST_F(FrameRoundtripTest, StateFrameSize) {
 
   // Now that encoding is implemented, test the actual results
   EXPECT_EQ(result, mecabridge::protocol::ErrorCode::OK);
-  EXPECT_EQ(bytes_written, 44);    // Total frame size
+  EXPECT_EQ(bytes_written, 45);        // Total frame size with protocol_version
   EXPECT_EQ(buffer[0], 0xAA);      // START_BYTE
   EXPECT_EQ(buffer[1], 0x02);      // FRAME_ID::STATE
-  EXPECT_EQ(buffer[2], 39);        // LEN (payload size)
+  EXPECT_EQ(buffer[2], 40);        // LEN (payload size)
 }
 
 TEST_F(FrameRoundtripTest, PayloadStructSizes) {
   // Verify that our payload structs have the correct sizes
-  EXPECT_EQ(sizeof(mecabridge::protocol::CommandFramePayload), 35);
-  EXPECT_EQ(sizeof(mecabridge::protocol::StateFramePayload), 39);
+  EXPECT_EQ(sizeof(mecabridge::protocol::CommandFramePayload), 36);
+  EXPECT_EQ(sizeof(mecabridge::protocol::StateFramePayload), 40);
 }
 
 TEST_F(FrameRoundtripTest, BufferTooSmall) {
@@ -161,7 +161,7 @@ TEST_F(FrameRoundtripTest, FrameParsingPlaceholder) {
   // With the implementation, we expect success
   EXPECT_EQ(result, mecabridge::protocol::ParseResult::SUCCESS);
   EXPECT_EQ(parsed.frame_id, mecabridge::protocol::FrameId::COMMAND);
-  EXPECT_EQ(parsed.payload_len, 35);
+  EXPECT_EQ(parsed.payload_len, 36);
   EXPECT_NE(parsed.payload_data, nullptr);
 }
 

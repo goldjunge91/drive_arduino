@@ -102,8 +102,8 @@ TEST_F(CRC16Test, RandomFuzzTesting) {
 
 TEST_F(CRC16Test, FrameProtocolExample) {
   // Test with a realistic frame protocol example
-  // START_BYTE (0xAA) + FRAME_ID (0x01) + LEN (0x23 = 35) + minimal payload
-  std::vector<uint8_t> frame_header = {0x01, 0x23};   // FRAME_ID + LEN (excluding START_BYTE per protocol)
+  // START_BYTE (0xAA) + FRAME_ID (0x01) + LEN (0x24 = 36) + minimal payload
+  std::vector<uint8_t> frame_header = {0x01, 0x24};   // FRAME_ID + LEN (excluding START_BYTE per protocol)
 
   uint16_t crc_result = mecabridge::protocol::crc16_ccitt_false(
     frame_header.data(), frame_header.size());
