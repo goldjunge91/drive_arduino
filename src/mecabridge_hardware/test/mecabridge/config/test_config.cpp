@@ -37,6 +37,7 @@ mecabridge_hardware:
       joint_name: esc_right_joint
       esc_min_pwm: 1000
       esc_max_pwm: 2000
+      esc_deadband: 0
   features:
     enable_servos: true
     enable_escs: true
