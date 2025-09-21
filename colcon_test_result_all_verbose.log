@@ -1,0 +1,66 @@
+ Volume "faef3c6a565fb746304e2c28225e3480efb24d329383b2a2273b40cafbd1096d_ros2_build_cache"  Creating
+ Volume "faef3c6a565fb746304e2c28225e3480efb24d329383b2a2273b40cafbd1096d_ros2_build_cache"  Created
+ Volume "faef3c6a565fb746304e2c28225e3480efb24d329383b2a2273b40cafbd1096d_ros2_install_cache"  Creating
+ Volume "faef3c6a565fb746304e2c28225e3480efb24d329383b2a2273b40cafbd1096d_ros2_install_cache"  Created
+ Volume "faef3c6a565fb746304e2c28225e3480efb24d329383b2a2273b40cafbd1096d_ros2_log_cache"  Creating
+ Volume "faef3c6a565fb746304e2c28225e3480efb24d329383b2a2273b40cafbd1096d_ros2_log_cache"  Created
+#1 [internal] load local bake definitions
+#1 reading from stdin 948B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 1.99kB 0.1s done
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/althack/ros2:humble-dev
+#3 DONE 0.1s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 33B
+#4 transferring context: 436B 0.1s done
+#4 DONE 0.1s
+
+#5 [internal] load build context
+#5 DONE 0.0s
+
+#6 [1/7] FROM docker.io/althack/ros2:humble-dev@sha256:51bb82377b9175b31480590a21cb6b2395722ebd5635b993da357a94b8682856
+#6 resolve docker.io/althack/ros2:humble-dev@sha256:51bb82377b9175b31480590a21cb6b2395722ebd5635b993da357a94b8682856 0.0s done
+#6 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 628.25kB 0.7s done
+#5 DONE 0.8s
+
+#7 [2/7] RUN apt-get update && apt-get install -y --no-install-recommends    build-essential    cmake    git    python3-colcon-common-extensions    python3-pip    vim    nano    ros-humble-controller-manager    ros-humble-hardware-interface    ros-humble-pluginlib    ros-humble-rclcpp    ros-humble-rclcpp-lifecycle    ros-humble-ros2-control    ros-humble-ros2-controllers    && if [ "1" = "1" ]; then    apt-get install -y --no-install-recommends    ros-humble-twist-mux    ros-humble-joint-state-publisher-gui    ros-humble-xacro    || echo "Optional desktop tools not available";    fi    && if [ "1" = "1" ]; then    apt-get install -y --no-install-recommends    ros-humble-gazebo-ros    ros-humble-gazebo-ros-pkgs    ros-humble-gazebo-ros2-control    || echo "Gazebo packages not available";    fi    && apt-get clean    && rm -rf /var/lib/apt/lists/*
+#7 CACHED
+
+#8 [3/7] WORKDIR /ros2_ws
+#8 CACHED
+
+#9 [4/7] RUN mkdir -p /ros2_ws/src    && echo "Skipping external dependencies for testing"
+#9 CACHED
+
+#10 [5/7] COPY ./src /ros2_ws/src
+#10 DONE 0.1s
+
+#11 [6/7] COPY ./robot /ros2_ws/src/robot
+#11 DONE 0.1s
+
+#12 [7/7] RUN echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc    && echo "if [ -f /ros2_ws/install/setup.bash ]; then source /ros2_ws/install/setup.bash; fi" >> /root/.bashrc
+#12 DONE 0.3s
+
+#13 exporting to image
+#13 exporting layers
+#13 exporting layers 0.2s done
+#13 exporting manifest sha256:5af8496c5e94bb8dcd9f48cda31e2b470621cfa40aaf66f636e4dc1bb0a15278 0.0s done
+#13 exporting config sha256:a2eb406cde995c995ffffa3c217f189f2ff21cfa09e60c1f4851c663a2fd1ad3 0.0s done
+#13 exporting attestation manifest sha256:8684d3e135eca7a0542e8b0928abdc45efde2cc8d89a7c73ddd003ddccec297d 0.0s done
+#13 exporting manifest list sha256:50ef5ba9b2153a6fac4752e049e0467d7cdd5cf9a4ae21dd7b438cf691f8937f 0.0s done
+#13 naming to docker.io/library/faef3c6a565fb746304e2c28225e3480efb24d329383b2a2273b40cafbd1096d-ros2_drive_dev:latest
+#13 naming to docker.io/library/faef3c6a565fb746304e2c28225e3480efb24d329383b2a2273b40cafbd1096d-ros2_drive_dev:latest done
+#13 unpacking to docker.io/library/faef3c6a565fb746304e2c28225e3480efb24d329383b2a2273b40cafbd1096d-ros2_drive_dev:latest 0.1s done
+#13 DONE 0.4s
+
+#14 resolving provenance for metadata file
+#14 DONE 0.0s
+Summary: 0 tests, 0 errors, 0 failures, 0 skipped
