@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "mecabridge_utils/protocol/frame.hpp"
+#include <cstring>
 
 using namespace mecabridge::protocol;
 
@@ -8,13 +9,31 @@ TEST(ProtocolHandshakeTest, VersionMismatch) {
   StateFramePayload state_payload = {};   // Zero-initialize
   state_payload.protocol_version = PROTOCOL_VERSION + 1;   // Mismatch
 
-  // 2. Encode this frame into a buffer
+  // 2. Manually encode this frame to preserve the wrong version
   uint8_t buffer[128];
-  size_t bytes_written = 0;
-  ErrorCode err = encodeState(state_payload, buffer, sizeof(buffer), bytes_written);
-
-  ASSERT_EQ(err, ErrorCode::OK);
-  ASSERT_GT(bytes_written, 0);
+  size_t offset = 0;
+  
+  // START_BYTE
+  buffer[offset++] = START_BYTE;
+  
+  // FRAME_ID  
+  buffer[offset++] = static_cast<uint8_t>(FrameId::STATE);
+  
+  // LEN (payload size)
+  buffer[offset++] = sizeof(StateFramePayload);
+  
+  // PAYLOAD - copy the struct directly with wrong version
+  std::memcpy(&buffer[offset], &state_payload, sizeof(StateFramePayload));
+  offset += sizeof(StateFramePayload);
+  
+  // Calculate CRC over FRAME_ID + LEN + PAYLOAD
+  uint16_t crc = crc16_ccitt_false(&buffer[1], offset - 1);
+  
+  // CRC16 (MSB first)
+  buffer[offset++] = static_cast<uint8_t>((crc >> 8) & 0xFF);
+  buffer[offset++] = static_cast<uint8_t>(crc & 0xFF);
+  
+  size_t bytes_written = offset;
 
   // 3. Attempt to parse the frame
   ParsedFrame parsed_frame;
