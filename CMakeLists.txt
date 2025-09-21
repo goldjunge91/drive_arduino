@@ -26,9 +26,9 @@ find_package(serial REQUIRED)
 
 # TB6612 Hardware Interface - Main library
 
-add_library(tb6612_hardware SHARED 
-  src/tb6612_hardware_interface.cpp 
-  src/tb6612_comms.cpp 
+add_library(tb6612_hardware SHARED
+  src/tb6612_hardware_interface.cpp
+  src/tb6612_comms.cpp
   src/wheel.cpp
 )
 
@@ -49,8 +49,30 @@ ament_target_dependencies(
 
 pluginlib_export_plugin_description_file(hardware_interface tb6612_hardware.xml)
 
+add_library(mecabridge_hardware SHARED
+  src/mecabridge_hardware_interface.cpp
+  src/mecabridge_comms.cpp
+)
+
+target_include_directories(
+  mecabridge_hardware
+  PRIVATE
+  include
+)
+
+ament_target_dependencies(
+  mecabridge_hardware
+  hardware_interface
+  controller_manager
+  rclcpp
+  pluginlib
+  serial
+)
+
+pluginlib_export_plugin_description_file(hardware_interface mecabridge_hardware.xml)
+
 install(
-  TARGETS tb6612_hardware
+  TARGETS tb6612_hardware mecabridge_hardware
   DESTINATION lib
 )
 
@@ -65,6 +87,7 @@ install(
 
 ament_export_libraries(
   tb6612_hardware
+  mecabridge_hardware
 )
 ament_export_dependencies(
   hardware_interface

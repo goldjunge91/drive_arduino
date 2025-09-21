@@ -2,7 +2,7 @@
 <package format="2">
   <name>drive_arduino</name>
   <version>0.0.1</version>
-  <description>Provides a ros2_control hardware interface for TB6612FNG motor driver with support for differential, mecanum, and four-wheel drive configurations.</description>
+  <description>Provides ros2_control hardware interfaces for TB6612FNG motor drivers and the new MecaBridge USB link between a Raspberry Pi 4B and Raspberry Pi Pico supporting mecanum robots with servos and ESCs.</description>
 
   <maintainer email="developer@example.com">Developer</maintainer>
   <author email="developer@example.com">Developer</author>
@@ -29,5 +29,6 @@
   <export>
     <build_type>ament_cmake</build_type>
     <hardware_interface plugin="${prefix}/tb6612_hardware.xml"/>
+    <hardware_interface plugin="${prefix}/mecabridge_hardware.xml"/>
   </export>
 </package>

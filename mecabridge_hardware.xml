@@ -1,0 +1,10 @@
+<library path="mecabridge_hardware">
+  <class name="drive_arduino/MecaBridgeHardwareInterface"
+         type="mecabridge::MecaBridgeHardwareInterface"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      MecaBridge hardware interface bridging ROS 2 control and Raspberry Pi Pico firmware for mecanum drive robots with servos a
+nd ESCs.
+    </description>
+  </class>
+</library>

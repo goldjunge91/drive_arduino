@@ -1,0 +1,122 @@
+# MecaBridge ros2_control configuration combining mecanum drive, servos and ESCs
+# Serves as the single source of truth for joint naming, geometry and hardware parameters
+
+ros2_control:
+  ros__parameters:
+    update_rate: 100  # Hz
+
+    hardware:
+      - name: mecabridge_system
+        type: mecabridge/MecaBridgeHardwareInterface
+        parameters:
+          device: /dev/ttyACM0
+          baud_rate: 115200
+          timeout_ms: 50
+          state_timeout_ms: 200
+          heartbeat_hz: 10.0
+
+          wheel_joints: [front_left_wheel, front_right_wheel, rear_left_wheel, rear_right_wheel]
+          wheel_inversions: [false, true, false, true]
+          wheel_radius: 0.05
+          wheel_separation_x: 0.30
+          wheel_separation_y: 0.28
+          encoder_cpr: 2048
+
+          servo_180_joint: tilt_servo
+          servo_180_min_deg: -90.0
+          servo_180_max_deg: 90.0
+
+          servo_360_joint: turret_servo
+          servo_360_max_deg_per_sec: 540.0
+
+          esc_joints: [left_aux_esc, right_aux_esc]
+          esc_min_command: 0.0
+          esc_max_command: 1.0
+
+    joints:
+      - name: front_left_wheel
+        command_interfaces: [velocity]
+        state_interfaces: [position, velocity]
+      - name: front_right_wheel
+        command_interfaces: [velocity]
+        state_interfaces: [position, velocity]
+      - name: rear_left_wheel
+        command_interfaces: [velocity]
+        state_interfaces: [position, velocity]
+      - name: rear_right_wheel
+        command_interfaces: [velocity]
+        state_interfaces: [position, velocity]
+      - name: tilt_servo
+        command_interfaces: [position]
+        state_interfaces: [position]
+      - name: turret_servo
+        command_interfaces: [velocity]
+        state_interfaces: [velocity]
+      - name: left_aux_esc
+        command_interfaces: [effort]
+        state_interfaces: [effort]
+      - name: right_aux_esc
+        command_interfaces: [effort]
+        state_interfaces: [effort]
+
+controller_manager:
+  ros__parameters:
+    update_rate: 100
+
+    mecanum_drive_controller:
+      type: mecanum_drive_controller/MecanumDriveController
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    servo_position_controller:
+      type: forward_command_controller/ForwardCommandController
+
+    servo_velocity_controller:
+      type: forward_command_controller/ForwardCommandController
+
+    esc_controller:
+      type: forward_command_controller/ForwardCommandController
+
+mecanum_drive_controller:
+  ros__parameters:
+    front_left_wheel_name: front_left_wheel
+    front_right_wheel_name: front_right_wheel
+    rear_left_wheel_name: rear_left_wheel
+    rear_right_wheel_name: rear_right_wheel
+    wheel_separation_x: 0.30
+    wheel_separation_y: 0.28
+    wheel_radius: 0.05
+    cmd_vel_timeout: 0.5
+    use_stamped_vel: false
+    publish_rate: 50.0
+    pose_covariance_diagonal: [0.01, 0.01, 0.01, 0.01, 0.01, 0.1]
+    twist_covariance_diagonal: [0.01, 0.01, 0.01, 0.01, 0.01, 0.1]
+    linear.x.has_velocity_limits: true
+    linear.x.max_velocity: 0.6
+    linear.x.min_velocity: -0.6
+    linear.y.has_velocity_limits: true
+    linear.y.max_velocity: 0.6
+    linear.y.min_velocity: -0.6
+    angular.z.has_velocity_limits: true
+    angular.z.max_velocity: 2.0
+    angular.z.min_velocity: -2.0
+
+servo_position_controller:
+  ros__parameters:
+    joints:
+      - tilt_servo
+    interface_name: position
+
+servo_velocity_controller:
+  ros__parameters:
+    joints:
+      - turret_servo
+    interface_name: velocity
+
+esc_controller:
+  ros__parameters:
+    joints:
+      - left_aux_esc
+      - right_aux_esc
+    interface_name: effort
