@@ -8,8 +8,8 @@
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-#include "tb6612_hardware/tb6612_hardware_interface.h"
-#include "tb6612_hardware/tb6612_config.h"
+#include "tb6612_hardware/mecabridge_hardware_interface.h"
+#include "tb6612_hardware/mecabridge_drive_config.h"
 
 using namespace tb6612_hardware;
 

@@ -19,7 +19,7 @@
 #include "rclcpp_lifecycle/state.hpp"
 
 #include "tb6612_hardware/tb6612_comms.h"
-#include "tb6612_hardware/tb6612_config.h"
+#include "tb6612_hardware/mecabridge_drive_config.h"
 #include "tb6612_hardware/wheel.h"
 
 namespace tb6612_hardware

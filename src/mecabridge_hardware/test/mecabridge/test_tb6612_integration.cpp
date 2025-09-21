@@ -17,7 +17,7 @@
 #include <pluginlib/class_loader.hpp>
 #include <controller_manager/controller_manager.hpp>
 
-#include "tb6612_hardware/tb6612_hardware_interface.h"
+#include "tb6612_hardware/mecabridge_hardware_interface.h"
 
 class TB6612IntegrationTest : public ::testing::Test
 {
