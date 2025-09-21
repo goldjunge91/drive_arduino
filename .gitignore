@@ -1,3 +1,4 @@
 robot
 build
 __pycache__
+*.log
