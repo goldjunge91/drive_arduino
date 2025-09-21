@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-﻿#include "mecabridge_hardware/mecabridge_hardware.hpp"
+// NOTE: Removed UTF-8 BOM that previously broke first preprocessor directive
+#include "mecabridge_hardware/mecabridge_hardware.hpp"
 
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "pluginlib/class_list_macros.hpp"

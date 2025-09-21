@@ -5,6 +5,10 @@
 
 #include "mecabridge_utils/serial/loopback_serial_backend.hpp"
 #include "mecabridge_utils/protocol/frame.hpp"
+using mecabridge::serial::LoopbackSerialBackend;
+using mecabridge::serial::SerialOptions;
+using namespace mecabridge::protocol; // bring protocol symbols
+using namespace std::chrono_literals;
 
 #include <memory>
 #include <chrono>
@@ -19,7 +23,7 @@ protected:
   void SetUp() override
   {
     // Create loopback backend instance
-    loopback_backend_ = std::make_shared<LoopbackSerialBackend>();
+  loopback_backend_ = std::make_shared<LoopbackSerialBackend>();
 
     // Initialize with test configuration
     setupTestConfig();

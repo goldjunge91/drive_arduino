@@ -4,6 +4,7 @@
  */
 
 #include "mecabridge_utils/protocol/frame.hpp"
+using namespace mecabridge::protocol; // use SafetyFlags, CommandFramePayload, encodeCommand, ErrorCode
 
 #include <memory>
 

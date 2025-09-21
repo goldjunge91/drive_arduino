@@ -61,5 +61,5 @@ private:
 
 } // namespace serial
 } // namespace mecabridge
-#endif  // MECABRIDGE_HARDWARE__MECABRIDGE_UTILS__SERIAL__MOCK_SERIAL_BACKEND_HPP_
+
 #endif  // MECABRIDGE_UTILS__SERIAL__MOCK_SERIAL_BACKEND_HPP_

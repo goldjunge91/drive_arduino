@@ -29,41 +29,41 @@
 
 namespace mecabridge_hardware
 {
-  class MecaBridgeHardwareInterface: public hardware_interface::SystemInterface
+  class MecaBridgeHardwareInterface : public hardware_interface::SystemInterface
   {
-public:
+  public:
     RCLCPP_SHARED_PTR_DEFINITIONS(MecaBridgeHardwareInterface);
 
     MecaBridgeHardwareInterface();
 
     hardware_interface::CallbackReturn on_init(
-      const hardware_interface::HardwareInfo & info) override;
+        const hardware_interface::HardwareInfo &info) override;
 
-    std::vector < hardware_interface::StateInterface > export_state_interfaces() override;
+    std::vector<hardware_interface::StateInterface> export_state_interfaces() override;
 
-    std::vector < hardware_interface::CommandInterface > export_command_interfaces() override;
+    std::vector<hardware_interface::CommandInterface> export_command_interfaces() override;
 
     hardware_interface::CallbackReturn on_activate(
-      const rclcpp_lifecycle::State & previous_state) override;
+        const rclcpp_lifecycle::State &previous_state) override;
 
     hardware_interface::CallbackReturn on_deactivate(
-      const rclcpp_lifecycle::State & previous_state) override;
+        const rclcpp_lifecycle::State &previous_state) override;
 
     hardware_interface::return_type read(
-      const rclcpp::Time & time, const rclcpp::Duration & period) override;
+        const rclcpp::Time &time, const rclcpp::Duration &period) override;
 
     hardware_interface::return_type write(
-      const rclcpp::Time & time, const rclcpp::Duration & period) override;
+        const rclcpp::Time &time, const rclcpp::Duration &period) override;
 
-private:
+  private:
     MecaBridgeDriveConfig cfg_;
     MecaBridgeSerialProtocol serial_protocol_;
 
     // Wheels based on drive type
-    std::vector < Wheel > wheels_;
+    std::vector<Wheel> wheels_;
 
     rclcpp::Logger logger_;
-    std::chrono::time_point < std::chrono::system_clock > time_;
+    std::chrono::time_point<std::chrono::system_clock> time_;
 
     // Connection recovery
     bool attemptConnectionRecovery();
@@ -79,6 +79,6 @@ private:
     mutable int write_error_count_;
   };
 
-}  // namespace mecabridge_hardware
+} // namespace mecabridge_hardware
 
-#endif  // mecabridge_hardware_mecabridge_hardware_INTERFACE_H
+#endif // mecabridge_hardware_mecabridge_hardware_INTERFACE_H

@@ -4,6 +4,8 @@
  */
 
 #include "mecabridge_hardware/mecabridge_utils/safety/watchdog.hpp"
+using mecabridge::safety::Watchdog;
+using namespace std::chrono_literals;
 
 #include <thread>
 

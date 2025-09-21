@@ -4,6 +4,8 @@
  */
 
 #include "mecabridge_utils/latency/latency_tracker.hpp"
+using mecabridge::latency::LatencyTracker;
+using mecabridge::latency::Duration;
 
 #include <memory>
 #include <chrono>
@@ -25,8 +27,8 @@ class LatencyMeasurementTest : public ::testing::Test
 protected:
     void SetUp() override
     {
-        // Create latency tracker with window size of 50 samples
-        latency_tracker_ = std::make_unique<LatencyTracker>(50);
+    // Create latency tracker with window size of 50 samples
+    latency_tracker_ = std::make_unique<mecabridge::latency::LatencyTracker>(50);
 
         base_time_ = std::chrono::steady_clock::now();
     }
@@ -49,7 +51,7 @@ protected:
         latency_tracker_->recordStateEcho(seq_id, echo_time);
     }
 
-    std::unique_ptr<LatencyTracker> latency_tracker_;
+    std::unique_ptr<mecabridge::latency::LatencyTracker> latency_tracker_;
     std::chrono::steady_clock::time_point base_time_;
 };
 
