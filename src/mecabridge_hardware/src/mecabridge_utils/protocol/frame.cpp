@@ -161,14 +161,11 @@ ParseResult tryParseFrame(ByteSpan input, ParsedFrame & result)
     return ParseResult::CRC_MISMATCH;
   }
 
-  // Version check for STATE frames
+  // Version check for STATE frames - skip for now since protocol_version field was removed
+  // TODO: Implement version handling through separate VERSION_INFO frame if needed
   if (result.frame_id == FrameId::STATE) {
     if (result.payload_len == sizeof(StateFramePayload)) {
-      const auto * payload = reinterpret_cast<const StateFramePayload *>(result.payload_data);
-      if (!verify_version(payload->protocol_version)) {
-        result.result = ParseResult::VERSION_MISMATCH;
-        return ParseResult::VERSION_MISMATCH;
-      }
+      // Skip version verification for now
     }
   }
 
