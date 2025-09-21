@@ -50,6 +50,7 @@ RUN mkdir -p ${ROS_WORKSPACE}/src \
 
 # `mecabridge_hardware` end up at /ros2_ws/src/mecabridge_hardware
 COPY ./src ${ROS_WORKSPACE}/src
+COPY scripts/add_copyright_headers.sh ${ROS_WORKSPACE}/src/mecabridge_hardware
 # Copy only the robot test package (kept under repo/robot) into the workspace src
 COPY ./robot ${ROS_WORKSPACE}/src/robot
 
