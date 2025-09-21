@@ -17,7 +17,7 @@
 #!/usr/bin/env python3
 
 """
-mecabridge Four Wheel Independent Drive Launch File
+MecaBridge four-wheel independent drive launch file.
 
 This launch file starts the mecabridge hardware interface configured for independent
 control of 4 wheels without specific kinematics constraints.

@@ -28,6 +28,6 @@
   <test_depend>ament_cmake_gtest</test_depend>
   <export>
     <build_type>ament_cmake</build_type>
-    <hardware_interface plugin="${prefix}/mecabridge_hardware.xml"/>
+    <hardware_interface plugin="${prefix}/mecabridge_hardware.xml" />
   </export>
 </package>

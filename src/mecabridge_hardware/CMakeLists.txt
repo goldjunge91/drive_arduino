@@ -2,14 +2,14 @@ cmake_minimum_required(VERSION 3.16)
 project(mecabridge_hardware)
 
 # Default to C++17
-if (NOT CMAKE_CXX_STANDARD)
+if(NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 17)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
-endif ()
+endif()
 
-if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_compile_options(-Wall -Wextra -Wpedantic)
-endif ()
+endif()
 
 # Feature toggle options
 option(MECABRIDGE_ENABLE_SERVOS "Enable servo support" ON)
@@ -17,23 +17,23 @@ option(MECABRIDGE_ENABLE_ESCS "Enable ESC support" ON)
 option(MECABRIDGE_ENABLE_DIAGNOSTICS "Enable diagnostics support" ON)
 
 # Configure feature toggles
-if (MECABRIDGE_ENABLE_SERVOS)
+if(MECABRIDGE_ENABLE_SERVOS)
     add_compile_definitions(MECABRIDGE_ENABLE_SERVOS=1)
-else ()
+else()
     add_compile_definitions(MECABRIDGE_ENABLE_SERVOS=0)
-endif ()
+endif()
 
-if (MECABRIDGE_ENABLE_ESCS)
+if(MECABRIDGE_ENABLE_ESCS)
     add_compile_definitions(MECABRIDGE_ENABLE_ESCS=1)
-else ()
+else()
     add_compile_definitions(MECABRIDGE_ENABLE_ESCS=0)
-endif ()
+endif()
 
-if (MECABRIDGE_ENABLE_DIAGNOSTICS)
+if(MECABRIDGE_ENABLE_DIAGNOSTICS)
     add_compile_definitions(MECABRIDGE_ENABLE_DIAGNOSTICS=1)
-else ()
+else()
     add_compile_definitions(MECABRIDGE_ENABLE_DIAGNOSTICS=0)
-endif ()
+endif()
 
 # Ensure the package include/ is available to tests and consumers using
 # #include "mecabridge_hardware/..." style headers.
@@ -106,7 +106,7 @@ install(FILES test/mecabridge/hardware/test_mecabridge_hardware_interface.yaml
 )
 
 # Testing
-if (BUILD_TESTING)
+if(BUILD_TESTING)
     find_package(ament_lint_auto REQUIRED)
     find_package(ament_cmake_gtest REQUIRED)
     # Some tests use GoogleMock matchers and mocks
@@ -214,8 +214,15 @@ if (BUILD_TESTING)
             test/mecabridge/hardware/test_mecabridge_hardware_interface.cpp
     )
     target_link_libraries(test_mecabridge_hardware_interface ${PROJECT_NAME})
-    target_include_directories(test_mecabridge_hardware_interface PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    ament_target_dependencies(test_mecabridge_hardware_interface pluginlib hardware_interface ament_index_cpp rcpputils)
+    target_include_directories(test_mecabridge_hardware_interface PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/include
+            ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    ament_target_dependencies(
+        test_mecabridge_hardware_interface
+        pluginlib
+        hardware_interface
+        ament_index_cpp
+        rcpputils)
 
     # Integration test node executable
     find_package(geometry_msgs REQUIRED)
@@ -236,7 +243,7 @@ if (BUILD_TESTING)
     install(TARGETS integration_test_node
             DESTINATION lib/${PROJECT_NAME}
     )
-endif ()
+endif()
 
 ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
 ament_export_dependencies(
@@ -247,3 +254,4 @@ ament_export_dependencies(
 )
 
 ament_package()
+

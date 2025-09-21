@@ -17,7 +17,7 @@
 #!/usr/bin/env python3
 
 """
-mecabridge Mecanum Drive Launch File
+MecaBridge mecanum drive launch file.
 
 This launch file starts the mecabridge hardware interface configured for mecanum drive
 with 4 wheels supporting omnidirectional movement.

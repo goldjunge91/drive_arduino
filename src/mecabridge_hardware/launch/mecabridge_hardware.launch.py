@@ -17,7 +17,7 @@
 #!/usr/bin/env python3
 
 """
-mecabridge Hardware Interface Master Launch File
+MecaBridge hardware interface master launch file.
 
 This launch file can start any mecabridge drive configuration based on parameters.
 It supports differential, mecanum, and four-wheel independent drive types.

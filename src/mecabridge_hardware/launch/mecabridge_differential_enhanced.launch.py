@@ -17,7 +17,7 @@
 #!/usr/bin/env python3
 
 """
-mecabridge Differential Drive Launch File (Enhanced)
+MecaBridge differential drive launch file (enhanced).
 
 This launch file starts the mecabridge hardware interface configured for differential drive
 with 2 wheels and comprehensive parameter support.
