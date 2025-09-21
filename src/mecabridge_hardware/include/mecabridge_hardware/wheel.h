@@ -6,8 +6,8 @@
 namespace tb6612_hardware
 {
 
-class Wheel
-{
+  class Wheel
+  {
 public:
     std::string name = "";
     int enc = 0;
@@ -20,12 +20,12 @@ public:
 
     Wheel() = default;
 
-    Wheel(const std::string &wheel_name, int counts_per_rev);
-    
-    void setup(const std::string &wheel_name, int counts_per_rev);
+    Wheel(const std::string & wheel_name, int counts_per_rev);
+
+    void setup(const std::string & wheel_name, int counts_per_rev);
 
     double calcEncAngle();
-};
+  };
 
 }  // namespace tb6612_hardware
 
