@@ -228,7 +228,6 @@ TEST_F(ESCServoLimitClampTest, CommandFrameClampingIntegration) {
   cmd.esc_norm[0] = 1.8f;          // Over ESC limit
   cmd.esc_norm[1] = -1.3f;         // Over ESC limit
   cmd.seq = 42;
-  cmd.protocol_version = 1;
   
   // Apply clamping (simulating what hardware interface should do)
   uint16_t safety_flags = 0;

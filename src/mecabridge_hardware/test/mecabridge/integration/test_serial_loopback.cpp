@@ -47,7 +47,6 @@ TEST_F(SerialLoopbackTest, BasicCommandEcho) {
   cmd_payload.esc_norm[0] = 0.3f;
   cmd_payload.esc_norm[1] = -0.2f;
   cmd_payload.seq = 42;
-  cmd_payload.protocol_version = 1;
 
   // Encode command frame
   uint8_t cmd_buffer[128];
@@ -79,8 +78,8 @@ TEST_F(SerialLoopbackTest, BasicCommandEcho) {
   // Check sequence echo
   EXPECT_EQ(state_payload->seq_echo, cmd_payload.seq);
 
-  // Check protocol version echo
-  EXPECT_EQ(state_payload->protocol_version, cmd_payload.protocol_version);
+  // Check protocol version is set correctly
+  EXPECT_EQ(state_payload->protocol_version, PROTOCOL_VERSION);
 
   // Check servo/ESC echo
   EXPECT_FLOAT_EQ(state_payload->servo_pos_rad, cmd_payload.servo_pos_rad);
@@ -102,7 +101,6 @@ TEST_F(SerialLoopbackTest, MultipleFrameSequence) {
     CommandFramePayload cmd_payload = {};
     cmd_payload.wheel_vel_rad_s[0] = static_cast<float>(seq) * 0.1f;
     cmd_payload.seq = seq;
-    cmd_payload.protocol_version = 1;
 
     // Encode and send
     uint8_t cmd_buffer[128];
@@ -155,7 +153,6 @@ TEST_F(SerialLoopbackTest, FrameInjection) {
   state_payload.seq_echo = 99;
   state_payload.flags = 0x01; // Some test flag
   state_payload.error_code = 2; // Some test error
-  state_payload.protocol_version = 1;
 
   // Encode the state frame
   uint8_t state_buffer[128];

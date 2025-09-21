@@ -123,8 +123,7 @@ void LoopbackSerialBackend::processCommandFrame(const uint8_t * data, size_t siz
   // Echo the sequence number
   state_payload.seq_echo = cmd_payload->seq;
 
-  // Echo the protocol version
-  state_payload.protocol_version = cmd_payload->protocol_version;
+  // Protocol version will be set during encoding (not copied from command)
 
   // Simulate encoder counts (convert wheel velocities to position deltas)
   state_payload.dt_ms = 20; // Simulate 20ms update rate
